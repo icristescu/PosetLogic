@@ -1,0 +1,47 @@
+### Starting build.
+# Target: main.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules main.ml > main.ml.depends # cached
+# Target: formulas.mli.depends, tags: { package(yojson), bin_annot, extension:mli, file:formulas.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules formulas.mli > formulas.mli.depends # cached
+# Target: poset.mli.depends, tags: { package(yojson), bin_annot, extension:mli, file:poset.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules poset.mli > poset.mli.depends
+# Target: poset.cmi, tags: { package(yojson), bin_annot, byte, compile, extension:mli, file:poset.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o poset.cmi poset.mli
+# Target: formulas.cmi, tags: { package(yojson), bin_annot, byte, compile, extension:mli, file:formulas.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o formulas.cmi formulas.mli
+# Target: main.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o main.cmo main.ml
+# Target: formulas.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:formulas.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules formulas.ml > formulas.ml.depends # cached
+# Target: lib.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:lib.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules lib.ml > lib.ml.depends # cached
+# Target: lib.mli.depends, tags: { package(yojson), bin_annot, extension:mli, file:lib.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules lib.mli > lib.mli.depends # cached
+# Target: lib.cmi, tags: { package(yojson), bin_annot, byte, compile, extension:mli, file:lib.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o lib.cmi lib.mli # cached
+# Target: lib.cmx, tags: { package(yojson), bin_annot, compile, extension:cmx, extension:ml, file:lib.cmx, file:lib.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -package yojson -o lib.cmx lib.ml # cached
+# Target: morphism.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:morphism.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules morphism.ml > morphism.ml.depends
+# Target: morphism.mli.depends, tags: { package(yojson), bin_annot, extension:mli, file:morphism.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules morphism.mli > morphism.mli.depends # cached
+# Target: morphism.cmi, tags: { package(yojson), bin_annot, byte, compile, extension:mli, file:morphism.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o morphism.cmi morphism.mli
+# Target: parameter.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:parameter.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules parameter.ml > parameter.ml.depends # cached
+# Target: parameter.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:parameter.cmo, file:parameter.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o parameter.cmo parameter.ml # cached
+# Target: parameter.cmx, tags: { package(yojson), bin_annot, compile, extension:cmx, extension:ml, file:parameter.cmx, file:parameter.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -package yojson -o parameter.cmx parameter.ml # cached
+# Target: poset.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:poset.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules poset.ml > poset.ml.depends
+# Target: poset.cmx, tags: { package(yojson), bin_annot, compile, extension:cmx, extension:ml, file:poset.cmx, file:poset.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -package yojson -o poset.cmx poset.ml
+# Target: morphism.cmx, tags: { package(yojson), bin_annot, compile, extension:cmx, extension:ml, file:morphism.cmx, file:morphism.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -package yojson -o morphism.cmx morphism.ml
++ ocamlfind ocamlopt -c -bin-annot -package yojson -o morphism.cmx morphism.ml
+File "morphism.ml", line 135, characters 30-45:
+Error: Unbound value Poset.empty_pos
+Hint: Did you mean empty_poset?
+Command exited with code 2.
+# Compilation unsuccessful.
