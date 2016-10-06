@@ -28,10 +28,11 @@ let rec eval fm v =
   | Iff(p,q) -> (eval p v) = (eval q v)
   | _ -> false
 
-type term = Var of string
-          | Fn of string * term list
+type ('a) term =  Var of string
+                | Fn of string * ('a) term list
+                | Const of ('a)
 
-type fol = R of string * term list
+type ('a) fol = R of string * ('a) term list
 
 let rec map_fm f fm =
   match fm with
@@ -45,30 +46,73 @@ let rec map_fm f fm =
   | Exists(x,p) -> Exists(x,map_fm f p)
   | _ -> fm
 
+(* Free variables in terms and formulas. *)
+let rec fvt tm =
+  match tm with
+    Var x -> [x]
+  | Const c -> []
+  | Fn(f,args) -> List.flatten (List.map fvt args)
+
+let rec fv fm =
+  match fm with
+  | False | True -> []
+  | Atom(R(p,args)) ->  List.flatten (List.map fvt args)
+  | Not(p) -> fv p
+  | And(p,q) | Or(p,q) | Imp(p,q) | Iff(p,q) -> (fv p)@(fv q)
+  | Forall(x,p) | Exists(x,p) -> List.filter (fun y -> not(x=y)) (fv p)
+
+let free_var fm = remove_duplicates(fv fm)
+
+let add_valuation (x,a) v y = if (x=y) then a else v(y)
+
+let trivial_val domain x = domain
+
+let rec forall p l =
+  match l with
+    [] -> true
+  | h::t -> p(h) && forall p t
+
+let rec exists p l =
+  match l with
+    [] -> false
+  | h::t -> p(h) || exists p t
+
 (*
  define the meaning of a term or formula with respect to both an interpretation,
  which specifies the interpretation of the function and predicate symbols,
  and a valuation which specifies the meanings of variables.
 *)
 
-let rec termval (func,pred as m) v tm =
+let rec termval func v tm =
   match tm with
     Var(x) -> v(x)
-  | Fn(f,args) -> func f (List.map (termval m v) args)
+  | Const(c) -> c
+  | Fn(f,args) -> func f (List.map (termval func v) args)
 
-let rec holds (_,pred as m) v fm =
+let rec holds (func,pred,domain as m) v fm =
   match fm with
     False -> false
   | True -> true
-  | Atom(R(r,args)) -> pred r (List.map (termval m v) args)
+  | Atom(R(r,args)) -> pred r (List.map (termval func v) args)
   | Not(p) -> not(holds m v p)
   | And(p,q) -> (holds m v p) && (holds m v q)
   | Or(p,q) -> (holds m v p) || (holds m v q)
   | Imp(p,q) -> not(holds m v p) || (holds m v q)
   | Iff(p,q) -> (holds m v p = holds m v q)
-  | _ -> false
-(*  | Forall(x,p) -> forall (fun a -> holds m ((x |-> a) v) p) domain
-  | Exists(x,p) -> exists (fun a -> holds m ((x |-> a) v) p) domain;;*)
+  | Forall(x,p) -> forall (fun a -> holds m (add_valuation (x,a) v) p) domain
+  | Exists(x,p) -> exists (fun a -> holds m (add_valuation (x,a) v) p) domain
+
+let rec denotations domain fm  =
+  match fm with
+    False -> trivial_val domain
+  | True -> trivial_val domain
+  | _ -> trivial_val domain
+
+let valuations_free_var domain fm =
+  let valuation = denotations domain fm in
+  List.map
+    (fun v -> (v, (valuation v)))
+    (fv fm)
 
 (**** Interpretation ****)
 
@@ -87,11 +131,11 @@ let membership = function
   | _ -> failwith "wrong arguments for cause"
 
 let equal_posets = function
-    (Poset.Pos p_1, Poset.Pos p_2) -> Morphism.isomorphism p_1 p_2
+    (Poset.Pos p1, Poset.Pos p2) -> Morphism.isomorphism p1 p2
   | _ -> failwith "wrong arguments for equal posets"
 
 let sub_poset = function
-    (Poset.Pos p_1, Poset.Pos p_2) -> Morphism.morphism p_1 p_2
+    (Poset.Pos p1, Poset.Pos p2) -> Morphism.morphism p1 p2
   | _ -> failwith "wrong arguments for equal posets"
 
 let intro = function
@@ -106,7 +150,14 @@ let id_label_event str = function
     [e] -> ((label e) = str)
   | _ -> failwith "wrong arguments for labels"
 
-let interpretation () =
+let check_pred p =
+  if ((String.length p) >= 5) then
+    let is_label = String.sub p 0 4 in (*label_A*)
+    (is_label = "label")
+  else false
+
+let interpretation t =
+  let domain = List.map (fun p -> Poset.Pos(p)) (Poset.get_posets(t)) in
   let func f args =
     match (f,args) with
     | ("intro", [p]) -> Poset.Pos (intro p)
@@ -115,8 +166,7 @@ let interpretation () =
     | ("intersection", [p1;p2]) -> p1
     | _ -> failwith "uninterpreted function" in
   let pred p args =
-    let is_label = String.sub p 0 4 in (*label_A*)
-    if (is_label = "label") then
+    if (check_pred p) then
       id_label_event (String.sub p 6 (String.length p)) args
     else
       match (p,args) with
@@ -127,4 +177,4 @@ let interpretation () =
       | ("sub_posets", [p1;p2]) -> sub_poset (p1,p2)
       | ("negative_influence", [x1;p1;x2;p2]) -> true
       | _ -> failwith "uninterpreted predicate" in
-  (func,pred)
+  (func,pred,domain)

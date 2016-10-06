@@ -30,7 +30,7 @@ type t = {
 
 val empty_poset : poset
 
-val gather_posets : string list -> t
+val set_posets : string list -> t
 
 val get_events : t -> event list
 
@@ -38,8 +38,16 @@ val get_posets : t -> poset list
 
 val get_events_from_poset : poset -> event list
 
-val get_event_local_id : int -> poset -> event
+val get_event_by_id : int -> poset -> event
+
+val get_event_id : event -> int
 
 val print_posets: t -> unit
 
-val intro: poset -> poset
+val print_poset: poset -> unit
+
+val print_event: event -> unit
+
+val intro : poset -> poset
+
+val remove_obs : poset -> poset

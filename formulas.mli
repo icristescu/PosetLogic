@@ -10,16 +10,19 @@ type ('a)formula = False
                  | Forall of string * ('a)formula
                  | Exists of string * ('a)formula;;
 
-type term = Var of string
-          | Fn of string * term list
+type ('a) term = Var of string
+               | Fn of string * ('a) term list
+               | Const of ('a)
 
-type fol = R of string * term list
+type ('a) fol = R of string * ('a) term list
 
 val eval : 'a formula -> ('a -> bool) -> bool
 
-val holds : (string -> 'b list -> 'b) * (string -> 'b list -> bool) ->
-            (string -> 'b) -> fol formula -> bool
+val holds : (string -> 'a list -> 'a) * (string -> 'a list -> bool) *
+              ('a list) ->
+            (string -> 'a) -> 'a fol formula -> bool
 
 
-val interpretation : unit -> (string -> Poset.domain list -> Poset.domain) *
-                                 (string -> Poset.domain list -> bool)
+val interpretation : Poset.t -> (string -> Poset.domain list -> Poset.domain) *
+                                 (string -> Poset.domain list -> bool) *
+                                   Poset.domain list
