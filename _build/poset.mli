@@ -48,6 +48,8 @@ val print_poset: poset -> unit
 
 val print_event: event -> unit
 
+val print_domain_list : domain list -> unit
+
 val intro : poset -> poset
 
 val remove_obs : poset -> poset

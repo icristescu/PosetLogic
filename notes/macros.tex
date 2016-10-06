@@ -1,0 +1,222 @@
+%% Todo notes 
+%\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage[colorinlistoftodos,prependcaption]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+
+%% Arrows
+\newcommand{\fw}{\mathrel{\longrightarrow}} % Forward
+\newcommand{\bw}{\mathrel{\rightsquigarrow}} % Backward
+\newcommand{\fbw}{\mathrel{\twoheadrightarrow}} % Forward or backward
+\newcommand{\red}{\mathrel{\fw}}
+\newcommand{\redl}[1]{\mathrel{\xrightarrow{#1}}}
+\newcommand{\revredl}[1]{\mathrel{\xrsa{#1}}}
+\newcommand{\fbl}[1]{\mathrel{\xrightarrow{#1}}}
+\newcommand{\wred}{\ensuremath{\Rightarrow}}
+\newcommand{\wredl}[1]{\mathrel{\overset{#1}{\wred}}}
+
+
+%order relations
+\newcommand{\substeq}{\ensuremath{\sqsubseteq}}
+\newcommand{\subst}{\ensuremath{\sqsubset}}
+\newcommand{\sor}{\ensuremath{\lhd}}
+\newcommand{\soreq}{\ensuremath{\unlhd}}
+\newcommand{\sleq}{\ensuremath{\sqsubset}}
+\newcommand{\oleq}{\ensuremath{\ll}}
+\newcommand{\coz}{\ensuremath{<}}
+\newcommand{\immleq}{\ensuremath{\sqsubset}}
+
+
+%%%%% RCCS
+\newcommand{\out}[1]{\ensuremath{\overline{#1}}}
+\newcommand{\outm}[2]{\ensuremath{\overline{#1}\msg{#2}}}
+
+
+
+
+%% Rigid families
+\newcommand{\rfam}{\ensuremath{\mathcal{F}}}
+\newcommand{\morp}{\ensuremath{f}}
+\newcommand{\isomorp}{\ensuremath{\iota}}
+\newcommand{\restr}{\ensuremath{\upharpoonleft}}
+\newcommand{\labl}{\ensuremath{\ell}}
+\newcommand{\labr}{\ensuremath{\widehat{\labl}}}
+\newcommand{\lablp}{\ensuremath{\wp}}
+\newcommand{\labf}{\ensuremath{\ell'}}
+\newcommand{\obj}{\ensuremath{\mathsf{obj}}}
+\newcommand{\subj}{\ensuremath{\mathsf{subj}}}
+\newcommand{\ist}{\ensuremath{\mathsf{inst}}}
+\newcommand{\compatible}{\ensuremath{\mathsf{compatible}}}
+\newcommand{\inter}{\ensuremath{\mathsf{interaction\_name}}}
+
+\newcommand{\op}{\ensuremath{\mathsf{op}}}
+\newcommand{\gc}{\ensuremath{\mathsf{gc}}}
+\newcommand{\bad}{\ensuremath{\mathsf{bad}}}
+
+
+%% Maths
+\newcommand{\integer}{\mathbb{N}}
+\newcommand{\sizeof}[1]{\rvert #1 \lvert}
+\newcommand{\infer}[3]{\ensuremath{\textsc{#1}\frac{#2}{#3}}}
+\newcommand{\domain}{\ensuremath{\mathrm{dom}}}
+
+%adjoints unit and counit
+\def\un{\ensuremath{\varepsilon}}
+\def\coun{\ensuremath{\eta}}
+
+%functors
+\def\power{\ensuremath{\mathcal{P}}}
+\def\radj{\ensuremath{\mathcal{R}}}
+\def\under{\ensuremath{\mathcal{U}}}
+%\def\free{\ensuremath{\mathcal{F}}}
+\def\forget{\ensuremath{\mathcal{G}}}
+\def\leftc{\ensuremath{\mathcal{L}}}
+\def\ees{\ensuremath{\mathcal{E}}} %event structure
+\def\enabl{\ensuremath{\vdash}}
+\def\dom{\ensuremath{\mathcal{D}}}
+\def\basis{\ensuremath{\mathcal{B}}}
+\def\setincl{\ensuremath{\mathcal{S}}}
+\newcommand{\idf}{\ensuremath{id}}
+
+%% Functions
+\DeclareMathOperator{\ids}{\mathsf{I}}
+\DeclareMathOperator{\trace}{tr}
+\DeclareMathOperator{\address}{ad}
+\DeclareMathOperator{\collapse}{collapse}
+\DeclareMathOperator{\tagg}{tag}
+\DeclareMathOperator{\untag}{untag}
+\DeclareMathOperator{\card}{Card}
+
+%% Encodings
+\newcommand{\encc}[1]{\ensuremath{[\![#1]\!]}}
+\newcommand{\enc}[1]{\encc{#1}} % Alias
+\newcommand{\encr}[1]{\ensuremath{[\![#1]\!]}}
+\newcommand{\encod}[1]{\ensuremath{\{\!\{#1\}\!\}}}
+\newcommand{\maxconc}[1]{\ensuremath{\{#1\}}}
+\newcommand{\minconc}[1]{\ensuremath{\{\{#1\}\}}}
+
+%% Sets of names
+\newcommand{\fn}[1]{\ensuremath{\mathrm{fn}(#1)}}
+\newcommand{\bn}[1]{\ensuremath{\mathrm{bn}(#1)}}
+\newcommand{\nm}[1]{\ensuremath{\mathrm{nm}(#1)}}
+%\newcommand{\names}{\ensuremath{\mathsf{N}}}
+\newcommand{\freed}[1]{\ensuremath{\mathrm{lib}(#1)}}
+\newcommand{\names}{\ensuremath{\mathrm{Names}}}
+\newcommand{\pn}{\ensuremath{\mathsf{P}}}
+\newcommand{\zn}{\ensuremath{\mathrm{\bf z}}}
+\newcommand{\wn}{\ensuremath{\mathrm{\bf w}}}
+\newcommand{\nat}{\ensuremath{\mathbb{N}}}
+
+\newcommand{\fnind}{\ensuremath{\mathrm{fn}}}
+\newcommand{\bnind}{\ensuremath{\mathrm{bn}}}
+\newcommand{\nmind}{\ensuremath{\mathrm{nm}}}
+\newcommand{\libind}{\ensuremath{\mathrm{lib}}}
+
+%%% Misc
+\newcommand{\funaddress}[3]{\address_{#1}(#2, #3)}
+\newcommand{\labels}{\ensuremath{\mathsf{L}}}
+\newcommand{\iso}{\ensuremath{\cong}}
+\newcommand{\set}[1]{\ensuremath{\{#1\}}}
+\newcommand{\conf}{\ensuremath{\mathcal{C}}}
+\newcommand{\rel}{\ensuremath{\mathcal{R}}}
+\newcommand{\srel}{\ensuremath{\mathcal{S}}}
+\newcommand{\erase}{\ensuremath{\varepsilon}}
+\newcommand{\unit}{\ensuremath{\mathbb{U}}}
+\newcommand{\Gam}{\ensuremath{\Gamma}}
+\def\unify{\mathop{\mathsf{U}}}
+\def\ua{\uparrow}
+\def\al{\alpha}
+\def\mc{\mathcal}
+\newcommand{\msg}[1]{\ensuremath{\langle#1\rangle}}
+
+\newcommand{\congr}{\ensuremath{\equiv}}
+\newcommand{\bs}{\ensuremath{\backslash}}
+\newcommand{\tick}{\ensuremath{\surd}}
+\newcommand{\new}{\ensuremath{\nu}}
+\newcommand{\multi}{\ensuremath{\mathcal{M}}}
+\newcommand{\ident}{\ensuremath{\mathcal{I}}}
+\newcommand{\confl}{\ensuremath{~\#~}}
+\newcommand{\conc}{\ensuremath{\Diamond}}
+\newcommand{\st}{s.t.\ } % such that
+\newcommand{\withoutlog}{w.l.o.g.\ }
+\newcommand{\wrt}{w.r.t.\ } 
+\newcommand{\BNFsepa}{\enspace \Arrowvert \enspace}
+\renewcommand{\tilde}{\ensuremath{\widetilde}}
+
+%Kappa
+\DeclareMathOperator{\type}{type}
+\DeclareMathOperator{\site}{site}
+\DeclareMathOperator{\free}{free}
+\DeclareMathOperator{\sfree}{\ensuremath{\dashv}}
+\DeclareMathOperator{\var}{Var}
+\DeclareMathOperator{\eval}{E}
+\newcommand{\ag}{\ensuremath{\mathcal{A}}}
+\newcommand{\sites}{\ensuremath{\mathcal{S}}}
+\newcommand{\links}{\ensuremath{\mathcal{L}}}
+\newcommand{\emb}{\ensuremath{\hookrightarrow}}
+%%\newcommand{\lemb}{\ensuremath{\rightarrow}}
+%%\newcommand{\remb}{\ensuremath{\leftarrow}}
+\newcommand{\remb}{\ensuremath{\hookleftarrow}}
+\newcommand{\lemb}{\ensuremath{\hookrightarrow}}
+\newcommand{\test}{\ensuremath{\mathrm{test}}}
+\newcommand{\modifplus}{\ensuremath{\mathrm{modif^+}}}
+\newcommand{\modifneg}{\ensuremath{\mathrm{modif^-}}}
+
+\newcommand{\lhs}{\ensuremath{\mathrm{Lhs}}}
+\newcommand{\rhs}{\ensuremath{\mathrm{Rhs}}}
+\newcommand{\ls}{\ensuremath{\ell}}
+
+\newcommand{\id}{\ensuremath{\text{id}}}
+\newcommand{\kexpr}{\ensuremath{\mathrm{k}\_\mathrm{expr}}}
+
+
+\usepackage{wasysym}
+\usepackage{booktabs}
+\providecommand\rightarrowRHD{\relbar\joinrel\mathrel\RHD}
+
+\newcommand{\action}{\ensuremath{\rightarrowRHD}}
+
+\usetikzlibrary{arrows, decorations.markings}
+
+
+
+%colors
+\definecolor{colorp1}{RGB}{192,192,192}
+\definecolor{colorp2}{RGB}{224,224,224}
+\definecolor{colorp3}{RGB}{150,150,150}
+
+%theorem styles
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{property}{Property}
+\newtheorem{corollary}{Corollary}
+\newtheorem{criterion}{Criterion}
+\newtheorem*{criterionbis}{Criterion}
+\newtheorem{note}{Note}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{notations}{Notations}
+\newtheorem{example}{Example}[section]
+
+\newcommand{\lemmaautorefname}{Lemma}
+\newcommand{\definitionautorefname}{Definition}
+\newcommand{\propositionautorefname}{Proposition}
+
+\newcommand{\proofsketch}[1]{\begin{proof}[sketch] {#1} \end{proof}}
+
+\newcommand*{\remarkautorefname}{Remark}
+\newcommand*{\exampleautorefname}{Example}
+\newcommand*{\notationsautorefname}{Notations}
+\newcommand*{\criterionautorefname}{Criterion}
+\newcommand*{\propertyautorefname}{Property}
+
+
+

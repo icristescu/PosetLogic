@@ -102,17 +102,13 @@ let rec holds (func,pred,domain as m) v fm =
   | Forall(x,p) -> forall (fun a -> holds m (add_valuation (x,a) v) p) domain
   | Exists(x,p) -> exists (fun a -> holds m (add_valuation (x,a) v) p) domain
 
-let rec denotations domain fm  =
-  match fm with
-    False -> trivial_val domain
-  | True -> trivial_val domain
-  | _ -> trivial_val domain
-
-let valuations_free_var domain fm =
-  let valuation = denotations domain fm in
-  List.map
-    (fun v -> (v, (valuation v)))
-    (fv fm)
+let rec denotations (func,pred,domain as m) fm =
+  let x = List.hd (fv fm) in
+  let valuation p y =
+    if (x=y) then p else failwith "uninterpreted variable" in
+  List.fold_left
+    (fun valid p ->
+      if (holds m (valuation p) fm) then p::valid else valid) [] domain
 
 (**** Interpretation ****)
 

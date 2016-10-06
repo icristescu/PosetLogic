@@ -26,3 +26,6 @@ val holds : (string -> 'a list -> 'a) * (string -> 'a list -> bool) *
 val interpretation : Poset.t -> (string -> Poset.domain list -> Poset.domain) *
                                  (string -> Poset.domain list -> bool) *
                                    Poset.domain list
+
+val denotations : (string -> 'a list -> 'a) * (string -> 'a list -> bool) *
+                    ('a list) -> 'a fol formula -> 'a list

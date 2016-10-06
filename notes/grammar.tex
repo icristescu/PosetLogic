@@ -1,0 +1,60 @@
+\section{Logic on posets}
+
+\subsection{Grammar}
+
+\begin{align*}
+  x ::= & x^e ~|~ x^s & \tag{variables on events and stories} \\
+  t^s ::= & x^s ~|~ s ~|~ \text{intro}(t^s) ~|~ \text{obs}(t^s) ~|~ t^s_1 \cup t^s_2 ~|~ t^s_1 \cap t^s_2 &\tag{terms on posets} \\
+  t^e ::= & x^e ~|~ e & \tag{terms on events}
+  \\
+  \varphi ::= & t^s ~|~ t^e ~| \\
+  & \exists x.\varphi(x) ~|~ \forall x.\varphi(x) ~|&\tag{quantifiers on events}\\
+  & \neg \varphi ~|~ \varphi_1 \vee \varphi_2~|~\varphi_1 \wedge \varphi_2~|~\varphi_1 \implies \varphi_2~|&\tag{logical connectors}\\
+  & t^e\in t^s ~|~ \labl(t^e) = A ~|~ t^e_1 \leq_{t^s} t^e_2 ~|~ t^e_1\in t^s_1 \dashv t^e_2\in t^s_2~|~ t^s_1 = t^s_2 ~|~ t^s_1\subseteq t^s_2
+  & \tag{predicates}\\
+  \\
+\end{align*}
+
+\subsection{Interpretation}
+
+We interpret the logic on the domain of events and posets.
+%an interpretation is the link between syntax and semantics. The functions and predicates are interpreted as their corresponding operations on events and posets.
+
+\begin{definition}[Poset]
+  \label{def:poset}
+  A poset $s=\{E,\leq\}$ is a set of events $E$ and a binary relations on events, $\leq$. We denote $\sqsubset$ the transitive closure of $\leq$.
+  We use the predicates $\text{intro}(s)$ and $\text{obs}(s)$ to retrieve the minimal and maximal events, respectively.
+
+  A labelled poset $s=\{E,\leq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
+\end{definition}
+
+%\begin{definition}[Immediate causality]
+%  Let us define immediate causality $e<_s e'$, for two events $e,e'\in s$ such that $e\sqsubset e'$ and $\nexists e''$, $e\sqsubset e''\sqsubset e'$.
+%\end{definition}
+
+We use the notations $s \subseteq_{\labl}s'$, $s\cap_{\labl}s'$, $s\cup_{\labl}s'$ and $s\iso_{\labl}s'$ for the respective set operations that are respectful of the causal order and labelling function.
+
+Let $\mathcal{R}$ a set of rules (labels on events) and $\mathcal{S}$ a set of posets closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$.
+
+We denote $A,B$ elements of $\mathcal{R}$ and $s$ elements of $\mathcal{S}$.
+
+All function and predicates used in our logic have standard interpretation on posets, with maybe the exception of $\dashv$. We can interpret it as any predicates that relates events in different posets. Our interpretation in the restrainted case of graph rewriting systems (and in Kappa) will be that of inhibition.
+
+A \emph{valuation} for $\varphi$ is a function
+$v:\text{fv}(\varphi)\to\mathcal{E}\uplus\mathcal{S}$
+from the set of free variables of $\varphi$ to the set of events and posets.
+
+The evaluation of $\varphi$ is defined below, where a valuation function is needed for the set of free variables of $\varphi$.
+\begin{align*}
+  \enc{x}_{v} &= v(x)\\
+  \enc{\forall x^s.\varphi}_{v} &= T \iff\text{ for all }s\in\mathcal{S}, \enc{\varphi(s/x)}_{v} = T\\
+  \enc{\exists x^s.\varphi}_{v} &= T \iff\text{ for some }s\in\mathcal{S}, \enc{\varphi(s/x)}_{v} = T\\
+  \enc{\text{pred}(t_1,\cdots t_n)}_{v} &= \text{pred}(\enc{t_1}_{v},\cdots,\enc{t_n}_{v}) \\
+  \enc{\text{func}(t_1,\cdots t_n)}_{v} &= \text{func}(\enc{t_1}_{v},\cdots,\enc{t_n}_{v}) \\
+\end{align*}
+%pred stands for predicates and func for the functions used in the grammar of $t^s$.
+
+A formula $\varphi$ is satisfiable if there exists $v$ such that $\enc{\varphi}_v = T$.
+
+The denotation of $\varphi$, denoted $\{\varphi\}$ is the set of valuations for which $\varphi$ evaluates to true. In~\autoref{logic_kappa} we will give the denotation for a fragment of our logic.
+%where we allow only one free variable, of sort poset.

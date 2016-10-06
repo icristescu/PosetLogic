@@ -114,6 +114,14 @@ let test_forall_intro_subset t =
                          Formulas.Var "x"])))) in
   (valuation,fm)
 
+let test_denotation_intro_subset t =
+  let fm =
+    Formulas.Atom(
+        Formulas.R("sub_posets",
+                   [Formulas.Fn ("intro", [Formulas.Var "x"]);
+                    Formulas.Var "x"])) in
+  fm
+
 let test_events_labels_in_diff_posets t =
   let posets = Poset.get_posets t in
   let p1 = List.nth posets 1 in
@@ -148,11 +156,14 @@ let () =
       (Sys.argv.(0) ^
        " stories\n outil") in
 
-
   let posets = Poset.set_posets (!files) in
   let (func,pred,domain) = Formulas.interpretation posets in
-  let (valuation,fm) = test_forall_intro_subset posets in
-  ()
+  let fm = test_denotation_intro_subset posets in
+  let model = Formulas.denotations (func,pred,domain) fm in
+  printf "valuations for x: \n";
+  Poset.print_domain_list model
+
+  (*let (valuation,fm)*)
   (*
   if (Formulas.holds (func,pred,domain) valuation fm) then printf "true\n"
   else printf "false\n"

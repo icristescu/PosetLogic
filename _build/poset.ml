@@ -64,6 +64,12 @@ let print_posets t =
     (fun i p -> Format.printf "\n poset nb %d\n" i; print_poset p)
     t.poset_list
 
+let print_domain_list l =
+  List.iter
+    (fun d -> match d with
+              | Pos p -> print_poset p
+              | Ev e -> print_event e) l
+
 let quarks_of_json (quarks:Yojson.Basic.json) =
   let open Yojson.Basic.Util in
   match quarks with
