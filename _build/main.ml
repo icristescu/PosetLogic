@@ -1,5 +1,6 @@
 let files = ref []
 let formula_file = ref ""
+let read_fm = ref []
 
 let options = [
     ("-f", Arg.Set_string formula_file,
@@ -88,7 +89,6 @@ let test_subset_without_obs t =
          Formulas.R("sub_posets", [Formulas.Var "x"; Formulas.Var "y"]))) in
   (valuation,fm)
 
-(* to do: test (forall p).test_intro_subset *)
 let test_intro_subset t =
   let posets = Poset.get_posets t in
   let p1 = List.nth posets 2 in
@@ -148,6 +148,23 @@ let test_events_labels_in_diff_posets t =
                         [Formulas.Var "x1"; Formulas.Var "x2"])))) in
   (valuation,fm)
 
+let empty_valuation = function
+    _ -> failwith "empty valuation"
+
+let parse_fm =
+(*  let () = if Sys.file_exists (!formula_file) then Format.printf "ok"
+           else Format.printf "not ok - %s" (!formula_file) in *)
+  let chan = open_in ("formula3") in
+  try
+    let lexbuf = Lexing.from_channel chan in
+    while true do
+      let result = Parser.main Lexer.token lexbuf in
+      read_fm := result::(!read_fm);
+      if (!Parameter.debug_mode) then
+        (Format.printf "parsing \n";Formulas.print_fm result;Format.printf"\n")
+    done
+  with Lexer.Eof -> ()
+
 let () =
   let () =
     Arg.parse
@@ -155,16 +172,21 @@ let () =
       (fun f -> files := f::(!files))
       (Sys.argv.(0) ^
        " stories\n outil") in
-
+  let () = parse_fm in
   let posets = Poset.set_posets (!files) in
   let (func,pred,domain) = Formulas.interpretation posets in
-  let fm = test_denotation_intro_subset posets in
-  let model = Formulas.denotations (func,pred,domain) fm in
-  printf "valuations for x: \n";
-  Poset.print_domain_list model
+  let fm = Formulas.convert_string_to_domain (List.hd (!read_fm)) in
+  if ((Formulas.free_var fm) = []) then
+    (if (Formulas.holds (func,pred,domain) empty_valuation fm)
+     then printf "true\n"
+     else printf "false\n")
+  else
+    let model = Formulas.denotations (func,pred,domain) fm in
+    printf "valuations for x: \n";
+    Poset.print_domain_list model
 
-  (*let (valuation,fm)*)
-  (*
+(*  let fm = test_denotation_intro_subset posets in*)
+  (* - in order to test for -
   if (Formulas.holds (func,pred,domain) valuation fm) then printf "true\n"
   else printf "false\n"
    *)

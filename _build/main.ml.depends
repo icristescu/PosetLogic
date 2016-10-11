@@ -1,1 +1,1 @@
-main.ml: Arg Array Formulas List Parameter Poset Printf Sys
+main.ml: Arg Array Format Formulas Lexer Lexing List Parameter Parser Poset Printf Sys

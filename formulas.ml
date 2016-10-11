@@ -34,9 +34,14 @@ type ('a) term =  Var of string
 
 type ('a) fol = R of string * ('a) term list
 
+let rec string_term = function
+  | Var s -> Var s
+  | Fn (s,ls) -> Fn (s,(List.map (fun tm -> string_term tm) ls))
+  | Const (s:string) -> Const (Poset.Pos Poset.empty_poset)
+
 let rec map_fm f fm =
   match fm with
-    Atom a -> f a
+    Atom a -> Atom (f a)
   | Not(p) -> Not(map_fm f p)
   | And(p,q) -> And(map_fm f p,map_fm f q)
   | Or(p,q) -> Or(map_fm f p,map_fm f q)
@@ -44,7 +49,47 @@ let rec map_fm f fm =
   | Iff(p,q) -> Iff(map_fm f p,map_fm f q)
   | Forall(x,p) -> Forall(x,map_fm f p)
   | Exists(x,p) -> Exists(x,map_fm f p)
-  | _ -> fm
+  | True -> True
+  | False -> False
+
+let convert_string_to_domain (fm: string fol formula) =
+  let aux_fun = function
+      R(s,ls) -> R(s, (List.map (fun tm -> string_term tm) ls)) in
+  map_fm aux_fun fm
+
+let print_var str = printf "%s" str
+
+let rec print_tm = function
+  | Var v -> printf " %s " v
+  | Fn (fn_name,tmls) -> printf " %s( " fn_name;
+                         List.iter (fun tm -> print_tm tm) tmls;
+                         printf ")"
+  | Const d -> match d with
+               | Poset.Ev e -> Poset.print_event e
+               | Poset.Pos p -> Poset.print_poset p
+
+let rec print_tm_string = function
+  | Var v | Const v -> printf " %s " v
+  | Fn (fn_name,tmls) -> printf " %s( " fn_name;
+                         List.iter (fun tm -> print_tm_string tm) tmls;
+                         printf ")"
+
+let print_atom = function
+  | R(str, tmls) -> printf "%s (" str;
+                    List.iter (fun tm -> print_tm_string tm) tmls;
+                    printf ")"
+
+let rec print_fm = function
+  | True -> printf "True"
+  | False -> printf "False"
+  | Atom a -> print_atom a
+  | Not(p) -> printf "Not ("; print_fm p; printf ")"
+  | And(p,q) -> printf "And("; print_fm p; printf", "; print_fm q; printf ")"
+  | Or(p,q) -> printf "Or("; print_fm p; printf", "; print_fm q; printf ")"
+  | Imp(p,q) -> printf "Imp("; print_fm p; printf", "; print_fm q; printf ")"
+  | Iff(p,q) -> printf "iff("; print_fm p; printf", "; print_fm q; printf ")"
+  | Forall(x,p) -> printf "Forall %s." x; printf "("; print_fm p; printf ")"
+  | Exists(x,p) -> printf "Exists %s." x; printf "("; print_fm p; printf ")"
 
 (* Free variables in terms and formulas. *)
 let rec fvt tm =
@@ -109,13 +154,13 @@ let rec denotations (func,pred,domain as m) fm =
   List.fold_left
     (fun valid p ->
       if (holds m (valuation p) fm) then p::valid else valid) [] domain
-
+(*
 let den free_var  =
   match free_var with
   | x::rest ->
      List.fold_left
        (fun v p -> add_valuation (x1,p) v) empty_val domain
-
+ *)
 (**** Interpretation ****)
 
 let label x = match x with

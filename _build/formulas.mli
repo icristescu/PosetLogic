@@ -29,3 +29,9 @@ val interpretation : Poset.t -> (string -> Poset.domain list -> Poset.domain) *
 
 val denotations : (string -> 'a list -> 'a) * (string -> 'a list -> bool) *
                     ('a list) -> 'a fol formula -> 'a list
+
+val free_var : 'a fol formula -> string list
+
+val print_fm : string fol formula -> unit
+
+val convert_string_to_domain : string fol formula -> Poset.domain fol formula
