@@ -167,6 +167,19 @@ let parse_fm () =
 let set_flags () =
   Parameter.debug_mode := !debug_mode
 
+let evaluate sfm m v =
+  let fm = Formulas.convert_string_to_domain sfm in
+  if ((Formulas.free_var fm) = []) then
+    (if (Formulas.holds m v fm)
+     then Format.printf "true\n"
+     else Format.printf "false\n")
+  else
+    let model = Formulas.denotations m fm in
+    if (model = []) then Format.printf "false\n"
+    else
+      (Format.printf "valuations:\n";
+       Domain.print_domain_list model)
+
 let () =
   let () =
     Arg.parse
@@ -177,21 +190,14 @@ let () =
   let () = set_flags () in
   let () = parse_fm () in
   let posets = Domain.set_posets (!files) in
-  let (func,pred,domain) = Formulas.interpretation posets in
-  let fm = Formulas.convert_string_to_domain (List.hd (!read_fm)) in
-  if ((Formulas.free_var fm) = []) then
-    (if (Formulas.holds (func,pred,domain) empty_valuation fm)
-     then Format.printf "true\n"
-     else Format.printf "false\n")
-  else
-    let model = Formulas.denotations (func,pred,domain) fm in
-    if (model = []) then Format.printf "false\n"
-    else
-      (Format.printf "valuations:\n";
-       Domain.print_domain_list model)
+  let m = Formulas.interpretation posets in
+  List.iteri
+    (fun i fm ->
+      Format.printf "evaluate formula %i:\n" i; (evaluate fm m empty_valuation))
+    (!read_fm)
 
   (*  let fm = test_denotation_intro_subset posets in*)
   (* - in order to test the tests in ocaml -
-  if (Formulas.holds (func,pred,domain) valuation fm) then Format.printf "true\n"
+  if (Formulas.holds (func,pred,domain) valuation fm) then Format.printf"true\n"
   else Format.printf "false\n"
    *)

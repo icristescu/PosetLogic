@@ -154,7 +154,7 @@ let rec denotations (func,pred,domain as m) fm =
   let () = if (!Parameter.debug_mode) then
              Format.printf "denotations for one var %s\n" x in
   let valuation p y =
-    if (x=y) then p else failwith "uninterpreted variable" in
+    if (x=y) then p else raise (ExceptionDefn.Uninterpreted_Variable(y)) in
   List.fold_left
     (fun valid p ->
       if (holds m (valuation p) fm) then p::valid else valid) []
@@ -164,11 +164,12 @@ let rec denotations (func,pred,domain as m) fm =
 
 let label x = match x with
   | Domain.Ev e -> (Event.get_label e)
-  | Domain.Pos _ -> failwith "wrong arguments for label"
+  | Domain.Pos _ ->
+     raise (ExceptionDefn.Malformed_Args("label"))
 
 let cause = function
   | (Domain.Ev e, Domain.Ev e', Domain.Pos p) -> true
-  | _ -> failwith "wrong arguments for cause"
+  | _ -> raise (ExceptionDefn.Malformed_Args("cause"))
 
 let id_eq x y =
   let () = if (!Parameter.debug_mode) then
@@ -177,7 +178,7 @@ let id_eq x y =
 
 let membership = function
     (Domain.Ev e, Domain.Pos p) -> List.mem e (p.Poset.events)
-  | _ -> failwith "wrong arguments for cause"
+  | _ -> raise (ExceptionDefn.Malformed_Args("membership"))
 
 let equal_posets = function
     (Domain.Pos p1, Domain.Pos p2) ->
@@ -187,7 +188,7 @@ let equal_posets = function
      | (true, false) -> Morphism.isomorphism (Poset.remove_obs(p1)) p2
      | (false, true) -> Morphism.isomorphism p1 (Poset.remove_obs(p2))
      | (false, false) -> Morphism.isomorphism p1 p2 )
-  | _ -> failwith "wrong arguments for equal posets"
+  | _ -> raise(ExceptionDefn.Malformed_Args("equal posets"))
 
 let equal_events = function
     (Domain.Ev e1, Domain.Ev e2) ->
@@ -196,26 +197,26 @@ let equal_events = function
                 Event.print_event e1) in
     if (e1 = e2) then true
     else false
-  | _ -> failwith "wrong arguments for equal posets"
+  | _ -> raise(ExceptionDefn.Malformed_Args("equal events"))
 
 let sub_poset = function
     (Domain.Pos p1, Domain.Pos p2) -> Morphism.morphism p1 p2
-  | _ -> failwith "wrong arguments for equal posets"
+  | _ -> raise (ExceptionDefn.Malformed_Args("sub_posets"))
 
 let intro = function
     Domain.Pos p -> Poset.intro p
-  | _ -> failwith "wrong arguments for intro"
+  | _ -> raise (ExceptionDefn.Malformed_Args("intro"))
 
 let obs = function
     Domain.Pos p -> p
-  | _ -> failwith "wrong arguments for obs"
+  | _ -> raise (ExceptionDefn.Malformed_Args("obs"))
 
 let id_label_event str = function
     [e] ->
     let () = if (!Parameter.debug_mode) then
                Format.printf "id_label_event %s\n" str in
     ((label e) = str)
-  | _ -> failwith "wrong arguments for labels"
+  | _ -> raise (ExceptionDefn.Malformed_Args("id_label_event"))
 
 let check_pred p =
   if ((String.length p) >= 5) then
@@ -232,7 +233,7 @@ let interpretation t =
     | ("obs", [p1]) -> p1
     | ("union", [p1;p2]) -> p1
     | ("intersection", [p1;p2]) -> p1
-    | _ -> failwith "uninterpreted function" in
+    | _ -> raise (ExceptionDefn.Uninterpreted_Function(f)) in
   let pred p args =
     if (check_pred p) then
       let lb = String.sub p 5 ((String.length p) - 5) in
@@ -248,5 +249,5 @@ let interpretation t =
       | ("equal_events", [e1;e2]) -> equal_events (e1,e2)
       | ("sub_posets", [p1;p2]) -> sub_poset (p1,p2)
       | ("negative_influence", [x1;p1;x2;p2]) -> true
-      | _ -> failwith "uninterpreted predicate" in
+      | _ -> raise (ExceptionDefn.Uninterpreted_Predicate(p)) in
   (func,pred,domain)

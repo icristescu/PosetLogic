@@ -86,4 +86,4 @@ let remove_obs p =
      let prec_1 = List.filter (fun (e1,e2) -> not (e2 = obs_id) ) p.prec_1 in
      let inhibit = List.filter (fun (e1,e2) -> not (e2 = obs_id) ) p.inhibit in
      { kappa = false; filename = p.filename; events; prec_1; inhibit; })
-  else failwith "Poset.remove_obs - should not be possible"
+  else raise (ExceptionDefn.Internal_Error("should not be possible"))

@@ -2,10 +2,10 @@
 
 \begin{definition}[Poset]
   \label{def:poset}
-  A poset $s=\{E,\leq\}$ is a set of events $E$ and a binary relations on events, $\leq$. We denote $\sqsubset$ the transitive closure of $\leq$.
+  A poset $s=\{E,<\}$ is a set of events $E$ and a binary relations on events, $<$. We denote $\sqsubseteq$ the transitive and reflexive closure of $<$.
   We use the predicates $\text{intro}(s)$ and $\text{obs}(s)$ to retrieve the minimal and maximal events, respectively.
 
-  A labelled poset $s=\{E,\leq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
+  A labelled poset $s=\{E,<,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
 \end{definition}
 
 %\begin{definition}[Immediate causality]
@@ -28,7 +28,7 @@ We denote $A,B$ elements of $\mathcal{R}$ and $s$ elements of $\mathcal{S}$.
   \varphi ::= & t^s ~|~ t^e ~| \\
   & \exists x.\varphi(x) ~|~ \forall x.\varphi(x) ~|&\tag{quantifiers on events}\\
   & \neg \varphi ~|~ \varphi_1 \vee \varphi_2~|~\varphi_1 \wedge \varphi_2~|~\varphi_1 \implies \varphi_2~|&\tag{logical connectors}\\
-  & t^e\in t^s ~|~ \labl(t^e) = A ~|~ t^e_1 \leq_{t^s} t^e_2 ~|~ t^e_1\in t^s_1 \dashv t^e_2\in t^s_2~|~ t^s_1 = t^s_2 ~|~ t^s_1\subseteq t^s_2
+  & t^e\in t^s ~|~ \labl(t^e) = A ~|~ t^e_1 <_{t^s} t^e_2 ~|~ t^e_1 \sqsubseteq_{t^s} t^e_2 ~|~ t^e_1\in t^s_1 \dashv t^e_2\in t^s_2~|~ t^s_1 = t^s_2 ~|~ t^s_1\subseteq t^s_2
   & \tag{predicates}\\
   \\
 \end{align*}

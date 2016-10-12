@@ -25,10 +25,10 @@ ocamlfind ocamldep -package yojson -modules parser.mli > parser.mli.depends # ca
 ocamlfind ocamlc -c -bin-annot -package yojson -o parser.cmi parser.mli # cached
 # Target: lexer.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:lexer.cmo, file:lexer.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -bin-annot -package yojson -o lexer.cmo lexer.ml # cached
-# Target: Parameter.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:Parameter.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package yojson -modules Parameter.ml > Parameter.ml.depends # cached
-# Target: Parameter.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:Parameter.cmo, file:Parameter.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -bin-annot -package yojson -o Parameter.cmo Parameter.ml # cached
+# Target: parameter.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:parameter.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules parameter.ml > parameter.ml.depends # cached
+# Target: parameter.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:parameter.cmo, file:parameter.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o parameter.cmo parameter.ml # cached
 # Target: main.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -bin-annot -package yojson -o main.cmo main.ml # cached
 # Target: domain.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:domain.ml, ocaml, ocamldep, quiet, traverse }
@@ -41,6 +41,10 @@ ocamlfind ocamldep -package yojson -modules event.ml > event.ml.depends # cached
 ocamlfind ocamlc -c -bin-annot -package yojson -o event.cmo event.ml # cached
 # Target: formulas.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:formulas.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package yojson -modules formulas.ml > formulas.ml.depends # cached
+# Target: exceptionDefn.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:exceptionDefn.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package yojson -modules exceptionDefn.ml > exceptionDefn.ml.depends # cached
+# Target: exceptionDefn.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:exceptionDefn.cmo, file:exceptionDefn.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o exceptionDefn.cmo exceptionDefn.ml # cached
 # Target: lib.mli.depends, tags: { package(yojson), bin_annot, extension:mli, file:lib.mli, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package yojson -modules lib.mli > lib.mli.depends # cached
 # Target: lib.cmi, tags: { package(yojson), bin_annot, byte, compile, extension:mli, file:lib.mli, interf, ocaml, quiet, traverse }
@@ -49,16 +53,16 @@ ocamlfind ocamlc -c -bin-annot -package yojson -o lib.cmi lib.mli # cached
 ocamlfind ocamldep -package yojson -modules morphism.mli > morphism.mli.depends # cached
 # Target: morphism.cmi, tags: { package(yojson), bin_annot, byte, compile, extension:mli, file:morphism.mli, interf, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -bin-annot -package yojson -o morphism.cmi morphism.mli # cached
-# Target: formulas.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:formulas.cmo, file:formulas.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -bin-annot -package yojson -o formulas.cmo formulas.ml # cached
 # Target: parser.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:parser.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package yojson -modules parser.ml > parser.ml.depends # cached
 # Target: parser.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:parser.cmo, file:parser.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -bin-annot -package yojson -o parser.cmo parser.ml # cached
 # Target: poset.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:poset.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package yojson -modules poset.ml > poset.ml.depends # cached
+# Target: formulas.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:formulas.cmo, file:formulas.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -package yojson -o formulas.cmo formulas.ml
 # Target: poset.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:poset.cmo, file:poset.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -bin-annot -package yojson -o poset.cmo poset.ml # cached
+ocamlfind ocamlc -c -bin-annot -package yojson -o poset.cmo poset.ml
 # Target: lib.ml.depends, tags: { package(yojson), bin_annot, extension:ml, file:lib.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package yojson -modules lib.ml > lib.ml.depends # cached
 # Target: lib.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:lib.cmo, file:lib.ml, implem, ocaml, quiet, traverse }
@@ -68,5 +72,5 @@ ocamlfind ocamldep -package yojson -modules morphism.ml > morphism.ml.depends # 
 # Target: morphism.cmo, tags: { package(yojson), bin_annot, byte, compile, extension:cmo, extension:ml, file:morphism.cmo, file:morphism.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -bin-annot -package yojson -o morphism.cmo morphism.ml # cached
 # Target: main.byte, tags: { package(yojson), bin_annot, byte, dont_link_with, extension:byte, file:main.byte, link, ocaml, program, quiet, traverse }
-ocamlfind ocamlc -linkpkg -package yojson Parameter.cmo event.cmo lib.cmo poset.cmo domain.cmo morphism.cmo formulas.cmo parser.cmo lexer.cmo main.cmo -o main.byte # cached
+ocamlfind ocamlc -linkpkg -package yojson event.cmo parameter.cmo exceptionDefn.cmo lib.cmo poset.cmo domain.cmo morphism.cmo formulas.cmo parser.cmo lexer.cmo main.cmo -o main.byte
 # Compilation successful.
