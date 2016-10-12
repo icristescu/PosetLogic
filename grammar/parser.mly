@@ -1,11 +1,11 @@
-%token <int> INT
 %token <string> VAR
 %token <string> LABEL
 %token LPAREN RPAREN
 %token FALSE TRUE AND OR NOT IMP IFF FORALL EXISTS
-%token P_IN P_SAME_LABELS P_EQ_LAB P_EQ_POS P_SUBPOS
+%token P_IN P_SAME_LABELS P_EQ_LAB P_EQ_POS P_SUBPOS P_EQ_EV
 %token F_INTRO
 %token EOL
+%token SORT_E SORT_P
 %start main     /* the entry point */
 %type <string Formulas.fol Formulas.formula> main
 %%
@@ -21,10 +21,10 @@ expr:
 	| LPAREN expr OR expr RPAREN	{ Formulas.Or ($2, $4) }
 	| LPAREN expr IMP expr RPAREN	{ Formulas.Imp ($2, $4) }
 	| LPAREN expr IFF expr RPAREN	{ Formulas.Iff ($2, $4) }
-	| FORALL VAR expr 		{ Formulas.Forall ($2, $3) }
-	| EXISTS VAR expr 		{ Formulas.Exists ($2, $3) }
+	| FORALL VAR sort expr 		{ Formulas.Forall ($2, $3, $4) }
+	| EXISTS VAR sort expr 		{ Formulas.Exists ($2, $3, $4) }
 	| LPAREN term pred term RPAREN  { Formulas.Atom(Formulas.R($3, [ $2;$4 ])) }
-
+	| LPAREN term pred RPAREN  	{ Formulas.Atom(Formulas.R($3, [ $2 ])) }
 ;
 term:
 	 VAR 	      	  		{ Formulas.Var($1) }
@@ -34,6 +34,11 @@ pred:
 	| P_SUBPOS			{ "sub_posets" }
 	| P_IN				{ "in" }
 	| P_SAME_LABELS			{ "equal_event_labels" }
-	| P_EQ_LAB LABEL		{ "label"^$2 }
+	| P_EQ_LAB LABEL		{ String.concat "" ["label"; $2] }
 	| P_EQ_POS 			{ "equal_posets" }
+	| P_EQ_EV 			{ "equal_events" }
+;
+sort:
+	SORT_E				{ "Event" }
+	| SORT_P			{ "Poset" }
 ;

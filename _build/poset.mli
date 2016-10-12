@@ -1,55 +1,23 @@
-open Yojson
-
-exception MalformedDatatype of string
-exception ErrorParsing of string
-
-type quark =
-  | Tested of (int*int*int)
-  | Modified of (int*int*int)
-  | TestedMod of (int*int*int)
-
-type event = {
-    event_id : int;
-    event_label : string;
-    quarks : quark list;
-  }
-
-type poset = {
-    events : event list;
+type t = {
+    kappa : bool;
+    filename : string option;
+    events : Event.t list;
     prec_1 : (int * int) list;
     inhibit : (int * int) list;
   }
 
-type domain =  Pos of poset
-             | Ev of event
+val empty_poset : t
 
-type t = {
-    poset_list : poset list;
-    events_list : event list;
-  }
+val get_events_from_poset : t -> Event.t list
 
-val empty_poset : poset
+val get_event_by_id : int -> t -> Event.t
 
-val set_posets : string list -> t
+val print_poset: t -> unit
 
-val get_events : t -> event list
+val intro : t -> t
 
-val get_posets : t -> poset list
+val remove_obs : t -> t
 
-val get_events_from_poset : poset -> event list
+val read_poset_from_file : string -> t
 
-val get_event_by_id : int -> poset -> event
-
-val get_event_id : event -> int
-
-val print_posets: t -> unit
-
-val print_poset: poset -> unit
-
-val print_event: event -> unit
-
-val print_domain_list : domain list -> unit
-
-val intro : poset -> poset
-
-val remove_obs : poset -> poset
+val test_poset : t

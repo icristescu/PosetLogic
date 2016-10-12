@@ -1,0 +1,43 @@
+\section{Transition systems for graph rewriting}
+
+\begin{definition}[Transition systems~\cite{NielsenRT92}]
+  A transition system is a structure $TS = (Q,E,T)$ where $Q$ is a set of states, $E$ is a set of events and $T\subseteq Q\times E\times Q$ is a set of labelled transitions. Let $q_{\text{init}}\in Q$ be a special state, called the \emph{initial} state. Moreover a transition system satisfies the following axioms:
+  \begin{itemize}
+  \item no redundant events: $\forall e\in E$, $\exists (s,e,s')\in T$;
+  \item no redundant states: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$;
+  \item no circles:$\forall (s,e,s')\in T$, $s\neq s'$;
+  \item each pair of states connected by a single transition: $\forall (s,e_1,s_1), (s,e_2,s_2)\in T$, $s_1=s_2\implies e_1=e_2$.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Asynchronuous Transition Systems~\cite{Mukund93}]
+  An asynchronuous TS is a structure $ATS = (Q,E,T,I)$ where $(Q,E,T)$ is a transition system equipped with an irreflexive, symmetric relation on events $I\subseteq E\times E$, called independence, that satisfies the following axioms:
+  \begin{itemize}
+  \item $e_1~I~e_2$ and $(q,e_1,q_1)\in T$ and $(q,e_2,q_2)\in T$ implies $\exists q'.(q_1,e_2,q')\in T$ and $(q_2,e_1,q')\in T$;
+  \item $e_1~I~e_2$ and $(q,e_1,q_1)\in T$ and $(q_1,e_2,q')\in T$ implies $\exists q_2.(q_1,e_2,q_2)\in T$ and $(q_2,e_1,q')\in T$.
+  \end{itemize}
+\end{definition}
+
+\subsection{From transition systems to posets of events}
+
+Let us now define the two additional relations on events: \emph{causality} and \emph{inhibition}.
+
+\begin{definition}
+  Let $ATS = (Q,E,T,I)$ be an asynchronuous transition system. Let $< \subseteq E\times E$ be a irreflexive and antisymmetric relation on events for which the following axiom holds:
+  \begin{itemize}
+  \item $e_1< e_2$ implies $\exists q$ such that $(q,e_1,q_1)\in T$ and $(q_1,e_2,q')\in T$ and $\nexists q_2.(q,e_2,q_2)\in T$.
+    %We sometimes write $e_1<_q e_2$.
+  \item $e_1< e_2$ implies $\exists q$ such that $(q,e_1,q_1)\in T$ and $(q_1,e_2,q')\in T$ and $\nexists e_2',q_2$ such that $(q,e_2,q_2)\in T$ and $\exists e_1'$ with $(q_2,e_1',q)\in T$.
+  \end{itemize}
+  Let $\dashv\subseteq E \times E$ be a relation for which the following axiom holds:
+  \begin{itemize}
+  \item $e_1\dashv e_2$ implies $\exists q$ such that $(q,e_1,q_1)\in T$ and $(q,e_2,q_2)\in T$ and $\nexists q'.(q_1,e_2,q')\in T$.
+  \end{itemize}
+\end{definition}
+
+From a transition system $TS = (Q,E,T,I,<,\dashv)$ one can extract posets of events $s=\{E_s,<\}$, where $E_s\subseteq E$.
+Let $\mathcal{S}$ be the set of posets closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$. We are not interested in the extraction mechanism, as long as the identity of events and the relationships between them (causality and inihibition) are preserved.
+
+In interpreting our logic, we only work with the set $\mathcal{S}$. If we are interested in the relations between events inside a poset, for example $e_1<_s e_2$, those are available in the structure of the poset. However, if we want to interpret formulas that relate events in different posets, we need to retrieve these relations from the events \emph{itselves}.
+
+Thus we need to fix some structure into the events, and we will do that by considering the category of simple graphs and transition system based on graph rewriting.

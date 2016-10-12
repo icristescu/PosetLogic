@@ -1,2 +1,2 @@
-val isomorphism : Poset.poset -> Poset.poset -> bool
-val morphism : Poset.poset -> Poset.poset -> bool
+val isomorphism : Poset.t -> Poset.t -> bool
+val morphism : Poset.t -> Poset.t -> bool

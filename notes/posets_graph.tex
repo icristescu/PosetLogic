@@ -1,0 +1,29 @@
+\begin{definition}[Event]
+  Define an event $e=(r:L\action R,m_k:L\lemb M)$ as a pair consisting of a rule $r:L\action R$ and a \emph{matching} $m_k:L\lemb M$ of the left hand side of $r$ in a site graph $M$. We denote $\labl(e) = r$.
+\end{definition}
+
+\begin{property}
+  $e\dashv e' \implies\labl(e)\xrightarrow{-}\labl(e')$.
+\end{property}
+\begin{proof}
+  \begin{mdframed}[backgroundcolor=blue!20]
+    to do
+  \end{mdframed}
+\end{proof}
+
+\begin{property}
+\label{prop:cause_pos_infl}
+  $e< e'\implies \labl(e)\xrightarrow{+}\labl(e')$.
+\end{property}
+\begin{proof}
+  \begin{mdframed}[backgroundcolor=blue!20]
+    to do
+  \end{mdframed}
+\end{proof}
+
+Note that if $e_1\ll e_2$ there are three cases possible:
+\begin{itemize}
+\item $e_1< e_2$
+\item $\labl(e)\xrightarrow{+}\labl(e')$ and $\neg(e_1 < e_2)$
+\item $\neg(\labl(e)\xrightarrow{+}\labl(e'))$
+\end{itemize}

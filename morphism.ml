@@ -3,18 +3,6 @@ module IntMap = Map.Make(struct type t = int let compare = compare end)
 
 let empty_morph = IntMap.empty
 
-let poset_minus p rem_events =
-  let events =
-    List.filter (fun e -> (not (List.mem e rem_events))) p.Poset.events in
-  let ids = List.map (fun e -> e.Poset.event_id) rem_events in
-  let filter_pair_list ls =
-    List.filter
-      (fun (e_1,e_2) ->
-        (not ((List.mem e_1 ids) || (List.mem e_2 ids)))) ls in
-  { Poset.events = events;
-    Poset.prec_1 = (filter_pair_list p.Poset.prec_1);
-    Poset.inhibit = (filter_pair_list p.Poset.inhibit); }
-
 let print_list_morphisms morphs =
   List.iter
     (fun m ->
@@ -71,9 +59,9 @@ let gen_all_morphs l1 l2 =
 let check_labels m p1 p2 =
   List.fold_left
     (fun ok_so_far (id1,id2) ->
-      let e1 = List.find (fun e -> e.Poset.event_id = id1) p1.Poset.events in
-      let e2 = List.find (fun e -> e.Poset.event_id = id2) p2.Poset.events in
-      ok_so_far && (e1.Poset.event_label = e2.Poset.event_label))
+      let e1 = List.find (fun e -> (Event.get_id e) = id1) p1.Poset.events in
+      let e2 = List.find (fun e -> (Event.get_id e) = id2) p2.Poset.events in
+      ok_so_far && ((Event.get_label e1)= (Event.get_label e2)))
     true (IntMap.bindings m)
 
 let check_prec m p1 p2 =
@@ -87,8 +75,8 @@ let check_prec m p1 p2 =
 let comp_morph p1 p2 =
   if ((List.length p1.Poset.events) <= (List.length p2.Poset.events)) then
     let all_morphs =
-      gen_all_morphs (List.map (fun e -> e.Poset.event_id) p1.Poset.events)
-                     (List.map (fun e -> e.Poset.event_id) p2.Poset.events) in
+      gen_all_morphs (List.map (fun e -> Event.get_id e) p1.Poset.events)
+                     (List.map (fun e -> Event.get_id e) p2.Poset.events) in
     let valid_labels =
       List.filter (fun m -> check_labels m p1 p2) all_morphs in
     let () = if (!Parameter.debug_mode)
