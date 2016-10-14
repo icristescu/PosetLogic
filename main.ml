@@ -50,8 +50,8 @@ let test_membership_const t =
 
 let test_subset t =
   let posets = Domain.get_posets t in
-  let p1 = List.nth posets 0 in
-  let p2 = List.nth posets 3 in
+  let p1 = List.nth posets 2 in
+  let p2 = List.nth posets 1 in
 
   let () = if (!Parameter.debug_mode) then
              ( Format.printf "\n test_subset : poset \n";
@@ -169,7 +169,8 @@ let set_flags () =
 
 let evaluate sfm m v =
   let fm = Formulas.convert_string_to_domain sfm in
-  if ((Formulas.free_var fm) = []) then
+  let free_var = Formulas.free_var fm in
+  if (free_var = []) then
     (if (Formulas.holds m v fm)
      then Format.printf "true\n"
      else Format.printf "false\n")
@@ -177,8 +178,13 @@ let evaluate sfm m v =
     let model = Formulas.denotations m fm in
     if (model = []) then Format.printf "false\n"
     else
-      (Format.printf "valuations:\n";
-       Domain.print_domain_list model)
+      List.iteri
+        (fun i m ->
+          Format.printf "valuation nb%i:\n" i;
+          (List.iter (fun v -> Format.printf "%s = " v;
+                               Domain.print_domain (m(v))) free_var);
+          Format.printf "\n")
+        model
 
 let () =
   let () =
@@ -196,8 +202,7 @@ let () =
       Format.printf "evaluate formula %i:\n" i; (evaluate fm m empty_valuation))
     (!read_fm)
 
-  (*  let fm = test_denotation_intro_subset posets in*)
-  (* - in order to test the tests in ocaml -
-  if (Formulas.holds (func,pred,domain) valuation fm) then Format.printf"true\n"
+(*  let (valuation,fm) = test_subset posets in
+  if (Formulas.holds m valuation fm) then Format.printf"true\n"
   else Format.printf "false\n"
-   *)
+ *)

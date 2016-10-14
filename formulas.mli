@@ -29,7 +29,7 @@ val interpretation : Domain.t ->
 val denotations : (string -> Domain.domain list -> Domain.domain) *
                     (string -> Domain.domain list -> bool) *
                       (Domain.domain list) ->
-                  Domain.domain fol formula -> Domain.domain list
+                  Domain.domain fol formula -> (string -> Domain.domain) list
 
 val free_var : 'a fol formula -> string list
 

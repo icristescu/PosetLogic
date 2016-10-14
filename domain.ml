@@ -19,13 +19,14 @@ let print_posets t =
     (fun i e -> Format.printf "event nb %d \n" i; Event.print_event e)
     t.event_list
 
+let print_domain = function
+  | Pos p -> (match p.Poset.filename with
+              | Some f -> Format.printf"%s " f
+              | None -> Poset.print_poset p)
+  | Ev e -> Event.print_event e
+
 let print_domain_list l =
-  List.iter
-    (fun d -> match d with
-              | Pos p -> (match p.Poset.filename with
-                          | Some f -> Format.printf"%s " f
-                          | None -> Poset.print_poset p)
-              | Ev e -> Event.print_event e) l;
+  List.iter (fun d -> print_domain d) l;
   Format.printf"\n"
 
 

@@ -29,25 +29,26 @@ let rec permutations = function
   | [] -> []
   | x::[] -> [[x]]
   | x::xs ->
+     let () = Format.printf "permutations@." in
      List.fold_left
        (fun acc p -> acc @ ins_all_positions x p ) [] (permutations xs)
 
-let rec gen_morphisms_permutations_l1 l1 l2 =
+let gen_morphisms_permutations_l1 l1 l2 =
   let permuts = permutations l1 in
   List.map
     (fun l1' -> gen_one_morphism l1' l2)
     permuts
 
 let combinations k list =
-    let rec aux k acc emit = function
-      | [] -> acc
-      | h :: t ->
-        if k = 1 then aux k (emit [h] acc) emit t else
-          let new_emit x = emit (h :: x) in
-          aux k (aux (k-1) acc new_emit t) emit t
-    in
-    let emit x acc = x :: acc in
-    aux k [] emit list;;
+  let rec aux k acc emit = function
+    | [] -> acc
+    | h :: t ->
+       if k = 1 then aux k (emit [h] acc) emit t else
+         let new_emit x = emit (h :: x) in
+         aux k (aux (k-1) acc new_emit t) emit t
+  in
+  let emit x acc = x :: acc in
+  aux k [] emit list
 
 let gen_all_morphs l1 l2 =
   let combins = combinations (List.length l1) l2 in
@@ -77,13 +78,16 @@ let comp_morph p1 p2 =
     let all_morphs =
       gen_all_morphs (List.map (fun e -> Event.get_id e) p1.Poset.events)
                      (List.map (fun e -> Event.get_id e) p2.Poset.events) in
+    let () = Format.printf "gen all morphisms\n" in
     let valid_labels =
       List.filter (fun m -> check_labels m p1 p2) all_morphs in
+    let () = Format.printf "valid_labels\n" in
     let () = if (!Parameter.debug_mode)
              then (Format.printf "morphisms after label check: \n";
                    print_list_morphisms valid_labels) in
     let valid_prec =
       List.filter (fun m -> check_prec m p1 p2) valid_labels in
+    let () = Format.printf "valid_prec\n" in
     let () = if (!Parameter.debug_mode)
              then (Format.printf "morphisms after prec check: \n";
                    print_list_morphisms valid_prec) in

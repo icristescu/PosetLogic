@@ -12,6 +12,7 @@ val get_posets : t -> Poset.t list
 
 val print_posets: t -> unit
 
+val print_domain : domain -> unit
 val print_domain_list : domain list -> unit
 
 val set_posets : string list -> t

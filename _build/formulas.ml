@@ -149,6 +149,20 @@ let rec holds (func,pred,domain as m) v fm =
      exists (fun a -> holds m (add_valuation (x,a) v) p)
             (List.filter (fun d -> domain_match_sort d s) domain)
 
+let denotations (_,_,domain as m) fm =
+  let rec denote_var vars valuation vals =
+    match vars with
+    | x::next ->
+       let () = if (!Parameter.debug_mode) then
+                  Format.printf "denotations for one var %s\n" x in
+       List.fold_left
+         (fun l p -> denote_var next (add_valuation (x,p) valuation) l)
+         vals
+         (List.filter (fun d -> domain_match_sort d "Poset") domain)
+    | [] -> if (holds m valuation fm) then (valuation::vals) else (vals) in
+  let default_valuation x = raise (ExceptionDefn.Uninterpreted_Variable(x)) in
+  denote_var (fv fm) default_valuation []
+(*
 let rec denotations (func,pred,domain as m) fm =
   let x = List.hd (fv fm) in
   let () = if (!Parameter.debug_mode) then
@@ -159,7 +173,7 @@ let rec denotations (func,pred,domain as m) fm =
     (fun valid p ->
       if (holds m (valuation p) fm) then p::valid else valid) []
     (List.filter (fun d -> domain_match_sort d "Poset") domain)
-
+ *)
 (**** Interpretation ****)
 
 let label x = match x with
@@ -200,8 +214,14 @@ let equal_events = function
   | _ -> raise(ExceptionDefn.Malformed_Args("equal events"))
 
 let sub_poset = function
-    (Domain.Pos p1, Domain.Pos p2) -> Morphism.morphism p1 p2
-  | _ -> raise (ExceptionDefn.Malformed_Args("sub_posets"))
+    (Domain.Pos p1, Domain.Pos p2) ->
+    (match (p1.Poset.kappa, p2.Poset.kappa) with
+     | (true, true) ->
+        Morphism.morphism (Poset.remove_obs(p1)) (Poset.remove_obs(p2))
+     | (true, false) -> Morphism.morphism (Poset.remove_obs(p1)) p2
+     | (false, true) -> Morphism.morphism p1 (Poset.remove_obs(p2))
+     | (false, false) -> Morphism.morphism p1 p2 )
+  | _ -> raise(ExceptionDefn.Malformed_Args("sub_posets"))
 
 let intro = function
     Domain.Pos p -> Poset.intro p
