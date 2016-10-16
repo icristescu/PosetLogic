@@ -1,4 +1,22 @@
-\section{Refinement of graph rewriting rules}
+\section{Posets of graph rewriting events}
+
+\subsection{From transition systems to posets of events}
+
+\begin{definition}[Story]
+  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system.
+  A \emph{story} $s = (E_s,<_s,\dashv_s)$ is a subset of events $E_s\subseteq E$ equipped with two binary relations on events $<_s$, $\dashv_s$ which are the restrictions of $<$ and $\dashv$ respectively, to the set $E_s$.
+\end{definition}
+
+Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$.
+%We are not interested in the extraction mechanism, as long as the identity of events and the relationships between them (causality and inihibition) are preserved.
+
+\bigskip
+
+In interpreting our logic, we only work with the posets in $\mathcal{S}$ without having access to the transition system. If we are interested in the relations between events inside a poset, for example $e_1<_s e_2$, those are available in the structure of the poset. However, if we want to interpret formulas that relate events in different posets, we need to retrieve these relations from the events \emph{itselves}.
+
+%Thus we need to fix some structure into the events, and we will do that by considering the category of simple graphs and transition system based on graph rewriting.
+
+\subsection{Refinement of graph rewriting rules}
 
 Let $r_1$ and $r_2$ two rules such that there exists a positive influence between the two : there exists $O$ such that $r_1 \redl{+}_O r_2$. Let us define a refinement of the two rules
 such that the following diagram commutes:
@@ -228,7 +246,7 @@ Let us now formally introduce the refinement of the rules in a poset using the p
 
 Let us define the notion of refinement using negative influence.
 
-\begin{definition}[Refinement based on positive influence]
+\begin{definition}[Refinement based on negative influence]
   For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements:
   \begin{align*}
     \mathcal{R}(e_1\in s_1) =
@@ -255,34 +273,21 @@ Let us define the notion of refinement using negative influence.
       \draw [>=latex, ->] (l1) -- (r1);
     \end{tikzpicture}
   \end{align*}
-  Define $\mathcal{R}(e_1\in s_1\redl{-}_O e_2\in s_2)$ as the context which realises the influence:
+  Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
-        \node (o) at (0,-1) {\(O\)};
-        \node (p) at (0,1) {\(\circ\)};
-        \node (n) at (0,3) {\(M\)};
-        \node (r1) at (-1,0) {\(R_1\)};
-        \node (l1) at (-2,0) {\(L_1\)};
-        \node (l2) at (2,0) {\(L_2\)};
-        \node (r2) at (3,0) {\(R_2\)};
-        \node (n1) at (-2,1) {\(M_1\)};
-        \node (n2) at (2,1) {\(M_2\)};
-        \node (p1) at (-1,2) {\(\circ\)};
-        \node (p2) at (1,2) {\(\circ\)};
-        \draw [->] (l1) -- (n1);
-        \draw [->] (l2) -- (n2);
-        \draw [->] (o) -- (l1);
-        \draw [->] (o) -- (l2);
-        \draw [->] (l1) -- (p);
-        \draw [->] (l2) -- (p);
-        \draw [->] (p) -- (p1);
-        \draw [->] (p) -- (p2);
-        \draw [->] (n1) -- (p1);
-        \draw [->] (n2) -- (p2);
-        \draw [->] (p1) -- (n);
-        \draw [->] (p2) -- (n);
-        \draw [>=latex, ->] (l1) -- (r1);
-        \draw [>=latex, ->] (l2) -- (r2);
+    \node (o) at (0,0) {\(O\)};
+    \node (n) at (0,2) {\(M\)};
+    \node (l1) at (-1,0) {\(L_1\)};
+    \node (l2) at (1,0) {\(L_2\)};
+    \node (n1) at (-1,1) {\(M_1\)};
+    \node (n2) at (1,1) {\(M_2\)};
+    \draw [->] (l1) -- (n1);
+    \draw [->] (l2) -- (n2);
+    \draw [->] (o) -- (n1);
+    \draw [->] (o) -- (n2);
+    \draw [->] (n1) -- (n);
+    \draw [->] (n2) -- (n);
   \end{tikzpicture}
   \]
 \end{definition}
@@ -292,32 +297,18 @@ Let us define the notion of refinement using negative influence.
 Let us show how we can interpret negative feedback loops. Let $e_1\in s_1\redl{-} e_2\in s_2$ such that $s_2\subset s_1$. Then $e_2\leq_{s_1} e_2$. However this additional constraint does not change the way we interpret negative influence, that is the influence is realised if there exists $M$ such that the following diagram commutes:
 \[
 \begin{tikzpicture} %[scale=0.8]
-\node (o) at (0,-1) {\(O\)};
-\node (p) at (0,1) {\(\circ\)};
-\node (n) at (0,3) {\(M\)};
-\node (r1) at (-1,0) {\(R_2\)};
-\node (l1) at (-2,0) {\(L_2\)};
-\node (l2) at (2,0) {\(L_1\)};
-\node (r2) at (3,0) {\(R_1\)};
-\node (n1) at (-2,1) {\(M_2\)};
-\node (n2) at (2,1) {\(M_1\)};
-\node (p1) at (-1,2) {\(\circ\)};
-\node (p2) at (1,2) {\(\circ\)};
-\node (dots) at (0,0) {\(\cdots\)};
-\draw [->] (l1) -- (n1);
-\draw [->] (l2) -- (n2);
-\draw [->] (o) -- (l1);
-\draw [->] (o) -- (l2);
-\draw [->] (l1) -- (p);
-\draw [->] (l2) -- (p);
-\draw [->] (p) -- (p1);
-\draw [->] (p) -- (p2);
-\draw [->] (n1) -- (p1);
-\draw [->] (n2) -- (p2);
-\draw [->] (p1) -- (n);
-\draw [->] (p2) -- (n);
-\draw [>=latex, ->] (l1) -- (r1);
-\draw [>=latex, ->] (l2) -- (r2);
+  \node (o) at (0,0) {\(O\)};
+  \node (n) at (0,2) {\(M\)};
+  \node (l1) at (-1,0) {\(L_1\)};
+  \node (l2) at (1,0) {\(L_2\)};
+  \node (n1) at (-1,1) {\(M_1\)};
+  \node (n2) at (1,1) {\(M_2\)};
+  \draw [->] (l1) -- (n1);
+  \draw [->] (l2) -- (n2);
+  \draw [->] (o) -- (n1);
+  \draw [->] (o) -- (n2);
+  \draw [->] (n1) -- (n);
+  \draw [->] (n2) -- (n);
 \end{tikzpicture}
 \]
 \end{example}

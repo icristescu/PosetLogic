@@ -1,27 +1,68 @@
+\section{Transition systems for graph rewriting}
 
 \subsection{Graph rewriting}
 
 \begin{definition}[Category of simple graphs]
   We define the category of \emph{simple graphs} where
   \begin{itemize}
-  \item objects are graphs: $G = (S_v,S_E)$, $S_v$ is a set of nodes and $S_E$ a set of edges;
-  \item morphisms preserve edges: $h:G_1\to G_2$ is a function on nodes $h:S_{v_1}\to S_{v_2}$ such that $(s,t)\in S_{E_1}\implies (h(s),h(t))\in S_{E_2}$.
+  \item objects are graphs: $G = (V,E)$ with $V$ a set of nodes and $E$ a binary symmetric reflexive relation on nodes, representing the edges;
+  \item morphisms $h:G_1\to G_2$ are functions on nodes $h_V:V_1\to V_2$ that preserve edges: $(s,t)\in E_1\implies (h_V(s),h_V(t))\in E_2$. We denote $h_E$ the function on edges: $h_E(s,t) = (h_V(s), h_V(t))$.
   \end{itemize}
 \end{definition}
 
-A mono is a morphism injective on nodes and edges.
+A mono is a morphism injective on nodes.
+
+\begin{definition}[Pushout]
+  The \emph{pushout} of the span $G_1\leftarrow O\rightarrow G_2$ is the cospan $G_1\rightarrow M\leftarrow G_2$ such that the following diagram commutes
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (0,-1) {\(O\)};
+    \node (l1) at (-1,0) {\(G_1\)};
+    \node (l2) at (1,0) {\(G_2\)};
+    \node (m) at (0,1) {\(M\)};
+    \draw [->] (o) --  (l1);
+    \draw [->] (o) --  (l2);
+    \draw [->] (l1) --  (m);
+    \draw [->] (l2) --  (m);
+  \end{tikzpicture}
+  \]
+  and such that for any other cospan $G_1\rightarrow M'\leftarrow G_2$ for which the diagram commutes, there is a unique morphism $M\to M'$:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (mp) at (0,2) {\(M'\)};
+    \node (o) at (0,-1) {\(O\)};
+    \node (l1) at (-1.5,0) {\(G_1\)};
+    \node (l2) at (1.5,0) {\(G_2\)};
+    \node (m) at (0,1) {\(M\)};
+    \draw [->] (o) --  (l1);
+    \draw [->] (o) --  (l2);
+    \draw [->] (l1) --  (m);
+    \draw [->] (l2) --  (m);
+    \draw [->] (l1) to [bend left] (mp);
+    \draw [->] (l2) to [bend right] (mp);
+    \draw [->, dotted] (m) -- (mp);
+  \end{tikzpicture}
+  \]
+\end{definition}
+
+\begin{property}
+  \begin{itemize}
+  \item The pushout is unique up to isomorphism.
+  \item The pushout preserves monos: if $O\to G_i$ is a mono then $G_i\to M$ is also a mono.
+  \end{itemize}
+\end{property}
 
 \begin{definition}[Double-pushout rewriting]
-  Let $p = L\overset{l}{\leftarrow} D \overset{r}{\rightarrow} R$ be a span of injective morphisms, called a \emph{prduction} or a \emph{rule}. Let $M$ be a graph and $L\lemb M$ be an injective morphism in $M$, called \emph{a matching}.
+  Let $p = L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$ be a span of injective morphisms, called a \emph{production} or a \emph{rule}. Let $M$ be a graph and $L\lemb M$ be an injective morphism in $M$, called \emph{a matching}.
 
-  The \emph{double pushout transformation} consists in defining the graphs $D'$, called the \emph{context} graph, and $N$ such that in the following diagram, the two squares are pushouts:
+  The \emph{double pushout transformation} consists in defining the graphs $D'$, called the \emph{context} graph, and the graph $N$ such that in the following diagram:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (l) at (-1.5,0) {\(L\)};
-    \node (d) at (0,0) {\(D\)};
+    \node (d) at (0,0) {\(K\)};
     \node (r) at (1.5,0) {\(R\)};
     \node (m) at (-1.5,1.5) {\(M\)};
-    \node (d') at (0,1.5) {\(D'\)};
+    \node (d') at (0,1.5) {\(D\)};
     \node (n) at (1.5,1.5) {\(N\)};
     \draw [->] (d) -- node [above,midway] {\(l\)} (l);
     \draw [->] (d) -- node [above,midway] {\(r\)} (r);
@@ -32,35 +73,79 @@ A mono is a morphism injective on nodes and edges.
     \draw [->] (r) -- (n);
   \end{tikzpicture}
   \]
-  The inverse rule is defined as $p^{-} = R\overset{r}{\leftarrow} D \overset{l}{\rightarrow} L$.
+  the two squares are pushouts.
+  We denote $L\action R$ the span $L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$. The inverse rule is defined as $p^{-} = R\overset{r}{\leftarrow} K \overset{l}{\rightarrow} L$.
 \end{definition}
 
-\begin{remark}
-  The DPO approach only works, if we impose that the rules we consider do not have \emph{no side effects}, which is also called the \emph{the dangling points condition}: the nodes $x$ in $L$ such that $m(x)$ is the source or target of an edge $e$ in $M\setminus L$, are also nodes in $D$.
+\begin{property}[Gluing conditions]
+  For any graph $G$ let us denote $V_G$ and $E_G$ the corresponding set of nodes and edges, respectively.
+  Let $p = L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$ be a production and let $L\overset{m}\lemb M$ be a matching in a graph $M$.
+  Define the \emph{gluing points} and \emph{dangling points} as the two following sets:
+  \begin{align*}
+  \text{GP} &= l_V(V_K)\cup l_E(V_E)\\
+  \text{DP} &= \{ v\in V_L \big| \exists e\in E_G\setminus m_E(E_L)\text{ s.t. }e=(v,\_)\text{ or }e=(\_, v)\}.
+  \end{align*}
+  Then DP $\subseteq$ GP iff there exists a unique $D$ such that $L\overset{m}{\rightarrow} M{\leftarrow} D$ is the pushout of the span $ L\overset{l}{\leftarrow} K {\rightarrow} D$.
+\end{property}
 
-  Other graph rewriting techniques exists that allows such rules. However, we are interested in reversible rules, and the DPO approach gives us the inverse of a rule in a straightforward way. We plan to extend the current work to rules with side effect in the future.
+Henceforth we only consider productions that satisfy the gluing condition.
+
+\begin{remark}
+Other graph rewriting techniques exists that allows production with dangling points. However, we are interested in reversible rules, and the DPO approach gives us the inverse of a rule in a straightforward way. We plan to extend the current work to rules with side effect in the future.
 \end{remark}
 
-We denote $L\action R$ the span $L\overset{l}{\leftarrow} D \overset{r}{\rightarrow} R$.
+\subsection{Transition systems}
 
-\begin{definition}
-  A transition system on graphs $TS = (Q,E,T,I,<,\dashv)$ is a transition system where :
+\begin{definition}[Transition systems~\cite{NielsenRT92}]
+  \label{def:ts_nielsen}
+  A transition system is a structure $TS = (Q,E,T)$ where $Q$ is a set of states, $E$ is a set of events and $T\subseteq Q\times E\times Q$ is a set of labelled transitions. Let $q_{\text{init}}\in Q$ be a special state, called the \emph{initial} state. Moreover a transition system satisfies the following axioms:
   \begin{itemize}
-  \item the states $Q$ are simples graphs;
-  \item an event $e=(p:L\action R,m_k(G):L\to G)$ is a pair consisting of a rule $p:L\action R$ and a function $m_k$, that for a graph $G$, selects one matching $m_k :L\to G$. The label of an event is the rule $\labl(e) = p$.
-  \item a transition $M\overset{p}{\action} N$ consists in a DPO rewriting step:
+  \item no redundant events: $\forall e\in E$, $\exists (s,e,s')\in T$;
+  \item no redundant states: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$;
+  \item no circles:$\forall (s,e,s')\in T$, $s\neq s'$;
+  \item each pair of states connected by a single transition: $\forall (s,e_1,s_1), (s,e_2,s_2)\in T$, $s_1=s_2\implies e_1=e_2$.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[TS on graphs]
+  A transition system on graphs $TS = (Q,R,E,T)$ consists of
+  \begin{itemize}
+  \item a set of states $Q$, where each state is a simple graph;
+  \item a set of rules or productions, $R$;
+  \item a set of events $E$, where each event $e=(p:L\action R,m(G):L\emb G)$ is a pair consisting of a rule $p\in R$ and a function $m$, that for a graph $G$, selects one matching $L\emb G$. For an event $e$, we define two functions $\labl(e) = p$ and $m_e(\_): L\emb \_$;
+  \item a set of labelled transition $T\subseteq Q\times E\times Q$, where each transition $M \overset{e}{\Rightarrow} N$ is a DPO rewriting step with the production $\labl(e) = p$ and the matching $m_e(M)$:
     \[
     \begin{tikzpicture} %[scale=0.8]
       \node (l) at (-1.5,0) {\(L\)};
       \node (r) at (0,0) {\(R\)};
       \node (m) at (-1.5,1.5) {\(M\)};
       \node (n) at (0,1.5) {\(N\)};
-      \draw [->] (l) -- node [left,midway] {\(m_k\)}  (m);
+      \draw [->] (l) -- node [left,midway] {\(m_e\)}  (m);
       \draw [>=latex, ->] (l) -- (r);
-      \draw [>=latex, ->] (m) -- node [above,midway] {\(p\)} (n);
+      \draw [>=latex, ->] (m) -- (n);
       \draw [->] (r) -- (n);
     \end{tikzpicture}
     \]
-    where $p$ is the rule $L\action R$.
+    We sometimes write $M\overset{m_e(M),p}{\Rightarrow} N$.
   \end{itemize}
+  Moreover $TS$ satisfy the axioms of~\autoref{def:ts_nielsen}.
+\end{definition}
+
+\begin{definition}[Independence relation~\cite{AlgebraicGR}]
+  We equip a graph transition system $(Q,R,E,T)$ with an irreflexive, symmetric relation on events $I\subseteq E\times E$, called independence, such that whenever $e_1~I~e_2$ the following axioms hold:
+  \begin{description}
+  \item[sequential independence]
+    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$;
+  \item[parallel independence]
+    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $M_2\overset{m_1',p_1}{\Rightarrow} M'$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M_2) = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$, $m_{e_2}(M_1) = m_2'$.
+  \end{description}
+  We call such a TS an \emph{asynchronous} transition system~\cite{Mukund93}.
+\end{definition}
+
+\begin{definition}[Causality or sequential dependence]
+  Define $< \subseteq E\times E$ an irreflexive and antisymmetric relation on events such that whenever $e_1 < e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that don't commute, i.e. there is no graph $M'\in Q$ such that $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$.
+\end{definition}
+
+\begin{definition}[Inhibition]
+  Define $\dashv\subseteq E \times E$ a relation on events such that whenever $e_1\dashv e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ for which there is no graph $M'\in Q$ such that $M_1\overset{m_2',p_2}{\Rightarrow} M'$.
 \end{definition}

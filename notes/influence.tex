@@ -2,7 +2,7 @@
 
 Let us now define the notions of influence between rules, that allows us to overapproximate the relations of causality and inhibition between events.
 
-\begin{definition}[Multisum]
+\begin{definition}[Multisum in the subcategory of monos]
   Let $G_1$ and $G_2$ be two graphs. The \emph{multisums} of $G_1$ and $G_2$ is a family of cospans of monos $G_1\lemb M_i\remb G_2$ such that for any other cospan of monos $G_1\lemb M'\remb G_2$ there exists a unique $M_k$, $k\leq n$ and a unique mono $M_k\lemb M'$:
   \[
   \begin{tikzpicture} %[scale=0.8]
@@ -100,7 +100,7 @@ Let us now define the notions of influence between rules, that allows us to over
 Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the span $L_1{\remb} O {\lemb} L_2$ and there is no iso between the pullback of the cospan $D_1\lemb L_1\remb O$ and $O$.
 
 \begin{remark}[Influence in Kappa]
-  In categories where the multisum between two graphs can be empty (such as the category of site graphs in Kappa), we can distinguish between \emph{low resolution} ifluence, in case the multisum is empty, and \emph{medium resolution} otherwise. There is a third notion of \emph{high resolution} influence which additionally checks that the graph $M$ of the multisum cospans, is reachable from an initial graph.
+  In categories where the multisum between two graphs can be empty (such as the category of site graphs in Kappa), we can distinguish between \emph{low resolution} influence, in case the multisum is empty, and \emph{medium resolution} otherwise. There is a third notion of \emph{high resolution} influence which additionally checks that the graph $M$ of the multisum cospans, is reachable from an initial graph (see Appendix).
 \end{remark}
 
 \begin{lemma}
@@ -122,7 +122,7 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
   \end{mdframed}
 \end{proof}
 
-\begin{remark}[Influence and posets in Kappa]
+\begin{remark}[Influence and causality in Kappa]
   \autoref{lemma:pos_infl} is reformulated in site graphs as follows:
   \[e< e'\implies \labl(e)\xrightarrow[low]{+}\labl(e').\]
 %% Note that if $e_1\ll e_2$ there are three cases possible:
