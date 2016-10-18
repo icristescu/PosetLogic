@@ -1,5 +1,6 @@
 %token <string> VAR
 %token <string> LABEL
+%token <string> CONST
 %token LPAREN RPAREN
 %token FALSE TRUE AND OR NOT IMP IFF FORALL EXISTS
 %token P_IN P_SAME_LABELS P_EQ_LAB P_EQ_POS P_SUBPOS P_EQ_EV
@@ -28,6 +29,7 @@ expr:
 ;
 term:
 	 VAR 	      	  		{ Formulas.Var($1) }
+	 | CONST			{ Formulas.Const($1) }
 	 | F_INTRO LPAREN term RPAREN	{ Formulas.Fn("intro", [$3]) }
 ;
 pred:

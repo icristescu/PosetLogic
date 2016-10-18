@@ -29,7 +29,7 @@ let rec permutations = function
   | [] -> []
   | x::[] -> [[x]]
   | x::xs ->
-     let () = Format.printf "permutations@." in
+(*     let () = Format.printf "permutations@." in*)
      List.fold_left
        (fun acc p -> acc @ ins_all_positions x p ) [] (permutations xs)
 
@@ -78,16 +78,13 @@ let comp_morph p1 p2 =
     let all_morphs =
       gen_all_morphs (List.map (fun e -> Event.get_id e) p1.Poset.events)
                      (List.map (fun e -> Event.get_id e) p2.Poset.events) in
-    let () = Format.printf "gen all morphisms\n" in
     let valid_labels =
       List.filter (fun m -> check_labels m p1 p2) all_morphs in
-    let () = Format.printf "valid_labels\n" in
     let () = if (!Parameter.debug_mode)
              then (Format.printf "morphisms after label check: \n";
                    print_list_morphisms valid_labels) in
     let valid_prec =
       List.filter (fun m -> check_prec m p1 p2) valid_labels in
-    let () = Format.printf "valid_prec\n" in
     let () = if (!Parameter.debug_mode)
              then (Format.printf "morphisms after prec check: \n";
                    print_list_morphisms valid_prec) in

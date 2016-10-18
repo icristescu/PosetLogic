@@ -17,10 +17,10 @@ type ('a) term =  Var of string
 
 type ('a) fol = R of string * ('a) term list
 
-let rec string_term = function
+let rec string_term tm domain = match tm with
   | Var s -> Var s
-  | Fn (s,ls) -> Fn (s,(List.map (fun tm -> string_term tm) ls))
-  | Const (s:string) -> Const (Domain.Pos Poset.empty_poset)
+  | Fn (s,ls) -> Fn (s,(List.map (fun tm -> string_term tm domain) ls))
+  | Const s -> Const (Domain.get_poset_from_filename s domain)
 
 let rec map_fm f fm =
   match fm with
@@ -35,9 +35,9 @@ let rec map_fm f fm =
   | True -> True
   | False -> False
 
-let convert_string_to_domain (fm: string fol formula) =
+let convert_string_to_domain (fm: string fol formula) domain =
   let aux_fun = function
-      R(s,ls) -> R(s, (List.map (fun tm -> string_term tm) ls)) in
+      R(s,ls) -> R(s, (List.map (fun tm -> string_term tm domain) ls)) in
   map_fm aux_fun fm
 
 (* Printing *)
@@ -161,7 +161,7 @@ let denotations (_,_,domain as m) fm =
          (List.filter (fun d -> domain_match_sort d "Poset") domain)
     | [] -> if (holds m valuation fm) then (valuation::vals) else (vals) in
   let default_valuation x = raise (ExceptionDefn.Uninterpreted_Variable(x)) in
-  denote_var (fv fm) default_valuation []
+  denote_var (free_var fm) default_valuation []
 (*
 let rec denotations (func,pred,domain as m) fm =
   let x = List.hd (fv fm) in
@@ -217,6 +217,9 @@ let sub_poset = function
     (Domain.Pos p1, Domain.Pos p2) ->
     (match (p1.Poset.kappa, p2.Poset.kappa) with
      | (true, true) ->
+        let () = if (!Parameter.debug_mode) then
+                   (Format.printf
+                      "sub_poset: posets are kappa type - remove obs\n";) in
         Morphism.morphism (Poset.remove_obs(p1)) (Poset.remove_obs(p2))
      | (true, false) -> Morphism.morphism (Poset.remove_obs(p1)) p2
      | (false, true) -> Morphism.morphism p1 (Poset.remove_obs(p2))

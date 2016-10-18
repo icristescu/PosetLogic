@@ -1,2 +1,2 @@
-true:   package(yojson)
-true:   bin_annot
+true:   package(yojson), package(z3)
+true:   debug, bin_annot

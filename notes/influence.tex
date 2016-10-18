@@ -103,15 +103,64 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
   In categories where the multisum between two graphs can be empty (such as the category of site graphs in Kappa), we can distinguish between \emph{low resolution} influence, in case the multisum is empty, and \emph{medium resolution} otherwise. There is a third notion of \emph{high resolution} influence which additionally checks that the graph $M$ of the multisum cospans, is reachable from an initial graph (see Appendix).
 \end{remark}
 
+\begin{definition}[Causal pair]
+  Let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two rules.
+
+  A pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is a \emph{causal pair} if the cospan $R_1{\remb}M{\lemb}L_2$ is in the multisum of $R_1$ and $L_2$ and $p_1\redl{-}_O p_2$, where $O$ is the pullback of the cospan $R_1{\remb}M{\lemb}L_2$:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (1,0) {\(O\)};
+    \node (m) at (1,2) {\(M\)};
+    \node (m1) at (-2,2) {\(P_1\)};
+    \node (m2) at (4,2) {\(P_2\)};
+    \node (r1) at (0,1) {\(R_1\)};
+    \node (l1) at (-1,1) {\(L_1\)};
+    \node (l2) at (2,1) {\(L_2\)};
+    \node (r2) at (3,1) {\(R_2\)};
+    \draw [left hook->] (o) -- (r1);
+    \draw [left hook->] (o) -- (l2);
+    \draw [left hook->] (r1) --  (m);
+    \draw [left hook->] (l2) --  (m);
+    \draw [left hook->] (l1) --  (m1);
+    \draw [left hook->] (r2) --  (m2);
+    \draw [>=latex, ->] (m1) -- node [above,midway] {$m_1,p_1$} (m);
+    \draw [>=latex, ->] (m) -- node [above,midway] {$m_2,p_2$} (m2);
+    \draw [>=latex, ->] (l2) -- (r2);
+    \draw [>=latex, ->] (l1) -- (r1);
+  \end{tikzpicture}
+  \]
+\end{definition}
+
 \begin{lemma}
-\label{lemma:pos_infl}
-  $e< e'\implies \labl(e)\xrightarrow{+}\labl(e')$.
+\label{lem:completeness_causal_pair}
+  For each pair of sequential dependent transitions $G_1\overset{n_1,p_1}{\Rightarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists a causal pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ and a mono $m:M\emb G$ such that
+\begin{mdframed}[backgroundcolor=blue!20]
+    the diagram commutes?
+  \end{mdframed}
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (m) at (1,2.5) {\(G\)};
+    \node (m1) at (-2,2.5) {\(G_1\)};
+    \node (m2) at (4,2.5) {\(G_2\)};
+    \node (l1) at (-2,1) {\(M_1\)};
+    \node (l2) at (1,1) {\(M\)};
+    \node (r2) at (4,1) {\(M_2\)};
+    \draw [left hook->] (l2) --  (m);
+    \draw [left hook->] (l1) --  (m1);
+    \draw [left hook->] (r2) --  (m2);
+    \draw [>=latex, ->] (m1) -- node [above,midway] {$n_1,p_1$} (m);
+    \draw [>=latex, ->] (m) -- node [above,midway] {$n_2,p_2$} (m2);
+    \draw [>=latex, ->] (l2) -- node [above,midway] {$m_2,p_2$} (r2);
+    \draw [>=latex, ->] (l1) -- node [above,midway] {$m_1,p_1$}(l2);
+  \end{tikzpicture}
+  \]
 \end{lemma}
 \begin{proof}
   \begin{mdframed}[backgroundcolor=blue!20]
     to do
   \end{mdframed}
 \end{proof}
+
 
 \begin{lemma}
   $e\dashv e' \implies\labl(e)\xrightarrow{-}\labl(e')$.

@@ -17,6 +17,9 @@ let get_events_from_poset p = p.events
 let get_event_by_id i p =
   List.find (fun e -> (Event.get_id e) = i) p.events
 
+let get_events_by_id_list ls p =
+  List.filter (fun e -> List.mem (Event.get_id e) ls) p.events
+
 let print_poset p =
   Format.printf "events (id, label) : \n";
   List.iter (fun e -> Event.print_event e) p.events;

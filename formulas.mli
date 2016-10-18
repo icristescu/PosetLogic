@@ -35,4 +35,5 @@ val free_var : 'a fol formula -> string list
 
 val print_fm : string fol formula -> unit
 
-val convert_string_to_domain : string fol formula -> Domain.domain fol formula
+val convert_string_to_domain : string fol formula -> Domain.domain list
+                               -> Domain.domain fol formula

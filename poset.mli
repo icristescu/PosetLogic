@@ -12,6 +12,8 @@ val get_events_from_poset : t -> Event.t list
 
 val get_event_by_id : int -> t -> Event.t
 
+val get_events_by_id_list : int list -> t -> Event.t list
+
 val print_poset: t -> unit
 
 val intro : t -> t

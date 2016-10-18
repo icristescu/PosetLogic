@@ -16,3 +16,5 @@ val print_domain : domain -> unit
 val print_domain_list : domain list -> unit
 
 val set_posets : string list -> t
+
+val get_poset_from_filename : string -> domain list -> domain

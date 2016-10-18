@@ -143,6 +143,7 @@ Other graph rewriting techniques exists that allows production with dangling poi
 \end{definition}
 
 \begin{definition}[Causality or sequential dependence]
+\label{def:seq_dep}
   Define $< \subseteq E\times E$ an irreflexive and antisymmetric relation on events such that whenever $e_1 < e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that don't commute, i.e. there is no graph $M'\in Q$ such that $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$.
 \end{definition}
 

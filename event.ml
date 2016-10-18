@@ -41,7 +41,6 @@ let quarks_of_json (quarks:Yojson.Basic.json) =
   | _ -> raise (Yojson.Basic.Util.Type_error
                   ("Not in the cflow format for quarks",`Null))
 
-
 let nodes_of_json (node:Yojson.Basic.json) =
   let open Yojson.Basic.Util in
   match node with

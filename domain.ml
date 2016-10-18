@@ -11,6 +11,15 @@ let get_events t = t.event_list
 
 let get_posets t = t.poset_list
 
+let get_poset_from_filename s dlist =
+  List.find
+    (fun d ->
+      match d with Ev e -> false
+                 | Pos p ->
+                    (match p.Poset.filename with Some n -> (s=n)
+                                               | None -> false))
+    dlist
+
 let print_posets t =
   List.iteri
     (fun i p -> Format.printf "\n poset nb %d\n" i; Poset.print_poset p)

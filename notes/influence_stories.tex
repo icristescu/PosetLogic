@@ -2,6 +2,15 @@
 
 \subsection{From transition systems to posets of events}
 
+\begin{lemma}
+\label{lemma:pos_infl}
+Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $e_1,e_2 \in E$.
+$e_1< e_2\implies \labl(e)\xrightarrow{+}\labl(e')$.
+\end{lemma}
+\begin{proof}
+  From~\autoref{def:seq_dep} $e_1 < e_2$ implies there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that are sequential dependent. For any such pair of transitions, using~\autoref{lem:completeness_causal_pair} there exists a causal pair which in turns implies that $\labl(e)\xrightarrow{+}\labl(e')$.
+\end{proof}
+
 \begin{definition}[Story]
   Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system.
   A \emph{story} $s = (E_s,<_s,\dashv_s)$ is a subset of events $E_s\subseteq E$ equipped with two binary relations on events $<_s$, $\dashv_s$ which are the restrictions of $<$ and $\dashv$ respectively, to the set $E_s$.

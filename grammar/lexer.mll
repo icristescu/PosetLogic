@@ -31,6 +31,7 @@ rule token = parse
   | ":Event"		{ SORT_E }
   | ":Poset"		{ SORT_P }
   | '\"'		{ let str = read_label [] ['\"'] lexbuf in LABEL str}
+  | '\''		{ let str = read_label [] ['\''] lexbuf in CONST str}
   | id as i		{ VAR i }
   | eof    		{ raise Eof }
   | _ 			{ raise LexingError }
