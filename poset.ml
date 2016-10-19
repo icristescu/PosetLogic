@@ -9,6 +9,11 @@ type t = {
     inhibit : (int * int) list;
   }
 
+type enriched = {
+    pos : t;
+    prec_star : int list array;
+  }
+
 let empty_poset =
   {kappa = false; filename = None; events = []; prec_1 = []; inhibit = [];}
 
@@ -90,3 +95,28 @@ let remove_obs p =
      let inhibit = List.filter (fun (e1,e2) -> not (e2 = obs_id) ) p.inhibit in
      { kappa = false; filename = p.filename; events; prec_1; inhibit; })
   else raise (ExceptionDefn.Internal_Error("should not be possible"))
+
+let sort_prec ls = ls
+
+(* id of events in interval [0,length(events)] *)
+let get_enriched p =
+  let arr = Array.make (List.length p.events) [] in
+  let sorted = sort_prec p.prec_1 in
+  let prec = List.rev sorted in
+  let () =
+    List.iter
+      (fun (e1,e2) ->
+        let l2 =
+          List.fold_left
+            (fun acc e -> if (List.mem e acc) then acc else e::acc)
+            arr.(e1) arr.(e2) in
+        arr.(e1) <- e2::l2) prec in
+  { pos = p; prec_star = arr }
+
+let check_prec_1 e1 e2 p =
+  List.mem (e1.Event.event_id, e2.Event.event_id) p.prec_1
+
+let check_prec_star e1 e2 p =
+  let enrich = get_enriched p in
+  let arr = enrich.prec_star in
+  List.mem (e2.Event.event_id) arr.(e1.Event.event_id)

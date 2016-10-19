@@ -181,9 +181,13 @@ let label x = match x with
   | Domain.Pos _ ->
      raise (ExceptionDefn.Malformed_Args("label"))
 
-let cause = function
-  | (Domain.Ev e, Domain.Ev e', Domain.Pos p) -> true
-  | _ -> raise (ExceptionDefn.Malformed_Args("cause"))
+let prec_1 = function
+  | (Domain.Ev e, Domain.Ev e', Domain.Pos p) -> Poset.check_prec_1 e e' p
+  | _ -> raise (ExceptionDefn.Malformed_Args("prec_1"))
+
+let prec_star = function
+  | (Domain.Ev e, Domain.Ev e', Domain.Pos p) -> Poset.check_prec_star e e' p
+  | _ -> raise (ExceptionDefn.Malformed_Args("prec_star"))
 
 let id_eq x y =
   let () = if (!Parameter.debug_mode) then
@@ -265,7 +269,8 @@ let interpretation t =
       id_label_event lb args
     else
       match (p,args) with
-        ("cause",[x;y;p]) -> cause (x,y,p)
+        ("prec_1",[x;y;p]) -> prec_1 (x,y,p)
+      | ("prec_star",[x;y;p]) -> prec_star (x,y,p)
       | ("equal_event_labels",[x; y]) -> id_eq (label x) (label y)
       | ("in", [x;p]) -> membership (x,p)
       | ("equal_posets", [p1;p2]) -> equal_posets (p1,p2)

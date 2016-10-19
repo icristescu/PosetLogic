@@ -13,28 +13,33 @@ let print_list_morphisms morphs =
       Format.printf "\n")
     morphs
 
-let gen_one_morphism l1 l2 =
+let gen_one_morphism p1 p2 =
+  let l1 = List.map (fun (id,_) -> id) p1 in
+  let l2 = List.map (fun (id,_) -> id) p2 in
   List.fold_left2
     (fun m e1 e2 -> IntMap.add e1 e2 m)
     IntMap.empty l1 l2
 
-let ins_all_positions x l =
-  let rec aux prev acc = function
-    | [] -> (prev @ [x]) :: acc |> List.rev
-    | hd::tl as l -> aux (prev @ [hd]) ((prev @ [x] @ l) :: acc) tl
-  in
-  aux [] [] l
+(* let () = Format.printf "permutations@." in*)
+let rm x l = List.filter ((<>) x) l
 
-let rec permutations = function
-  | [] -> []
-  | x::[] -> [[x]]
-  | x::xs ->
-(*     let () = Format.printf "permutations@." in*)
-     List.fold_left
-       (fun acc p -> acc @ ins_all_positions x p ) [] (permutations xs)
+let check (_,x1) (_,x2) = (x1 = x2)
+
+let rec permutations l1 l2 = match (l1,l2) with
+  | ([], []) -> []
+  | (x1::[], x2::[]) -> if (check x1 x2 ) then [[x1]] else [[]]
+  | (l, x2::l2') ->
+    List.fold_left
+      (fun acc x ->
+        if (check x x2) then
+          (let perms = permutations (rm x l) l2' in
+           if (perms = [[]]) then acc
+           else acc @ List.map (fun p -> x::p) (perms))
+        else acc) [] l
+  | _ -> raise (ExceptionDefn.Internal_Error("permutations arguments"))
 
 let gen_morphisms_permutations_l1 l1 l2 =
-  let permuts = permutations l1 in
+  let permuts = permutations l1 l2 in
   List.map
     (fun l1' -> gen_one_morphism l1' l2)
     permuts
@@ -50,11 +55,23 @@ let combinations k list =
   let emit x acc = x :: acc in
   aux k [] emit list
 
-let gen_all_morphs l1 l2 =
+let check_combination p1 p2 =
+  List.for_all
+    (fun (_,e1) ->
+      List.exists (fun (_,e2) -> (e1 = e2)) p2)
+    p1
+
+let gen_all_morphs p1 p2 =
+  let l1 =
+    List.map (fun e -> (Event.get_id e, Event.get_label e)) p1.Poset.events in
+  let l2 =
+    List.map (fun e -> (Event.get_id e, Event.get_label e)) p2.Poset.events in
   let combins = combinations (List.length l1) l2 in
   List.flatten
     (List.map
-       (fun short_l2 -> gen_morphisms_permutations_l1 l1 short_l2)
+       (fun short_l2 -> if (check_combination l1 short_l2) then
+                          gen_morphisms_permutations_l1 l1 short_l2
+                        else [])
        combins)
 
 let check_labels m p1 p2 =
@@ -74,36 +91,35 @@ let check_prec m p1 p2 =
     true p1.Poset.prec_1
 
 let comp_morph p1 p2 =
-  if ((List.length p1.Poset.events) <= (List.length p2.Poset.events)) then
-    let all_morphs =
-      gen_all_morphs (List.map (fun e -> Event.get_id e) p1.Poset.events)
-                     (List.map (fun e -> Event.get_id e) p2.Poset.events) in
-    let valid_labels =
-      List.filter (fun m -> check_labels m p1 p2) all_morphs in
-    let () = if (!Parameter.debug_mode)
-             then (Format.printf "morphisms after label check: \n";
-                   print_list_morphisms valid_labels) in
-    let valid_prec =
-      List.filter (fun m -> check_prec m p1 p2) valid_labels in
-    let () = if (!Parameter.debug_mode)
-             then (Format.printf "morphisms after prec check: \n";
-                   print_list_morphisms valid_prec) in
-    valid_prec
-  else []
-
-let morphism p1 p2 =
-  not((comp_morph p1 p2) = [])
+  let all_morphs = gen_all_morphs p1 p2 in
+  let () = if (!Parameter.debug_mode)
+           then (Format.printf "gen all morphisms\n";
+           print_list_morphisms all_morphs) in
+  let valid_prec =
+    List.filter (fun m -> check_prec m p1 p2) all_morphs in
+  let () = if (!Parameter.debug_mode)
+           then (Format.printf "morphisms after prec check: \n";
+                 print_list_morphisms valid_prec) in
+  valid_prec
 
 (* m : p1 -> p2*)
 let check_rev_morph p2 p1 m =
   check_prec m p2 p1
 
+let isomorph p1 p2 =
+  let iso = List.filter (fun m -> check_rev_morph p2 p1 m) (comp_morph p1 p2) in
+  let () = if (!Parameter.debug_mode)
+           then (Format.printf "isomorphisms: \n"; print_list_morphisms iso) in
+  (not (iso = []))
+
+let morphism p1 p2 =
+  if ((List.length p1.Poset.events) = (List.length p2.Poset.events)) then
+    isomorph p1 p2
+  else
+    if ((List.length p1.Poset.events) <= (List.length p2.Poset.events)) then
+         not((comp_morph p1 p2) = [])
+    else false
+
 let isomorphism p1 p2 =
-  if ((List.length p2.Poset.events) <= (List.length p1.Poset.events)) then
-    let iso =
-      List.filter (fun m -> check_rev_morph p2 p1 m) (comp_morph p1 p2) in
-    let () = if (!Parameter.debug_mode)
-             then (Format.printf "isomorphisms: \n";
-                   print_list_morphisms iso) in
-    (not (iso = []))
-  else false
+  if ((List.length p1.Poset.events) = (List.length p2.Poset.events))
+  then isomorph p1 p2 else false

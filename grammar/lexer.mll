@@ -12,7 +12,6 @@ rule token = parse
   | ['\n' ]		{ EOL }
   | '('        	  	{ LPAREN }
   | ')'    		{ RPAREN }
-  | '='			{ P_EQ_EV }
   | "true" 		{ TRUE }
   | "false" 		{ FALSE }
   | "not"		{ NOT }
@@ -22,6 +21,8 @@ rule token = parse
   | "imp"		{ IMP }
   | "forall"		{ FORALL }
   | "exists"		{ EXISTS }
+  | '>'			{ PREC_1 }
+  | ">="		{ PREC_STAR }
   | "in"		{ P_IN }
   | "same_labels"	{ P_SAME_LABELS }
   | "equal_label"	{ P_EQ_LAB }
@@ -32,6 +33,7 @@ rule token = parse
   | ":Poset"		{ SORT_P }
   | '\"'		{ let str = read_label [] ['\"'] lexbuf in LABEL str}
   | '\''		{ let str = read_label [] ['\''] lexbuf in CONST str}
+  | '='			{ P_EQ_EV }
   | id as i		{ VAR i }
   | eof    		{ raise Eof }
   | _ 			{ raise LexingError }

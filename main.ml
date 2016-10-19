@@ -15,8 +15,8 @@ let test_z3 t =
 
 let test_subset t =
   let posets = Domain.get_posets t in
-  let p1 = List.nth posets 3 in
-  let p2 = List.nth posets 2 in
+  let p1 = List.nth posets 2 in
+  let p2 = List.nth posets 1 in
 
   let () = if (!Parameter.debug_mode) then
              ( Format.printf "\n test_subset : poset \n";
@@ -84,9 +84,10 @@ let () =
   let posets = Domain.set_posets (!files) in
 (*  test_z3 posets*)
   let m = Formulas.interpretation posets in
-  List.iteri
+ List.iteri
     (fun i fm ->
-      Format.printf "\n evaluate formula %i:\n" i; (evaluate fm m empty_valuation))
+      Format.printf "\n evaluate formula %i:\n" i;
+      (evaluate fm m empty_valuation))
     (!read_fm)
 (*  let (valuation,fm) = test_subset posets in
   if (Formulas.holds m valuation fm) then Format.printf"true\n"
