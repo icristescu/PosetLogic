@@ -109,6 +109,13 @@ let free_var fm = remove_duplicates(fv fm)
 
 let add_valuation (x,a) v y =  if (x=y) then a else v(y)
 
+let print_valuation valuation vars =
+  List.iter
+    (fun var ->
+      match (valuation var) with
+      | Domain.Pos p -> Poset.print_poset p
+      | Domain.Ev e -> Event.print_event e) vars
+
 let domain_match_sort d s = match (d,s) with
   | (Domain.Pos _, "Poset") -> true
   | (Domain.Ev _, "Event") -> true
@@ -138,7 +145,7 @@ let rec holds (func,pred,domain as m) v fm =
   | True -> true
   | Atom(R(r,args)) -> pred r (List.map (termval func v) args)
   | Not(p) -> not(holds m v p)
-  | And(p,q) -> (holds m v p) && (holds m v q)
+  | And(p,q) -> ((holds m v p) && (holds m v q))
   | Or(p,q) -> (holds m v p) || (holds m v q)
   | Imp(p,q) -> not(holds m v p) || (holds m v q)
   | Iff(p,q) -> (holds m v p = holds m v q)
@@ -159,21 +166,14 @@ let denotations (_,_,domain as m) fm =
          (fun l p -> denote_var next (add_valuation (x,p) valuation) l)
          vals
          (List.filter (fun d -> domain_match_sort d "Poset") domain)
-    | [] -> if (holds m valuation fm) then (valuation::vals) else (vals) in
+    | [] ->
+ (*      let () = if (!Parameter.debug_mode) then
+                  Format.printf "holds test for valuation ";
+                print_valuation v (vars) in*)
+       if (holds m valuation fm) then (valuation::vals) else (vals) in
   let default_valuation x = raise (ExceptionDefn.Uninterpreted_Variable(x)) in
   denote_var (free_var fm) default_valuation []
-(*
-let rec denotations (func,pred,domain as m) fm =
-  let x = List.hd (fv fm) in
-  let () = if (!Parameter.debug_mode) then
-             Format.printf "denotations for one var %s\n" x in
-  let valuation p y =
-    if (x=y) then p else raise (ExceptionDefn.Uninterpreted_Variable(y)) in
-  List.fold_left
-    (fun valid p ->
-      if (holds m (valuation p) fm) then p::valid else valid) []
-    (List.filter (fun d -> domain_match_sort d "Poset") domain)
- *)
+
 (**** Interpretation ****)
 
 let label x = match x with
@@ -182,11 +182,19 @@ let label x = match x with
      raise (ExceptionDefn.Malformed_Args("label"))
 
 let prec_1 = function
-  | (Domain.Ev e, Domain.Ev e', Domain.Pos p) -> Poset.check_prec_1 e e' p
+  | (Domain.Ev e, Domain.Ev e', Domain.Pos p) ->
+     let () = if (!Parameter.debug_mode) then
+                Format.printf "prec_1 " in
+     Poset.check_prec_1 e e' p
   | _ -> raise (ExceptionDefn.Malformed_Args("prec_1"))
 
 let prec_star = function
-  | (Domain.Ev e, Domain.Ev e', Domain.Pos p) -> Poset.check_prec_star e e' p
+  | (Domain.Ev e, Domain.Ev e', Domain.Pos p) ->
+     let () = if (!Parameter.debug_mode) then
+                (Format.printf "prec_star: ";
+                 Event.print_event e; Event.print_event e';
+                 Poset.print_poset p) in
+     Poset.check_prec_star e e' p
   | _ -> raise (ExceptionDefn.Malformed_Args("prec_star"))
 
 let id_eq x y =
@@ -240,8 +248,8 @@ let obs = function
 
 let id_label_event str = function
     [e] ->
-    let () = if (!Parameter.debug_mode) then
-               Format.printf "id_label_event %s\n" str in
+(*    let () = if (!Parameter.debug_mode) then
+               Format.printf "id_label_event %s\n" str in*)
     ((label e) = str)
   | _ -> raise (ExceptionDefn.Malformed_Args("id_label_event"))
 
@@ -264,8 +272,6 @@ let interpretation t =
   let pred p args =
     if (check_pred p) then
       let lb = String.sub p 5 ((String.length p) - 5) in
-      let () = if (!Parameter.debug_mode) then
-                 Format.printf "pred is label %s\n" lb in
       id_label_event lb args
     else
       match (p,args) with

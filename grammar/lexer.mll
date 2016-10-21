@@ -21,8 +21,8 @@ rule token = parse
   | "imp"		{ IMP }
   | "forall"		{ FORALL }
   | "exists"		{ EXISTS }
-  | '>'			{ PREC_1 }
-  | ">="		{ PREC_STAR }
+  | '<'			{ PREC_1 }
+  | "=<"		{ PREC_STAR }
   | "in"		{ P_IN }
   | "same_labels"	{ P_SAME_LABELS }
   | "equal_label"	{ P_EQ_LAB }
