@@ -3,20 +3,61 @@
 \subsection{From transition systems to posets of events}
 
 \begin{lemma}
-\label{lemma:pos_infl}
-Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $e_1,e_2 \in E$.
-$e_1< e_2\implies \labl(e)\xrightarrow{+}\labl(e')$.
+  \label{lemma:pos_infl}
+  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $e,e' \in E$.
+  \begin{enumerate}
+  \item $e< e'\implies \labl(e)\xrightarrow{+}\labl(e')$;
+  \item $e\dashv e' \implies\labl(e)\xrightarrow{-}\labl(e')$.
+  \end{enumerate}
 \end{lemma}
 \begin{proof}
-  From~\autoref{def:seq_dep} $e_1 < e_2$ implies there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that are sequential dependent. For any such pair of transitions, using~\autoref{lem:completeness_causal_pair} there exists a causal pair which in turns implies that $\labl(e)\xrightarrow{+}\labl(e')$.
+  \begin{enumerate}
+  \item From~\autoref{def:seq_dep} $e_1 < e_2$ implies there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that are sequential dependent. For any such pair of transitions, using~\autoref{lem:completeness_causal_pair} there exists a causal pair which in turns implies that $\labl(e)\xrightarrow{+}\labl(e')$.
+
+  \item From~\autoref{def:inhibition} $e_1 \dashv e_2$ implies there exists transition $M\overset{m_1,p_1}{\Rightarrow} M_1$ inhibiting transition $M\overset{m_2,p_2}{\Rightarrow} M_2$. For any such pair of transitions, using~\autoref{lem:completeness_inhib_pair} there exists an inhibiting pair which in turns implies that $\labl(e)\xrightarrow{-}\labl(e')$.
+  \end{enumerate}
 \end{proof}
+
+\begin{remark}
+  Sequential dependence (~\autoref{def:seq_dep}) is not transitive. Therefore when considering posets in~\autoref{def:poset}, we need to distinguish between the \emph{immediate} order relation and its transitive closure.
+\end{remark}
 
 \begin{definition}[Story]
   Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system.
-  A \emph{story} $s = (E_s,<_s,\dashv_s)$ is a subset of events $E_s\subseteq E$ equipped with two binary relations on events $<_s$, $\dashv_s$ which are the restrictions of $<$ and $\dashv$ respectively, to the set $E_s$.
+  A \emph{story} of TS, $s$ $=$ $(E_s,<_s)$, is a subset of events $E_s\subseteq E$ equipped with a binary relation on events $<_s$ which is the restrictions of $<$ to the set $E_s$.
 \end{definition}
 
-Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$.
+\begin{remark}[Stories in Kappa]
+In site graph we can express a dependence between events that is neither sequential dependence nor inhibition. It comes from the distinction between low res and medium res influence.
+
+Let us consider an example, with the following three rules
+
+\begin{verbatim}
+  r1: C(y),A(x!1,y),B(x!1)-> C(y!2),A(x!1,y!2),B(x!1)
+  r2: A(x!1), B(x!1) -> A(x), B(x)
+  r3: C(y!2),A(x,y!2) -> C(y!2),A(x~p,y!2)
+\end{verbatim}
+
+We have that $r_1\xrightarrow[low]{+} r_3$, $r_2\xrightarrow[medium]{+} r_3$ and $r_2\xrightarrow[medium]{-} r_1$.
+
+Let $e_1$, $e_2$ and $e_3$ be three events such that $r_1$, $r_2$ and $r_3$ are their corresponding labels. We can exhibit contexts for the sequential dependence between $e_2$ and $e_3$ and for the inhibition of $e_1$ by $e_2$, but none of them express the dependence relation between $e_1$ and $e_3$.
+
+Thus, we denote $e<^{\star}e'$ whenever $\labl(e)\xrightarrow[low]{+} \labl(e')$. Stories in Kappa are sets of events equipped with three binary relations $<$, $\dashv$ and $<^{\star}$ and the following properties hold between them:
+\begin{align*}
+  e < e' \implies e<^{\star}e'\text{ but not the reverse; }\\
+\labl(e)\xrightarrow[medium]{+} \labl(e') \implies \labl(e)\xrightarrow[low]{+} \labl(e')\text{ but not the reverse; }\\
+  e<^{\star}e'\text{ and }\neg(\labl(e)\xrightarrow[medium]{+} \labl(e'))\implies \exists e'', e''\dashv e\text{ and }e''< e'.
+\end{align*}
+%% Note that if $e_1\ll e_2$ there are three cases possible:
+%% \begin{itemize}
+%% \item $e_1< e_2$
+%% \item $\labl(e)\xrightarrow{+}\labl(e')$ and $\neg(e_1 < e_2)$
+%% \item $\neg(\labl(e)\xrightarrow{+}\labl(e'))$
+%% \end{itemize}
+\end{remark}
+
+Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$. We equip the set of stories $\mathcal{S}$ with the binary relation $\dashv_{\mathcal{S}}$, which is the restriction of $\dashv$ to the set of events $\cup_{s\in\mathcal{S}} E_s$.
+
 %We are not interested in the extraction mechanism, as long as the identity of events and the relationships between them (causality and inihibition) are preserved.
 
 \bigskip

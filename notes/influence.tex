@@ -106,7 +106,7 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
 \begin{definition}[Causal pair]
   Let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two rules.
 
-  A pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is a \emph{causal pair} if the cospan $R_1{\remb}M{\lemb}L_2$ is in the multisum of $R_1$ and $L_2$ and $p_1\redl{-}_O p_2$, where $O$ is the pullback of the cospan $R_1{\remb}M{\lemb}L_2$:
+  A pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is a \emph{causal pair} if the cospan $R_1{\remb}M{\lemb}L_2$ is in the multisum of $R_1$ and $L_2$ and $p_1\redl{+}_O p_2$, where $O$ is the pullback of the cospan $R_1{\remb}M{\lemb}L_2$:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -133,27 +133,35 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
 
 \begin{lemma}
 \label{lem:completeness_causal_pair}
-  For each pair of sequential dependent transitions $G_1\overset{n_1,p_1}{\Rightarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists a causal pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ and a mono $m:M\emb G$ such that
-\begin{mdframed}[backgroundcolor=blue!20]
-    the diagram commutes?
-  \end{mdframed}
+  For each pair of sequential dependent transitions $G_1\overset{n_1,p_1}{\Rightarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists a causal pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ and a mono $h:M\emb G$ such that the following diagram commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
-    \node (m) at (1,2.5) {\(G\)};
-    \node (m1) at (-2,2.5) {\(G_1\)};
-    \node (m2) at (4,2.5) {\(G_2\)};
-    \node (l1) at (-2,1) {\(M_1\)};
-    \node (l2) at (1,1) {\(M\)};
-    \node (r2) at (4,1) {\(M_2\)};
+    \node (g) at (1,2.5) {\(G\)};
+    \node (g1) at (-2,2.5) {\(G_1\)};
+    \node (g2) at (4,2.5) {\(G_2\)};
+    \node (m1) at (-2,1) {\(M_1\)};
+    \node (m) at (1,1) {\(M\)};
+    \node (m2) at (4,1) {\(M_2\)};
+    \node (r1) at (0,-0.5) {\(R_1\)};
+    \node (l1) at (-2,-0.5) {\(L_1\)};
+    \node (l2) at (2,-0.5) {\(L_2\)};
+    \node (r2) at (4,-0.5) {\(R_2\)};
+    \draw [left hook->] (m) -- node [left,midway] {$h$} (g);
+    \draw [left hook->] (m1) -- node [left,midway] {$h_1$} (g1);
+    \draw [left hook->] (m2) --  (g2);
+    \draw [>=latex, ->] (g1) -- node [above,midway] {$n_1,p_1$} (g);
+    \draw [>=latex, ->] (g) -- node [above,midway] {$n_2,p_2$} (g2);
+    \draw [>=latex, ->] (m) -- node [above,midway] {$m_2,p_2$} (m2);
+    \draw [>=latex, ->] (m1) -- node [above,midway] {$m_1,p_1$}(m);
+    \draw [left hook->] (r1) --  (m);
     \draw [left hook->] (l2) --  (m);
     \draw [left hook->] (l1) --  (m1);
     \draw [left hook->] (r2) --  (m2);
-    \draw [>=latex, ->] (m1) -- node [above,midway] {$n_1,p_1$} (m);
-    \draw [>=latex, ->] (m) -- node [above,midway] {$n_2,p_2$} (m2);
-    \draw [>=latex, ->] (l2) -- node [above,midway] {$m_2,p_2$} (r2);
-    \draw [>=latex, ->] (l1) -- node [above,midway] {$m_1,p_1$}(l2);
+    \draw [>=latex, ->] (l2) -- (r2);
+    \draw [>=latex, ->] (l1) -- (r1);
   \end{tikzpicture}
   \]
+that is $n_1 = h_1\circ m_1$ and $n_2 = h\circ m_2$.
 \end{lemma}
 \begin{proof}
   \begin{mdframed}[backgroundcolor=blue!20]
@@ -161,9 +169,65 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
   \end{mdframed}
 \end{proof}
 
+\begin{definition}[Inhibiting pair]
+  Let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two rules.
+
+  A pair $P_1\overset{m_1,p_1}{\Leftarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is an \emph{inhibiting pair} if the cospan $L_1{\remb}M{\lemb}L_2$ is in the multisum of $L_1$ and $L_2$ and $p_1\redl{-}_O p_2$, where $O$ is the pullback of the cospan $L_1{\remb}M{\lemb}L_2$:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (1,0) {\(O\)};
+    \node (m) at (1,2) {\(M\)};
+    \node (m1) at (-2,2) {\(P_1\)};
+    \node (m2) at (4,2) {\(P_2\)};
+    \node (l1) at (0,1) {\(L_1\)};
+    \node (r1) at (-1,1) {\(R_1\)};
+    \node (l2) at (2,1) {\(L_2\)};
+    \node (r2) at (3,1) {\(R_2\)};
+    \draw [left hook->] (o) -- (l1);
+    \draw [left hook->] (o) -- (l2);
+    \draw [left hook->] (l1) --  (m);
+    \draw [left hook->] (l2) --  (m);
+    \draw [left hook->] (r1) --  (m1);
+    \draw [left hook->] (r2) --  (m2);
+    \draw [>=latex, ->] (m) -- node [above,midway] {$m_1,p_1$} (m1);
+    \draw [>=latex, ->] (m) -- node [above,midway] {$m_2,p_2$} (m2);
+    \draw [>=latex, ->] (l2) -- (r2);
+    \draw [>=latex, ->] (l1) -- (r1);
+  \end{tikzpicture}
+  \]
+\end{definition}
 
 \begin{lemma}
-  $e\dashv e' \implies\labl(e)\xrightarrow{-}\labl(e')$.
+\label{lem:completeness_inhib_pair}
+  For each pair of transitions $G_1\overset{n_1,p_1}{\Leftarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$, where $G\overset{n_1,p_1}{\Rightarrow}G_1$ inhibits $G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists an inhibiting pair $P_1\overset{m_1,p_1}{\Leftarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ and a mono $h:M\emb G$ such that the following diagram commutes:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (g) at (1,2.5) {\(G\)};
+    \node (g1) at (-2,2.5) {\(G_1\)};
+    \node (g2) at (4,2.5) {\(G_2\)};
+    \node (m1) at (-2,1) {\(M_1\)};
+    \node (m) at (1,1) {\(M\)};
+    \node (m2) at (4,1) {\(M_2\)};
+    \node (l1) at (0,-0.5) {\(R_1\)};
+    \node (r1) at (-2,-0.5) {\(L_1\)};
+    \node (l2) at (2,-0.5) {\(L_2\)};
+    \node (r2) at (4,-0.5) {\(R_2\)};
+    \draw [left hook->] (m) -- node [left,midway] {$h$} (g);
+    \draw [left hook->] (m1) -- node [left,midway] {$h_1$} (g1);
+    \draw [left hook->] (m2) --  (g2);
+    \draw [>=latex, ->] (g) -- node [above,midway] {$n_1,p_1$} (g1);
+    \draw [>=latex, ->] (g) -- node [above,midway] {$n_2,p_2$} (g2);
+    \draw [>=latex, ->] (m) -- node [above,midway] {$m_2,p_2$} (m2);
+    \draw [>=latex, ->] (m) -- node [above,midway] {$m_1,p_1$} (m1);
+    \draw [left hook->] (l1) --  (m);
+    \draw [left hook->] (l2) --  (m);
+    \draw [left hook->] (r1) --  (m1);
+    \draw [left hook->] (r2) --  (m2);
+    \draw [>=latex, ->] (l2) -- (r2);
+    \draw [>=latex, ->] (l1) -- (r1);
+  \end{tikzpicture}
+  \]
+that is $n_1 = h\circ m_1$ and $n_2 = h\circ m_2$.
 \end{lemma}
 \begin{proof}
   \begin{mdframed}[backgroundcolor=blue!20]
@@ -171,13 +235,6 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
   \end{mdframed}
 \end{proof}
 
-\begin{remark}[Influence and causality in Kappa]
-  \autoref{lemma:pos_infl} is reformulated in site graphs as follows:
-  \[e< e'\implies \labl(e)\xrightarrow[low]{+}\labl(e').\]
-%% Note that if $e_1\ll e_2$ there are three cases possible:
-%% \begin{itemize}
-%% \item $e_1< e_2$
-%% \item $\labl(e)\xrightarrow{+}\labl(e')$ and $\neg(e_1 < e_2)$
-%% \item $\neg(\labl(e)\xrightarrow{+}\labl(e'))$
-%% \end{itemize}
+\begin{remark}
+  \autoref{lem:completeness_inhib_pair} is a weaker version of the completness result on critical pairs \cite{AlgebraicGR}.
 \end{remark}
