@@ -1,0 +1,111 @@
+\section{Site graphs}
+
+\subsection{The category of site-graphs}
+
+Define $\kn = \set{A, B,..}$ a set of agent types %with a distinct agent type \emph{free},
+and equipped with a site map $\site:\kn\to\nat$.
+%such that $\site(\text{free}) = 0$.
+Define $\pn$ a set of properties.
+
+%Define the set of external links as follows:
+%\[
+%\text{Ext} = \set{-,\sfree}\cup\Sigma_{ag}\cup\set{(A,i) : A\in\Sigma_{ag}, i\in\site(A)}
+%\]
+
+\begin{definition}[Site-graphs]
+A site-graph is a structure $(\ag,\type,\nodes,\links,p_k)$ where
+\begin{itemize}
+\item $\ag$ is a set of agents, ranged over by $a,b$;
+\item $\type:\ag\to \set{A, B,...}$ assigns a type to each agent;
+\item $\nodes\subseteq \ag\times\nat\uplus\{\text{free}\}$ is a set of nodes, with a special node free, and where each other node is a pair $(a,i)$ with $a\in\ag$ an agent and $i<\site(\type(a))$ a site of $a$;
+\item $\links\subseteq \nodes\times\nodes$ is a set of edges that is \emph{conflict free}: $\forall e,e'\in\links$, $e=e'$ or $e\cap e' \subseteq \{\text{free}\}$;
+\item $p_k\subseteq\nodes$, with $k\in\pn$, is the set of internal states of a site. The pairwise intersection of $\{p_k\}_{k\in\pn}$ is the empty set, that is a site can only have one internal state.
+\end{itemize}
+Denote $\varepsilon$ the empty $\Sigma$-graph.
+\end{definition}
+
+%% \begin{property}
+%%   A site with a specified property need not be a \emph{specified} site of an agent: $p_k\not\subseteq\sites$.
+%% \end{property}
+%% Define a partial order on $\links\cup\text{Ext}$:
+%% \[
+%% - \leq A \leq (A,i) \leq (a,i)
+%% \]
+
+\begin{definition}[Morphisms]
+A morphism $h:G\to H$ is a total function on agents $h:\ag_G\to\ag_H$ such that
+\begin{itemize}
+\item it preserves agent's types:
+\[
+\type(a) = \type(h(a)) \text{ for all }a \in \ag_G
+\]
+\item it preserves nodes:
+\[
+\text{ if }(a,i)\in \nodes_G \text{ then }(h(a),i) \in \nodes_H\text{ and }h(\text{free})=\text{free}
+\]
+\item it preserves property sets:
+\[
+\set{h(u) : u\in p_{k,G}} \subseteq p_{k,H}, \forall k\in\pn.
+\]
+\end{itemize}
+An embedding or a mono, denoted $h:G\lemb H$, is an injective morphism on edges, that is it preserves edges:
+\[
+(u,v)\in\nodes_G \implies (h(u),h(v))\in\nodes_H
+\]
+\end{definition}
+
+\begin{lemma}
+  Site-graphs and morphisms form a category.
+\end{lemma}
+
+
+\begin{definition}[Rules]
+  A rule, or an action map, $\alpha:L \action R$ is a span $L\overset{h}{\remb} D \overset{g}{\lemb} R$ such that $h$ and $g$ are monos on site graphs and the following hold
+  \begin{itemize}
+  %\item for any span $L\overset{h'}{\remb} D' \overset{g'}{\lemb} R$ and any embedding $D\overset{f}{\lemb}D'$ such that $h=h'f$ and $g=g'f$ then $f$ is an isomorphism;
+  \item $\forall a\in\ag_D$, $(a,i)\in\nodes_D\iff (h(a),i)\in\nodes_L \iff (g(a),i)\in\nodes_R$;
+  %\item if $[(g(a),i),x] \in\links_R$ with $x\in\text{Ext}\setminus \sfree$, then $[(h(a),i),x] \in\links_D$;
+  %\item if $[(a,i),x] \in\links_R$ and $\nexists b$ such that $h(b)=a$ or $\nexists y$ such that $[(b,i),y]\in\links_D$ then $x\in\sites_R$;
+  \item if $a\in\ag_R$ and $a\notin\text{image}(g)$ then $(a,i)\in\nodes_R$, $\forall i\in\Sigma_{ag-st}(\type(a))$.
+  \end{itemize}
+\end{definition}
+
+\begin{example}
+For the rule
+\begin{verbatim}
+  A(x!1), C(y!1), B(y) -> A(x!1), C(y), B(y!1)
+\end{verbatim}
+the domain of definition is \verb|A(x?), C(y?), B(y?)|.
+\end{example}
+
+The category of site graphs and morphisms does not have all the pushouts. %but does have all pullbacks.
+
+\begin{example}[Inexistence of pushout in the category of site graphs]
+  Let $G$, $H$ and $O$ three site graphs defined as follows\footnote{Henceforth we write the symmetric reduction for the set $\links$.}:
+  \begin{align*}
+    \ag_G = \{a\},   \type(a) = A,   \links_G = \{[(a,i),B] \} \\
+    \ag_H = \{a'\},  \type(a') = A,  \links_H = \{[(a',i),C]\} \\
+    \ag_o = \{a''\}, \type(a'') = A, \links_O = \{[(a'',i),\_]\}.
+  \end{align*}
+  There is no site graph $M$ such that the following diagram commutes:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (0,-1) {\(O\)};
+    \node (l1) at (-1.5,0) {\(G\)};
+    \node (l2) at (1.5,0) {\(H\)};
+    \node (m) at (0,1) {\(M\)};
+    \draw [right hook->] (o) -- (l1);
+    \draw [left hook->] (o) -- (l2);
+    \draw [right hook->] (l1) -- (m);
+    \draw [left hook->] (l2) -- (m);
+  \end{tikzpicture}
+  \]
+\end{example}
+
+
+\begin{lemma}
+  Let $L\overset{h}{\remb} D \overset{g}{\lemb} R$ be a rule and let $M$ and $m:L\emb M$ be a site graph and matching, respectively. The DPO rewriting can be applied whenever the gluing conditions hold.
+\end{lemma}
+\begin{proof}
+
+\end{proof}

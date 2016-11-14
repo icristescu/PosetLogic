@@ -22,83 +22,41 @@
   Sequential dependence (~\autoref{def:seq_dep}) is not transitive. Therefore when considering posets in~\autoref{def:poset}, we need to distinguish between the \emph{immediate} order relation and its transitive closure.
 \end{remark}
 
-\begin{definition}[Story]
-  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system.
-  A \emph{story} of TS, $s$ $=$ $(E_s,<_s)$, is a subset of events $E_s\subseteq E$ equipped with a binary relation on events $<_s$ which is the restrictions of $<$ to the set $E_s$.
+\begin{definition}[Abstraction on a trace]
+
+  Define an \emph{abstraction} function $\alpha$ that maps a trace $\theta$ into a set of events $\varepsilon$:
+  \[
+  \alpha(\theta) = (\varepsilon,<,\labl) \text{ where }
+  \alpha(t_i:M_i\redl{e_i}M_{i+1}) = \abse_i \]
+  such that $\labl(\abse_i) = \labl(e_i)$ and
+  \[
+  \abse_i < \abse_j \iff e_i < e_j\text{ and }\alpha(e_i)< \alpha(e_j)
+  \]
 \end{definition}
 
-\begin{remark}[Stories in Kappa]
-In site graph we can express a dependence between events that is neither sequential dependence nor inhibition. It comes from the distinction between low res and medium res influence.
+\begin{definition}[Set of stories]
+  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $\{\theta_1,\cdots,\theta_n\}$ be a set of traces of TS.
+  The set of stories is obtained by abstraction of the set of traces:
+  \[
+  \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)\text{ with }k\leq n
+  \]
+  where $\alpha(\theta_i) = (\varepsilon_j,<,\labl)$ and $s_j = (\varepsilon_j,\tleq,\labl)$.
+%  A \emph{story} of TS, $s$ $=$ $(E_s,<_s)$, is a subset of events $E_s\subseteq E$ equipped with a binary relation on events $<_s$ which is the restrictions of $<$ to the set $E_s$.
+\end{definition}
 
-Let us consider an example, with the following three rules
-
-\begin{verbatim}
-  r1: C(y),A(x!1,y),B(x!1)-> C(y!2),A(x!1,y!2),B(x!1)
-  r2: A(x!1), B(x!1) -> A(x), B(x)
-  r3: C(y!2),A(x,y!2) -> C(y!2),A(x~p,y!2)
-\end{verbatim}
-
-We have that $r_1\xrightarrow[low]{+} r_3$, $r_2\xrightarrow[medium]{+} r_3$ and $r_2\xrightarrow[medium]{-} r_1$.
-
-Let $e_1$, $e_2$ and $e_3$ be three events such that $r_1$, $r_2$ and $r_3$ are their corresponding labels. We can exhibit contexts for the sequential dependence between $e_2$ and $e_3$ and for the inhibition of $e_1$ by $e_2$, but none of them express the dependence relation between $e_1$ and $e_3$.
-
-Thus, we denote $e<^{\star}e'$ whenever $\labl(e)\xrightarrow[low]{+} \labl(e')$. Stories in Kappa are sets of events equipped with three binary relations $<$, $\dashv$ and $<^{\star}$ and the following properties hold between them:
-\begin{align*}
-  e < e' \implies e<^{\star}e'\text{ but not the reverse; }\\
-\labl(e)\xrightarrow[medium]{+} \labl(e') \implies \labl(e)\xrightarrow[low]{+} \labl(e')\text{ but not the reverse; }\\
-  e<^{\star}e'\text{ and }\neg(\labl(e)\xrightarrow[medium]{+} \labl(e'))\implies \exists e'', e''\dashv e\text{ and }e''< e'.
-\end{align*}
-%% Note that if $e_1\ll e_2$ there are three cases possible:
-%% \begin{itemize}
-%% \item $e_1< e_2$
-%% \item $\labl(e)\xrightarrow{+}\labl(e')$ and $\neg(e_1 < e_2)$
-%% \item $\neg(\labl(e)\xrightarrow{+}\labl(e'))$
-%% \end{itemize}
-\end{remark}
-
-Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$. We equip the set of stories $\mathcal{S}$ with the binary relation $\dashv_{\mathcal{S}}$, which is the restriction of $\dashv$ to the set of events $\cup_{s\in\mathcal{S}} E_s$.
+%Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$. We equip the set of stories $\mathcal{S}$ with the binary relation $\dashv_{\mathcal{S}}$, which is the restriction of $\dashv$ to the set of events $\cup_{s\in\mathcal{S}} E_s$.
 
 %We are not interested in the extraction mechanism, as long as the identity of events and the relationships between them (causality and inihibition) are preserved.
 
-\bigskip
-
-In interpreting our logic, we only work with the posets in $\mathcal{S}$ without having access to the transition system. If we are interested in the relations between events inside a poset, for example $e_1<_s e_2$, those are available in the structure of the poset. However, if we want to interpret formulas that relate events in different posets, we need to retrieve these relations from the events \emph{itselves}.
-
-%Thus we need to fix some structure into the events, and we will do that by considering the category of simple graphs and transition system based on graph rewriting.
+In the following subsection we define the \emph{concretization} function.
 
 \subsection{Refinement of graph rewriting rules}
 
-Let $r_1$ and $r_2$ two rules such that there exists a positive influence between the two : there exists $O$ such that $r_1 \redl{+}_O r_2$. Let us define a refinement of the two rules
-such that the following diagram commutes:
-\[
-\begin{tikzpicture} %[scale=0.8]
-  \node (o) at (0,-1) {\(O\)};
-  \node (p) at (0,1) {\(M\)};
-  \node (r1) at (-1,0) {\(R_1\)};
-  \node (l1) at (-2,0) {\(L_1\)};
-  \node (l2) at (1,0) {\(L_2\)};
-  \node (r2) at (2,0) {\(R_2\)};
-  \node (m1) at (-2,1) {\(M_1\)};
-  \node (m2) at (2,1) {\(M_2\)};
-  \draw [->] (l1) -- (m1);
-  \draw [->] (r2) -- (m2);
-  \draw [->] (o) -- (r1);
-  \draw [->] (o) -- (l2);
-  \draw [->] (r1) -- (p);
-  \draw [->] (l2) -- (p);
-  \draw [>=latex, ->] (m1) -- (p);
-  \draw [>=latex, ->] (p) -- (m2);
-  \draw [>=latex, ->] (l1) -- (r1);
-  \draw [>=latex, ->] (l2) -- (r2);
-\end{tikzpicture}
-\]
-We compute $M$ as the pushout of the span $R_1\remb O\lemb L_2$ and using the Dpo graph rewriting we compute the two $M_1$ and $M_2$. We can then refine the two rules to the sequence $M_1\action M\action M_2$. We call $M$ the context which realises the positive influence between $r_1$ and $r_2$.
-
-In a poset, we have that for any event, its immediate causes have a positive influence on it (\autoref{prop:cause_pos_infl}). Hence we can refine events in a poset and propagate the context.
+In a story we have that for any event, its immediate causes have a positive influence on it (\autoref{lemma:pos_infl}). For every pair of causal events in a story we can build a context $M$ as in~\autoref{def:causal_pair}. We propagate these contexts to the entire causal chain.
 
 \begin{example}
 \label{ex:e1e2e3}
-Let us consider the poset $e_1<e_2<e_3$ with $\labl(e_1)=r_1$, $\labl(e_2)=r_2$ and $\labl(e_3)=r_3$. First we compute the two contexts for $r_1\redl{+}_{O_1} r_2$ and $r_2\redl{+}_{O_2} r_3$:
+Let us consider the poset $(\{e_1,e_2,e_3,e_4\},<)$ where $e_1<e_2<e_3$, $e_4<e_3$ and $\labl(e_1)=r_1$, $\labl(e_2)=r_2$, $\labl(e_3)=r_3$, $\labl(e_4)=r_4$. First we compute the two contexts for $r_1\redl{+}_{O_1} r_2$ and $r_2\redl{+}_{O_2} r_3$ using \autoref{def:low_res}:
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (o1) at (0,-1) {\(O_1\)};
@@ -124,7 +82,7 @@ Let us consider the poset $e_1<e_2<e_3$ with $\labl(e_1)=r_1$, $\labl(e_2)=r_2$ 
   \draw [>=latex, ->] (l3) -- (r3);
 \end{tikzpicture}
 \]
-We then apply the rewriting of $M_1$ using $r_2$ and combine the context with $M_2$:
+We then apply the rewriting of $M_1$ using $r_2$ and combine the context with $M_2$ (this step is formally defined in~\autoref{def:seq_comb}):
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (o1) at (0,-1) {\(O_1\)};
@@ -156,7 +114,7 @@ We then apply the rewriting of $M_1$ using $r_2$ and combine the context with $M
   \draw [>=latex, ->] (m1) -- (m2p);
 \end{tikzpicture}
 \]
-Finally, we apply the rewriting steps on $N$ and obtain the refined sequence : $N_0\action N_1\action N\action N_3$:
+We apply the rewriting steps on $N$ and obtain the refined sequence $N_0\action N_1\action N\action N_3$ (that we will formally introduce in~\autoref{def:propagate}):
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (o1) at (0,-1) {\(O_1\)};
@@ -197,153 +155,115 @@ Finally, we apply the rewriting steps on $N$ and obtain the refined sequence : $
   \draw [>=latex, ->] (n) -- (n3);
 \end{tikzpicture}
 \]
-\end{example}
-
-An event can also have two (or more) immediate causes. Let $e_1>e$ and $e_2>e$ be such a case and let $r_1$, $r_2$ and $r$ be their corresponding labels. The contexts then combine thanks to the left hand side of $r$:
+Let us now integrate $e_4<e_3$ in the sequence. Let $R_4\lemb M_4\remb L_3$ be the cospan obtained from $\labl(e_4)\redl{+}_O\labl(e_3)$.
+The concurrent contexts $M_4$ and $N$ combine using their common subpart $L_3$ (formally introduced in~\autoref{def:conc_comb}):
 \[
 \begin{tikzpicture} %[scale=0.8]
-  \node (l) at (0,0) {\(L\)};
-  \node (m1) at (-1,1) {\(M_1\)};
-  \node (m2) at (1,1) {\(M_2\)};
-  \node (m) at (0,2) {\(M\)};
-  \draw [->] (l) -- (m1);
-  \draw [->] (l) -- (m2);
-  \draw [->] (m1) -- (m);
-  \draw [->] (m2) -- (m);
+  \node (l4) at (1,0) {\(L_4\)};
+  \node (r4) at (2,0) {\(R_4\)};
+  \node (o4) at (3,-1) {\(O_4\)};
+  \node (m4) at (3,1) {\(M_4\)};
+  \node (l3) at (4,0) {\(L_3\)};
+  \node (r3) at (5,0) {\(R_3\)};
+  \node (m2p) at (5,1) {\(N\)};
+  \node (n) at (4,2) {\(N'\)};
+  \draw [->] (o4) -- (r4);
+  \draw [->] (o4) -- (l3);
+  \draw [->] (r4) -- (m4);
+  \draw [->] (l3) -- (m4);
+  \draw [->] (m4) -- (n);
+  \draw [->] (m2p) -- (n);
+  \draw [->] (l3) -- (m2p);
+  \draw [>=latex, ->] (l4) -- (r4);
+  \draw [>=latex, ->] (l3) -- (r3);
 \end{tikzpicture}
 \]
+Finally we propagate the context $N'$:
+\[
+\begin{tikzpicture} %[scale=0.8]
+  \node (l4) at (1,0) {\(L_4\)};
+  \node (r4) at (2,0) {\(R_4\)};
+  \node (n4) at (1,1) {\(N_4'\)};
+  \node (m4) at (2,1) {\(N'\)};
+  \draw [>=latex, ->] (r4) -- (l4);
+  \draw [>=latex, ->] (m4) -- (n4);
+  \draw [->] (r4) -- (m4);
+  \draw [->] (l4) -- (n4);
+\end{tikzpicture}
+\hspace{3cm}
+\begin{tikzpicture} %[scale=0.8]
+  \node (n0) at (1,0) {\(N_0\)};
+  \node (n1) at (2,0) {\(N_1\)};
+  \node (n) at (3,0) {\(N\)};
+  \node (n3) at (4,0) {\(N_3\)};
+  \node (np0) at (1,1) {\(N_0'\)};
+  \node (np1) at (2,1) {\(N_1'\)};
+  \node (np) at (3,1) {\(N'\)};
+  \node (np3) at (4,1) {\(N_3'\)};
+  \draw [>=latex, ->] (n0) -- (n1);
+  \draw [>=latex, ->] (n1) -- (n);
+  \draw [>=latex, ->] (n) -- (n3);
+  \draw [>=latex, ->] (np0) -- (np1);
+  \draw [>=latex, ->] (np1) -- (np);
+  \draw [>=latex, ->] (np) -- (np3);
+  \draw [->] (n0) -- (np0);
+  \draw [->] (n1) -- (np1);
+  \draw [->] (n) -- (np);
+  \draw [->] (n3) -- (np3);
+\end{tikzpicture}
+\]
+The refinement of our story is then the set of transitions $N_0'\Rightarrow N_1'\Rightarrow N'\Rightarrow N_3'$ and $N_4'\Rightarrow N'$.
 
-Let us now formally introduce the refinement of the rules in a poset using the positive influence.
+\end{example}
 
-\begin{definition}[Refinement based on positive influence]
+\begin{definition}[Refinement of a story]
+  Given a story $s=(E,<)$ of graph rewriting events, define a refinement of $s$ as a sequence $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$, where
   \begin{itemize}
-  \item[]
-  \item The refinement of two causally consecutive events $\mathcal{R}(e_1< e_2)$ is the sequence:
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-      \node (o) at (0,-1) {\(O\)};
-      \node (p) at (0,1) {\(M\)};
-      \node (r1) at (-1,0) {\(R_1\)};
-      \node (l1) at (-2,0) {\(L_1\)};
-      \node (l2) at (1,0) {\(L_2\)};
-      \node (r2) at (2,0) {\(R_2\)};
-      \node (m1) at (-2,1) {\(M_1\)};
-      \node (m2) at (2,1) {\(M_2\)};
-      \draw [->] (l1) -- (m1);
-      \draw [->] (r2) -- (m2);
-      \draw [->] (o) -- (r1);
-      \draw [->] (o) -- (l2);
-      \draw [->] (r1) -- (p);
-      \draw [->] (l2) -- (p);
-      \draw [>=latex, ->] (m1) -- (p);
-      \draw [>=latex, ->] (p) -- (m2);
-      \draw [>=latex, ->] (l1) -- (r1);
-      \draw [>=latex, ->] (l2) -- (r2);
-    \end{tikzpicture}
-    \]
-    \item Refinements combine using two combinators:
-      \begin{itemize}
-      \item the sequence combinator $\mathcal{R}(e_1 < e_2)\oplus\mathcal{R}(e_2 < e_3)$ resulting in the graph in~\autoref{ex:e1e2e3};
-      \item the concurrent combinator $\mathcal{R}(e_1 < e)\otimes\mathcal{R}(e_2 < e)$ which combines contexts obtained from $e_1$ and $e_2$ into a single context.
-      \end{itemize}
-  \item The refinement of a poset $s$ is obtained using the two combinators above and resulting in the sequence
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-      \node (m1) at (0,0) {\(M_1\)};
-      \node (m2) at (1,0) {\(M_2\)};
-      \node (m3) at (2,0) {\(M_3\)};
-      \node (m4) at (3,0) {\(M_4\)};
-      \node (m5) at (1,-1) {\(M_5\)};
-      \node (m6) at (3,-1) {\(M_6\)};
-      \node (m7) at (4,-1) {\(\cdots\)};
-      \node (m8) at (4,0) {\(\cdots\)};
-      \draw [>=latex, ->] (m1) -- (m2);
-      \draw [>=latex, ->] (m2) -- (m3);
-      \draw [>=latex, ->] (m3) -- (m4);
-      \draw [>=latex, ->] (m5) -- (m3);
-      \draw [>=latex, ->] (m3) -- (m6);
-    \end{tikzpicture}
-    \]
-    where each transition $M_i\action M_j$ denotes a square
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-      \node (mi) at (-2,1) {\(M_i\)};
-      \node (mj) at (-1,1) {\(M_j\)};
-      \node (r1) at (-1,0) {\(R\)};
-      \node (l1) at (-2,0) {\(L\)};
-      \draw [->] (l1) -- (mi);
-      \draw [->] (r1) -- (mj);
-      \draw [>=latex, ->] (mi) -- (mj);
-      \draw [>=latex, ->] (l1) -- (r1);
-    \end{tikzpicture}
-    \]
-    The refinement of an event in a poset $\mathcal{R}(e\in s)$ is then the square
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-      \node (mi) at (-2,1) {\(M_i\)};
-      \node (mj) at (-1,1) {\(M_j\)};
-      \node (r1) at (-1,0) {\(R\)};
-      \node (l1) at (-2,0) {\(L\)};
-      \draw [->] (l1) -- (mi);
-      \draw [->] (r1) -- (mj);
-      \draw [>=latex, ->] (mi) -- (mj);
-      \draw [>=latex, ->] (l1) -- (r1);
-    \end{tikzpicture}
-    \]
-    where $\labl(e) = r$ and $m_{M_i}(e) = L \emb M_i$.
+  \item for all $e\in E$ there exists $M\overset{m,p}{\Rightarrow} M'$ such that $\labl(e)=p$ and $m_e(M) = m$ and
+  \item for all $e_1,e_2\in E$ such that $e_1<e_2$ with the corresponding transitions $M_1\overset{m_1,p_1}{\Rightarrow} M_1'$ and $M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ we have that $M_1'\iso M_2$.
   \end{itemize}
 \end{definition}
 
-Let us define the notion of refinement using negative influence.
-
-\begin{definition}[Refinement based on negative influence]
-  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements:
-  \begin{align*}
-    \mathcal{R}(e_1\in s_1) =
-    \begin{tikzpicture}[baseline=0.4cm] %[scale=0.8]
-      \node (mi) at (-2,1) {\(M_1\)};
-      \node (mj) at (-1,1) {\(N_1\)};
-      \node (r1) at (-1,0) {\(R_1\)};
-      \node (l1) at (-2,0) {\(L_1\)};
-      \draw [->] (l1) -- (mi);
-      \draw [->] (r1) -- (mj);
-      \draw [>=latex, ->] (mi) -- (mj);
-      \draw [>=latex, ->] (l1) -- (r1);
-    \end{tikzpicture}
-    \text{ and }
-    \mathcal{R}(e_2\in s_2) =
-    \begin{tikzpicture}[baseline=0.4cm] %[scale=0.8]
-      \node (mi) at (-2,1) {\(M_2\)};
-      \node (mj) at (-1,1) {\(N_2\)};
-      \node (r1) at (-1,0) {\(R_2\)};
-      \node (l1) at (-2,0) {\(L_2\)};
-      \draw [->] (l1) -- (mi);
-      \draw [->] (r1) -- (mj);
-      \draw [>=latex, ->] (mi) -- (mj);
-      \draw [>=latex, ->] (l1) -- (r1);
-    \end{tikzpicture}
-  \end{align*}
-  Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
+\begin{definition}[Refinement of an event in a story]
+  Given an event $e$ in a story $s$ define $\mathcal{R}(e\in s) = M$ as the context of application of $e$ in $s$:
   \[
   \begin{tikzpicture} %[scale=0.8]
-    \node (o) at (0,0) {\(O\)};
-    \node (n) at (0,2) {\(M\)};
-    \node (l1) at (-1,0) {\(L_1\)};
-    \node (l2) at (1,0) {\(L_2\)};
-    \node (n1) at (-1,1) {\(M_1\)};
-    \node (n2) at (1,1) {\(M_2\)};
-    \draw [->] (l1) -- (n1);
-    \draw [->] (l2) -- (n2);
-    \draw [->] (o) -- (n1);
-    \draw [->] (o) -- (n2);
-    \draw [->] (n1) -- (n);
-    \draw [->] (n2) -- (n);
+    \node (mi) at (-2,1) {\(M\)};
+    \node (mj) at (-1,1) {\(M'\)};
+    \node (r1) at (-1,0) {\(R\)};
+    \node (l1) at (-2,0) {\(L\)};
+    \draw [->] (l1) -- (mi);
+    \draw [->] (r1) -- (mj);
+    \draw [>=latex, ->] (mi) -- (mj);
+    \draw [>=latex, ->] (l1) -- (r1);
   \end{tikzpicture}
   \]
+  where $\labl(e) = r$ and $m_{M}(e) = L \emb M$ and $M\Rightarrow M'$ is a transition in the refinement of $s$.
+\end{definition}
+%Before giving the construction of a refinement $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$ let us first introduce some combinators of contexts.
+
+\begin{definition}[Propagate a context]
+  \label{def:propagate}
+  Given a sequence $M_1{\Rightarrow} M_2\cdots {\Rightarrow} M_n\cdots {\Rightarrow} M_{m}$ and a graph $M_{n}'$ with $M_n\emb M_{n}'$ define the \emph{propagation} of $M_{n}'$ as the sequence  $M_1'{\Rightarrow} M_2'\cdots {\Rightarrow} M_n'\cdots {\Rightarrow} M_{m}'$ where
+  \begin{itemize}
+  \item $M_i'$, for $i<n$, is obtained by the reverse of the production $M_i\Rightarrow M_{i+1}$ applied to the new contexts;
+  \item $M_i'$, for $n<i\leq m$, is obtained by the production $M_i\Rightarrow M_{i+1}$ applied to the new contexts.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Sequential combinator]
+\label{def:seq_comb}
+  Let $M_1\Rightarrow N_1$ and $M_2\Rightarrow N_2$ be two productions such that there exists $N_1\lemb R \remb M_2$ a cospan.
+  Define $M_1\Rightarrow N_1\oplus_R M_2\Rightarrow N_2$ the productions $M_1'\Rightarrow M$ and $M\Rightarrow N_2'$, where $M$ is the pushout of the cospan $N_1\lemb R \remb M_2$ and $M_1'$, $N_2'$ are obtained by the propagation of $M$ to the two initial productions.
+\end{definition}
+
+\begin{definition}[Concurrent combinator]
+\label{def:conc_comb}
+  Let $M_1\Rightarrow N_1$ and $M_2\Rightarrow N_2$ be two productions such that there exists $N_1\lemb L \remb N_2$ a cospan.
+  Define $M_1\Rightarrow N_1\otimes_L M_2\Rightarrow N_2$ the productions $M_1'\Rightarrow M$ and $M_2'\Rightarrow M$, where $M$ is the pushout of the cospan $N_1\lemb L \remb N_2$ and $M_1'$, $M_2'$ are obtained by the propagation of $M$ to the two initial productions.
 \end{definition}
 
 \begin{example}[Feedback loops]
-
 Let us show how we can interpret negative feedback loops. Let $e_1\in s_1\redl{-} e_2\in s_2$ such that $s_2\subset s_1$. Then $e_2\leq_{s_1} e_2$. However this additional constraint does not change the way we interpret negative influence, that is the influence is realised if there exists $M$ such that the following diagram commutes:
 \[
 \begin{tikzpicture} %[scale=0.8]
@@ -363,24 +283,44 @@ Let us show how we can interpret negative feedback loops. Let $e_1\in s_1\redl{-
 \]
 \end{example}
 
-This technique introduces context into the rules. This context might interfere with the intuitive reading of influence.
+Any refinement of a story into a trace is a potential \emph{concretisation} function. In our construction, we obtain a set of traces each representing possible concretisations for a story.
 
-\begin{example}[Influence on refined rules]
-\label{ex:infl_refined}
-Let us consider the following two rules:
+\begin{definition}[Concretisation of a story]
+  Let $s = (E,<,\labl)$ a story. Define $\textit{infl}$ a function that sends a poset into a set of posets
+  \[
+  \textit{infl}(s) =\{\overline{s}_1,\cdots\overline{s}_n\}
+  \]
+  where $\overline{s}_i = (E,\sqsubset,\labl)$ with $\sqsubset\subseteq E\times E\times G$ and such that
+  \[
+  e \sqsubset_O e' \implies e < e' \text{ and }\labl(e)\redl{+}_O \labl(e).
+  \]
 
-\begin{verbatim}
-r1:  A,B -> A-B
-r2:  C,D -> D
-\end{verbatim}
+  For each poset $\overline{s}_i\in\textit{infl}(s)$ we define the refinement $\gamma(\overline{s}_i)$ as follows: for each pair of consecutive events $e \sqsubset_O e'$ construct the graph $G$ using the causal pair induce by $O$. Then propagate the graphs using the sequential and concurrent combinators.
 
-Let us additionally consider that rule \verb|r1| occurs in a poset and is refined to \verb|A,B,C -> A-B,C|. We then observe a negative influence of \verb|r2| to \verb|r1|.
-\end{example}
+  The composition of the two functions $\gamma(\textit{infl}(s))$ is the concretisation function.
+\end{definition}
 
-If we do not want a negative influence in~\autoref{ex:infl_refined}, we need to refine the definition of influence such that the domain of definition in both rules is considered.
+\subsection{Interpreting inhibition on stories}
 
-Unrefined rules suggest a local modification on a graph, whereas the refined one are modifications in a larger context. Thus we need to keep in mind the context of the refined rule in order not to overapproximate the influence.
+In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a set of events $\cup_{s\in\mathcal{S}} E_s$.
 
-\begin{mdframed}[backgroundcolor=blue!20]
-  the definition of influence in refined rules
-\end{mdframed}
+\begin{definition}[Refinement based on negative influence]
+  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements $\mathcal{R}(e_1\in s_1) = M_1$ and $\mathcal{R}(e_2\in s_2) = M_2$. Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (0,0) {\(O\)};
+    \node (n) at (0,2) {\(M\)};
+    \node (l1) at (-1,0) {\(L_1\)};
+    \node (l2) at (1,0) {\(L_2\)};
+    \node (n1) at (-1,1) {\(M_1\)};
+    \node (n2) at (1,1) {\(M_2\)};
+    \draw [->] (l1) -- (n1);
+    \draw [->] (l2) -- (n2);
+    \draw [->] (o) -- (n1);
+    \draw [->] (o) -- (n2);
+    \draw [->] (n1) -- (n);
+    \draw [->] (n2) -- (n);
+  \end{tikzpicture}
+  \]
+  where $\labl(e_1)\redl{-}_O\labl(e_2)$.
+\end{definition}

@@ -101,9 +101,9 @@ Other graph rewriting techniques exists that allows production with dangling poi
   A transition system is a structure $TS = (Q,E,T)$ where $Q$ is a set of states, $E$ is a set of events and $T\subseteq Q\times E\times Q$ is a set of labelled transitions. Let $q_{\text{init}}\in Q$ be a special state, called the \emph{initial} state. Moreover a transition system satisfies the following axioms:
   \begin{itemize}
   \item no redundant events: $\forall e\in E$, $\exists (s,e,s')\in T$;
-  \item no redundant states: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$;
-  \item no circles:$\forall (s,e,s')\in T$, $s\neq s'$;
-  \item each pair of states connected by a single transition: $\forall (s,e_1,s_1), (s,e_2,s_2)\in T$, $s_1=s_2\implies e_1=e_2$.
+  \item all states are reachable: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$;
+%  \item no circles:$\forall (s,e,s')\in T$, $s\neq s'$;
+%  \item each pair of states connected by a single transition: $\forall (s,e_1,s_1), (s,e_2,s_2)\in T$, $s_1=s_2\implies e_1=e_2$.
   \end{itemize}
 \end{definition}
 
@@ -112,44 +112,45 @@ Other graph rewriting techniques exists that allows production with dangling poi
   \begin{itemize}
   \item a set of states $Q$, where each state is a simple graph;
   \item a set of rules or productions, $R$;
-  \item a set of events $E$, where each event $e=(p:L\action R,m(G):L\emb G)$ is a pair consisting of a rule $p\in R$ and a function $m$, that for a graph $G$, selects one matching $L\emb G$. For an event $e$, we define two functions $\labl(e) = p$ and $m_e(\_): L\emb \_$;
-  \item a set of labelled transition $T\subseteq Q\times E\times Q$, where each transition $M \overset{e}{\Rightarrow} N$ is a DPO rewriting step with the production $\labl(e) = p$ and the matching $m_e(M)$:
+  \item a set of events $E$, where each event $e=(p:L\action R,G,m:L\emb G)$ is a triple consisting of a rule $p\in R$, a graph $G$ and a function $m$ that selects one matching $L\emb G$. For an event $e$, we define two functions $\labl(e) = p$ and $m(e) = L\emb G$.
+  \item a set of labelled transition $T\subseteq Q\times E\times Q$, where each transition $M \overset{e}{\Rightarrow} N$ is a DPO rewriting step with the production $\labl(e) = p$ and the matching $m(e) = L\emb M$:
     \[
     \begin{tikzpicture} %[scale=0.8]
       \node (l) at (-1.5,0) {\(L\)};
       \node (r) at (0,0) {\(R\)};
       \node (m) at (-1.5,1.5) {\(M\)};
       \node (n) at (0,1.5) {\(N\)};
-      \draw [->] (l) -- node [left,midway] {\(m_e\)}  (m);
+      \draw [->] (l) -- node [left,midway] {\(m(e)\)}  (m);
       \draw [>=latex, ->] (l) -- (r);
       \draw [>=latex, ->] (m) -- (n);
       \draw [->] (r) -- (n);
     \end{tikzpicture}
     \]
-    We sometimes write $M\overset{m_e(M),p}{\Rightarrow} N$.
+    We sometimes write $M\overset{m(e),\labl(e)}{\Rightarrow} N$.
   \end{itemize}
   Moreover $TS$ satisfy the axioms of~\autoref{def:ts_nielsen}.
 \end{definition}
+
 
 \begin{definition}[Independence relation~\cite{AlgebraicGR}]
   We equip a graph transition system $(Q,R,E,T)$ with an irreflexive, symmetric relation on events $I\subseteq E\times E$, called independence, such that whenever $e_1~I~e_2$ the following axioms hold:
   \begin{description}
   \item[sequential independence]
-    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$;
+    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$ such that  %where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$;
   \item[parallel independence]
-    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $M_2\overset{m_1',p_1}{\Rightarrow} M'$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M_2) = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$, $m_{e_2}(M_1) = m_2'$.
+    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $M_2\overset{m_1',p_1}{\Rightarrow} M'$. %where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M_2) = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$, $m_{e_2}(M_1) = m_2'$.
   \end{description}
   We call such a TS an \emph{asynchronous} transition system~\cite{Mukund93}.
 \end{definition}
 
 \begin{definition}[Sequential dependence]
 \label{def:seq_dep}
-  Define $< \subseteq E\times E$ an irreflexive and antisymmetric relation on events such that whenever $e_1 < e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that don't commute, i.e. there is no graph $M'\in Q$ such that $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$.
+  Define $< \subseteq E\times E$ an irreflexive and antisymmetric relation on events such that whenever $e_1 < e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that don't commute, i.e. there is no graph $M'\in Q$ such that $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$. %where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$.
 \end{definition}
 
 \begin{definition}[Inhibition]
 \label{def:inhibition}
-  Define $\dashv\subseteq E \times E$ a relation on events such that whenever $e_1\dashv e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ for which there is no graph $M'\in Q$ such that $M_1\overset{m_2',p_2}{\Rightarrow} M'$, i.e. $m_{e_2}(M_1) = \emptyset$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$.
+  Define $\dashv\subseteq E \times E$ a relation on events such that whenever $e_1\dashv e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ for which there is no graph $M'\in Q$ such that $M_1\overset{m_2',p_2}{\Rightarrow} M'$. %i.e. $m_{e_2}(M_1) = \emptyset$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$.
 \end{definition}
 
 \begin{remark}

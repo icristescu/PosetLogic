@@ -2,8 +2,8 @@
 
 \begin{definition}[Poset]
   \label{def:poset}
-  A poset $s=\{E,<\}$ is a set of events $E$ and a binary relations on events, $<$. We denote $\sqsubseteq$ the transitive and reflexive closure of $<$.
-  We use the predicates $\text{intro}(s)$ and $\text{obs}(s)$ to retrieve the minimal and maximal events, respectively.
+  A poset $s=\{E,<\}$ is a set of events $E$ and a binary relations on events $< \subseteq E\times E$. We denote $\tleq$ the transitive and reflexive closure of $<$.
+  We use the predicates $\text{min}(s)$ and $\text{max}(s)$ to retrieve the minimal and maximal events, respectively.
 
   A labelled poset $s=\{E,<,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
 \end{definition}
@@ -22,16 +22,17 @@ We denote $A,B$ elements of $R$ and $s$ elements of $\mathcal{S}$.
 
 \begin{align*}
   x ::= & x^e ~|~ x^s & \tag{variables on events and stories} \\
-  t^s ::= & x^s ~|~ s ~|~ \text{intro}(t^s) ~|~ \text{obs}(t^s) ~|~ t^s_1 \cup t^s_2 ~|~ t^s_1 \cap t^s_2 &\tag{terms on posets} \\
-  t^e ::= & x^e ~|~ e & \tag{terms on events}
+  t^s ::= & x^s ~|~ s ~|~ \text{min}(t^s) ~|~ \text{max}(t^s) ~|~ t^s_1 \cup t^s_2 ~|~ t^s_1 \cap t^s_2 &\tag{terms on posets} \\
+  t^e ::= & x^e ~|~ e & \tag{terms on events}\\
+  t ::= & t^s ~|~ t^e & \tag{terms}\\
   \\
-  \varphi ::= & t^s ~|~ t^e ~| \\
-  & \exists x.\varphi(x) ~|~ \forall x.\varphi(x) ~|&\tag{quantifiers on events}\\
-  & \neg \varphi ~|~ \varphi_1 \vee \varphi_2~|~\varphi_1 \wedge \varphi_2~|~\varphi_1 \implies \varphi_2~|&\tag{logical connectors}\\
-  & t^e\in t^s ~|~ \labl(t^e) = A ~|~ t^e_1 <_{t^s} t^e_2 ~|~ t^e_1 \sqsubseteq_{t^s} t^e_2 ~|~ t^e_1\in t^s_1 \dashv t^e_2\in t^s_2~|~ t^s_1 = t^s_2 ~|~ t^s_1\subseteq t^s_2
+  \varphi ::= & \exists x.\varphi(x) ~|~ \forall x.\varphi(x) ~|&\tag{quantifiers}\\
+  & \neg \varphi ~|~\varphi_1 \wedge \varphi_2~|&\tag{logical connectors}\\
+  & t^e\in t^s ~|~ \labl(t^e) = A ~|~ t^e_1 <_{t^s} t^e_2 ~|~ t^e_1 \tleq_{t^s} t^e_2 ~|~ t^e_1\in t^s_1 \dashv t^e_2\in t^s_2~|~ t^s_1 = t^s_2 ~|~ t^s_1\subseteq t^s_2
   & \tag{predicates}\\
-  \\
 \end{align*}
+
+We define the logical connectors $\vee$, $\implies$ in the usual manner.
 
 \subsection{Interpretation}
 
@@ -45,39 +46,30 @@ $v:\text{fv}(\varphi)\to\mathcal{E}\uplus\mathcal{S}$
 from the set of free variables of $\varphi$ to the set of events and posets.
 %
 The evaluation of $\varphi$ is defined below, where a valuation function is needed for the set of free variables of $\varphi$.
+%We use two functions $\enct$ to evaluate terms and $\enc$ to evaluate formulas.
 \begin{align*}
-  \enc{x}_{v} &= v(x)\\
   \enc{\forall x^s.\varphi}_{v} &= T \iff\text{ for all }s\in\mathcal{S}, \enc{\varphi(s/x)}_{v} = T\\
   \enc{\exists x^s.\varphi}_{v} &= T \iff\text{ for some }s\in\mathcal{S}, \enc{\varphi(s/x)}_{v} = T\\
-  \enc{\text{pred}(t_1,\cdots t_n)}_{v} &= \text{pred}(\enc{t_1}_{v},\cdots,\enc{t_n}_{v}) \\
-  \enc{\text{func}(t_1,\cdots t_n)}_{v} &= \text{func}(\enc{t_1}_{v},\cdots,\enc{t_n}_{v}) \\
+  \enc{\neg\varphi}_v &= \neg\enc{\varphi} \\
+  \enc{\varphi_1\wedge\varphi_2}_v &= \enc{\varphi_1}_v\wedge\enc{\varphi_2}_v\\
+  \enc{t^e\in t^s}_v &= T\iff\enct{t^e}_v\in\enct{t^s}_v\\
+  \enc{\labl(t^e) = A}_v &= T\iff\labl(\enct{t^e}_v)=A\\
+  \enc{t^e_1 <_{t^s} t^e_2} &= T\iff e_1 <_s e_2\text{ where }e_1 = \enc{t^e_1}_v,e_2 = \enc{t^e_2}_v,s = \enc{t^s}_v\\
+  \enc{t^e_1 \tleq_{t^s} t^e_2} &= T\iff e_1 \tleq_s e_2\text{ where }e_1 = \enc{t^e_1}_v,e_2 = \enc{t^e_2}_v,s = \enc{t^s}_v\\
+  \enc{t^e_1\in t^s_1 \dashv t^e_2\in t^s_2}_v &= T\iff e_1\in s_1 \dashv e_2\in s_2\text{ where }
+  e_1 = \enc{t^e_1}_v,e_2 = \enc{t^e_2}_v,s_1 = \enc{t^s_1}_v,s_2 = \enc{t^s_2}_v\\
+  \enc{t^s_1\subseteq t^s_2}_v &= T\iff\enc{t^s_1}_v\subseteq \enc{t^s_2}_v\\
+  \\
+  \enct{x}_{v} &= v(x)\\
+  \enct{e}_{v} &= e\\
+  \enct{s}_{v} &= s\\
+  \enct{\text{min}(t^s)}_{v} &= \text{min}(\enct{t^s})\\
+  \enct{\text{max}(t^s)}_{v} &= \text{max}(\enct{t^s})\\
+  \enct{t^s_1 \cup t^s_2}_{v} &= \enct{t^s_1}_v \cup \enct{t^s_2}_{v}\\
+  \enct{t^s_1 \cap t^s_2}_{v} &= \enct{t^s_1}_v \cap \enct{t^s_2}_{v}\\
 \end{align*}
 %pred stands for predicates and func for the functions used in the grammar of $t^s$.
 
 A formula $\varphi$ is satisfiable if there exists $v$ such that $\enc{\varphi}_v = T$.
 
-The denotation of $\varphi$, denoted $\den{\varphi}$ is the set of valuations for which $\varphi$ evaluates to true.
-\[
-\begin{array}{rcl}
-  \den{x^e} &=& \{v : \{x^e\}\to \mathcal{E}\}\\
-  \den{x^s} &=& \{v : \{x^s\}\to \mathcal{S}\}\\
-  \den{\forall x.\varphi} &=& \{v :\fn{\varphi}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v \in \{\varphi\}\text{ and }\enc{\forall x.\varphi}_v= T\}\\
-  \den{\varphi_1 \wedge \varphi_2} &=& \{v: \fn{\varphi_1}\cup\fn{\varphi_2}\to\mathcal{E}\uplus\mathcal{S}~\Big|~ \\
-  &&\begin{array}{ll}
-  \quad v(x) = v_1(x)\wedge v(x) = v_2(x), &\text{ if }x\in\fn{\varphi_1}\cap\fn{\varphi_2}\\
-  \quad v(x) = v_1(x) &\text{ if }x\in\fn{\varphi_1},x\notin\fn{\varphi_2}\\
-  \quad v(x) = v_2(x) &\text{ if }x\in\fn{\varphi_2},x\notin\fn{\varphi_1}\\
-  \end{array}\\
-  &&\text{ and }v_i\in\den{\varphi_i}\text{ for }i=1,2\}\\
-  \den{\neg(\varphi)} &=& \{v :\fn{\varphi}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e) = \mathcal{E}\setminus v'(x^e)\text{ and }v(x^s) = \mathcal{S}\setminus v'(x^s)\\
-  &&\text{ for }x^e, x^s\in \fn{\varphi}, v'\in\den{\varphi}\}
-  \\
-  \den{ x^e\in x^s} &=& \{v :\{x^e,x^s\}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e)\in v(x^s) \} \\
-  \den{ x^e\in f(t^s_1,\cdots t^s_n)} &=& \{v :\{x^e\}\cup\fn{t^s_1}\cdots\cup\fn{t^s_n}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e)\in f(\enc{t^s_1}_v,\cdots \enc{t^s_n}_v \} \\
-  \\
-  \den{\text{func}(t_1,\cdots t_n)}_{v} &=& \text{func}(\den{t_1}_{v},\cdots,\den{t_n}_{v}) \\
-\end{array}
-\]
-\begin{mdframed}[backgroundcolor=blue!20]
-to do: valuation for the rest of the predicates
-\end{mdframed}
+The denotation of $\varphi$, denoted $\den{\varphi}$ is the set of valuations for which $\varphi$ evaluates to true. We give the denotation of a formula in~\autoref{app:denote}.

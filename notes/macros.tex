@@ -28,13 +28,12 @@
 \newcommand{\oleq}{\ensuremath{\ll}}
 \newcommand{\coz}{\ensuremath{<}}
 \newcommand{\immleq}{\ensuremath{\sqsubset}}
+\newcommand{\tleq}{\ensuremath{\leq^{\star}}}
 
 
 %%%%% RCCS
 \newcommand{\out}[1]{\ensuremath{\overline{#1}}}
 \newcommand{\outm}[2]{\ensuremath{\overline{#1}\msg{#2}}}
-
-
 
 
 %% Rigid families
@@ -93,10 +92,9 @@
 %% Encodings
 \newcommand{\encc}[1]{\ensuremath{[\![#1]\!]}}
 \newcommand{\enc}[1]{\encc{#1}} % Alias
-\newcommand{\encr}[1]{\ensuremath{[\![#1]\!]}}
-\newcommand{\den}[1]{\ensuremath{\langle{#1}\rangle}}
-\newcommand{\maxconc}[1]{\ensuremath{\{#1\}}}
-\newcommand{\minconc}[1]{\ensuremath{\{\{#1\}\}}}
+\newcommand{\encf}[1]{\ensuremath{\langle{#1}\rangle}}
+\newcommand{\enct}[1]{\ensuremath{\{#1\}}}
+\newcommand{\den}[1]{\ensuremath{\{#1\}}}
 
 %% Sets of names
 \newcommand{\fn}[1]{\ensuremath{\mathrm{fn}(#1)}}
@@ -105,7 +103,6 @@
 %\newcommand{\names}{\ensuremath{\mathsf{N}}}
 \newcommand{\freed}[1]{\ensuremath{\mathrm{lib}(#1)}}
 \newcommand{\names}{\ensuremath{\mathrm{Names}}}
-\newcommand{\pn}{\ensuremath{\mathsf{P}}}
 \newcommand{\zn}{\ensuremath{\mathrm{\bf z}}}
 \newcommand{\wn}{\ensuremath{\mathrm{\bf w}}}
 \newcommand{\nat}{\ensuremath{\mathbb{N}}}
@@ -153,9 +150,12 @@
 \DeclareMathOperator{\sfree}{\ensuremath{\dashv}}
 \DeclareMathOperator{\var}{Var}
 \DeclareMathOperator{\eval}{E}
+\newcommand{\pn}{\ensuremath{\mathsf{P}}}
+\newcommand{\kn}{\ensuremath{\mathsf{K}}}
 \newcommand{\ag}{\ensuremath{\mathcal{A}}}
 \newcommand{\sites}{\ensuremath{\mathcal{S}}}
 \newcommand{\links}{\ensuremath{\mathcal{L}}}
+\newcommand{\nodes}{\ensuremath{\mathcal{N}}}
 \newcommand{\emb}{\ensuremath{\hookrightarrow}}
 %%\newcommand{\lemb}{\ensuremath{\rightarrow}}
 %%\newcommand{\remb}{\ensuremath{\leftarrow}}
@@ -171,6 +171,8 @@
 
 \newcommand{\id}{\ensuremath{\text{id}}}
 \newcommand{\kexpr}{\ensuremath{\mathrm{k}\_\mathrm{expr}}}
+
+\newcommand{\abse}{\ensuremath{\overline{e}}}
 
 
 \usepackage{wasysym}
