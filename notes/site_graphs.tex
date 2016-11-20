@@ -66,7 +66,7 @@ An embedding or a mono, denoted $h:G\lemb H$, is an injective morphism on edges,
   \item $\forall a\in\ag_D$, $(a,i)\in\nodes_D\iff (h(a),i)\in\nodes_L \iff (g(a),i)\in\nodes_R$;
   %\item if $[(g(a),i),x] \in\links_R$ with $x\in\text{Ext}\setminus \sfree$, then $[(h(a),i),x] \in\links_D$;
   %\item if $[(a,i),x] \in\links_R$ and $\nexists b$ such that $h(b)=a$ or $\nexists y$ such that $[(b,i),y]\in\links_D$ then $x\in\sites_R$;
-  \item if $a\in\ag_R$ and $a\notin\text{image}(g)$ then $(a,i)\in\nodes_R$, $\forall i\in\Sigma_{ag-st}(\type(a))$.
+  \item if $a\in\ag_R$ and $a\notin\text{image}(g)$ then $\forall i\in\Sigma_{ag-st}(\type(a))$, $(a,i)\in\nodes_R$ and $\exists e\in \links_R$ such that $(a,i)\in e$.
   \end{itemize}
 \end{definition}
 
@@ -81,31 +81,58 @@ the domain of definition is \verb|A(x?), C(y?), B(y?)|.
 The category of site graphs and morphisms does not have all the pushouts. %but does have all pullbacks.
 
 \begin{example}[Inexistence of pushout in the category of site graphs]
-  Let $G$, $H$ and $O$ three site graphs defined as follows\footnote{Henceforth we write the symmetric reduction for the set $\links$.}:
-  \begin{align*}
-    \ag_G = \{a\},   \type(a) = A,   \links_G = \{[(a,i),B] \} \\
-    \ag_H = \{a'\},  \type(a') = A,  \links_H = \{[(a',i),C]\} \\
-    \ag_o = \{a''\}, \type(a'') = A, \links_O = \{[(a'',i),\_]\}.
-  \end{align*}
-  There is no site graph $M$ such that the following diagram commutes:
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (o) at (0,-1) {\(O\)};
-    \node (l1) at (-1.5,0) {\(G\)};
-    \node (l2) at (1.5,0) {\(H\)};
-    \node (m) at (0,1) {\(M\)};
-    \draw [right hook->] (o) -- (l1);
-    \draw [left hook->] (o) -- (l2);
-    \draw [right hook->] (l1) -- (m);
-    \draw [left hook->] (l2) -- (m);
-  \end{tikzpicture}
-  \]
+  For the two graphs \verb|A(x!1), B(x!1)| and \verb|A(x)| there is no pushout.
+  %% Let $G$, $H$ and $O$ three site graphs defined as follows\footnote{Henceforth we write the symmetric reduction for the set $\links$.}:
+  %% \begin{align*}
+  %%   \ag_G = \{a\},   \type(a) = A,   \links_G = \{[(a,i),B] \} \\
+  %%   \ag_H = \{a'\},  \type(a') = A,  \links_H = \{[(a',i),C]\} \\
+  %%   \ag_o = \{a''\}, \type(a'') = A, \links_O = \{[(a'',i),\_]\}.
+  %% \end{align*}
+  %% There is no site graph $M$ such that the following diagram commutes:
+  %% \[
+  %% \begin{tikzpicture} %[scale=0.8]
+  %%   \node (o) at (0,-1) {\(O\)};
+  %%   \node (l1) at (-1.5,0) {\(G\)};
+  %%   \node (l2) at (1.5,0) {\(H\)};
+  %%   \node (m) at (0,1) {\(M\)};
+  %%   \draw [right hook->] (o) -- (l1);
+  %%   \draw [left hook->] (o) -- (l2);
+  %%   \draw [right hook->] (l1) -- (m);
+  %%   \draw [left hook->] (l2) -- (m);
+  %% \end{tikzpicture}
+  %% \]
 \end{example}
 
 
 \begin{lemma}
-  Let $L\overset{h}{\remb} D \overset{g}{\lemb} R$ be a rule and let $M$ and $m:L\emb M$ be a site graph and matching, respectively. The DPO rewriting can be applied whenever the gluing conditions hold.
+  Let $L\overset{h}{\remb} K \overset{g}{\lemb} R$ be a rule and let $M$ and $m:L\emb M$ be a site graph and matching, respectively. The DPO rewriting can be applied whenever the gluing conditions hold.
 \end{lemma}
 \begin{proof}
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (l) at (-1.5,0) {\(L\)};
+    \node (d) at (0,0) {\(K\)};
+    \node (r) at (1.5,0) {\(R\)};
+    \node (m) at (-1.5,1.5) {\(M\)};
+    \node (d') at (0,1.5) {\(D\)};
+    \node (n) at (1.5,1.5) {\(N\)};
+    \draw [->] (d) -- node [above,midway] {\(l\)} (l);
+    \draw [->] (d) -- node [above,midway] {\(r\)} (r);
+    \draw [->] (d') -- (m);
+    \draw [->] (d') -- (n);
+    \draw [->] (l) -- node [left,midway] {\(m\)}  (m);
+    \draw [->] (d) -- (d');
+    \draw [->] (r) -- (n);
+  \end{tikzpicture}
+  \]
+  Let us first construct $D$ and show that it is the pushout complement. Secondly, we construct $N$ and show that it is the pushout.
+  \begin{enumerate}
+  \item
 
+
+  \end{enumerate}
+
+  \begin{mdframed}[backgroundcolor=blue!20]
+    to do
+  \end{mdframed}
 \end{proof}

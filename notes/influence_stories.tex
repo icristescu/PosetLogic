@@ -48,7 +48,7 @@
 
 %We are not interested in the extraction mechanism, as long as the identity of events and the relationships between them (causality and inihibition) are preserved.
 
-In the following subsection we define the \emph{concretization} function.
+In the following subsection we define the \emph{concretisation} function.
 
 \subsection{Refinement of graph rewriting rules}
 
@@ -178,19 +178,20 @@ The concurrent contexts $M_4$ and $N$ combine using their common subpart $L_3$ (
   \draw [>=latex, ->] (l3) -- (r3);
 \end{tikzpicture}
 \]
-Finally we propagate the context $N'$:
+Finally we propagate the context $N'$ to obtain
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (l4) at (1,0) {\(L_4\)};
   \node (r4) at (2,0) {\(R_4\)};
   \node (n4) at (1,1) {\(N_4'\)};
   \node (m4) at (2,1) {\(N'\)};
+  \node (and) at (4,0.5) { and };
   \draw [>=latex, ->] (r4) -- (l4);
   \draw [>=latex, ->] (m4) -- (n4);
   \draw [->] (r4) -- (m4);
   \draw [->] (l4) -- (n4);
 \end{tikzpicture}
-\hspace{3cm}
+\qquad
 \begin{tikzpicture} %[scale=0.8]
   \node (n0) at (1,0) {\(N_0\)};
   \node (n1) at (2,0) {\(N_1\)};
@@ -217,29 +218,9 @@ The refinement of our story is then the set of transitions $N_0'\Rightarrow N_1'
 \end{example}
 
 \begin{definition}[Refinement of a story]
-  Given a story $s=(E,<)$ of graph rewriting events, define a refinement of $s$ as a sequence $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$, where
-  \begin{itemize}
-  \item for all $e\in E$ there exists $M\overset{m,p}{\Rightarrow} M'$ such that $\labl(e)=p$ and $m_e(M) = m$ and
-  \item for all $e_1,e_2\in E$ such that $e_1<e_2$ with the corresponding transitions $M_1\overset{m_1,p_1}{\Rightarrow} M_1'$ and $M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ we have that $M_1'\iso M_2$.
-  \end{itemize}
+  Given a story $s=(E,<)$ of graph rewriting events, define a refinement of $s$ as a sequence $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$,  such that there is a bijection $\imath$ between events $e\in E$ and transitions $M\overset{m,p}{\Rightarrow} M'$ which preserves label, i.e. $\labl(e)=p$ and such that for all $e_1,e_2\in E$, if $e_1<e_2$ and $\imath(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$, $\imath(e_1) =M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ then $M_1'\iso M_2$.
 \end{definition}
 
-\begin{definition}[Refinement of an event in a story]
-  Given an event $e$ in a story $s$ define $\mathcal{R}(e\in s) = M$ as the context of application of $e$ in $s$:
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (mi) at (-2,1) {\(M\)};
-    \node (mj) at (-1,1) {\(M'\)};
-    \node (r1) at (-1,0) {\(R\)};
-    \node (l1) at (-2,0) {\(L\)};
-    \draw [->] (l1) -- (mi);
-    \draw [->] (r1) -- (mj);
-    \draw [>=latex, ->] (mi) -- (mj);
-    \draw [>=latex, ->] (l1) -- (r1);
-  \end{tikzpicture}
-  \]
-  where $\labl(e) = r$ and $m_{M}(e) = L \emb M$ and $M\Rightarrow M'$ is a transition in the refinement of $s$.
-\end{definition}
 %Before giving the construction of a refinement $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$ let us first introduce some combinators of contexts.
 
 \begin{definition}[Propagate a context]
@@ -304,7 +285,15 @@ Any refinement of a story into a trace is a potential \emph{concretisation} func
 
 In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a set of events $\cup_{s\in\mathcal{S}} E_s$.
 
+\begin{definition}[Refinement of an event in a story]
+  Let $e$ be an event in a story $s$. Let $t = M_1{\Rightarrow} M_2\cdots {\Rightarrow} M_n$ be a trace in $\gamma(\textit{infl}(s))$ and $\imath$ a bijection between $s$ and $t$.
+
+  Define $\mathcal{R}(e\in s) = M$ such that $\imath(e) = M{\Rightarrow}M'$. We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
+\end{definition}
+
+
 \begin{definition}[Refinement based on negative influence]
+\label{def:ref_neg_infl}
   For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements $\mathcal{R}(e_1\in s_1) = M_1$ and $\mathcal{R}(e_2\in s_2) = M_2$. Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]

@@ -29,6 +29,7 @@ rule token = parse
   | "equal_posets"	{ P_EQ_POS }
   | "subset"		{ P_SUBPOS }
   | "intro"		{ F_INTRO }
+  | "-|"		{ P_NEG_INFL }
   | ":Event"		{ SORT_E }
   | ":Poset"		{ SORT_P }
   | '\"'		{ let str = read_label [] ['\"'] lexbuf in LABEL str}

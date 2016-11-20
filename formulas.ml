@@ -98,7 +98,7 @@ let rec fv fm =
   | And(p,q) | Or(p,q) | Imp(p,q) | Iff(p,q) -> (fv p)@(fv q)
   | Forall(x,_,p) | Exists(x,_,p) -> List.filter (fun y -> not(x=y)) (fv p)
 
-let free_var fm = remove_duplicates(fv fm)
+let free_var fm = remove_duplicates (fv fm) (fun i1 i2 -> i1 = i2)
 
 (*
  define the meaning of a term or formula with respect to both an interpretation,
@@ -246,6 +246,12 @@ let obs = function
     Domain.Pos p -> p
   | _ -> raise (ExceptionDefn.Malformed_Args("obs"))
 
+let negative_influence = function
+    (Domain.Ev e1, Domain.Pos p1, Domain.Ev e2, Domain.Pos p2) ->
+    let () = Site_graph.test () in
+    true
+   | _ ->  raise(ExceptionDefn.Malformed_Args("negative_influence"))
+
 let id_label_event str = function
     [e] ->
 (*    let () = if (!Parameter.debug_mode) then
@@ -282,6 +288,7 @@ let interpretation t =
       | ("equal_posets", [p1;p2]) -> equal_posets (p1,p2)
       | ("equal_events", [e1;e2]) -> equal_events (e1,e2)
       | ("sub_posets", [p1;p2]) -> sub_poset (p1,p2)
-      | ("negative_influence", [x1;p1;x2;p2]) -> true
+      | ("negative_influence", [x1;p1;x2;p2]) ->
+         negative_influence (x1,p1,x2,p2)
       | _ -> raise (ExceptionDefn.Uninterpreted_Predicate(p)) in
   (func,pred,domain)
