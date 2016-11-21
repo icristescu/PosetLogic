@@ -2,23 +2,30 @@
 
 \begin{definition}[Poset]
   \label{def:poset}
-  A poset $s=\{E,<\}$ is a set of events $E$ and a binary relations on events $< \subseteq E\times E$. We denote $\tleq$ the transitive and reflexive closure of $<$.
+  A poset $s=\{E,\tleq\}$ is a finite set of events $E$ and a partial order on events $\tleq\subseteq E\times E$. The \emph{cover} relation on events $\leq\subseteq E\times E$ is the transitive reflexive reduction of $\tleq$.
   We use the predicates $\text{min}(s)$ and $\text{max}(s)$ to retrieve the minimal and maximal events, respectively.
 
-  A labelled poset $s=\{E,<,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
+  A labelled poset $s=\{E,\tleq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
 \end{definition}
 
-%\begin{definition}[Immediate causality]
-%  Let us define immediate causality $e<_s e'$, for two events $e,e'\in s$ such that $e\sqsubset e'$ and $\nexists e''$, $e\sqsubset e''\sqsubset e'$.
-%\end{definition}
+\begin{definition}[Morphisms on posets]
+  Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the cover relation. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
 
-%We use the notations $s \subseteq s'$, $s\cap s'$, $s\cup s'$ and $s\iso s'$ for the respective set operations that are respectful of the causal order and labelling function. - just in kappa
+  A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
+\end{definition}
 
-Let $R$ a set of rules (labels on events) and $\mathcal{S}$ a set of posets.
-%closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$.
-We denote $A,B$ elements of $R$ and $s$ elements of $\mathcal{S}$.
+\begin{mdframed}[backgroundcolor=blue!20]
+  to do:
+  \begin{itemize}
+  \item prove its a category
+  \item define multi sums $s\cap s'$ and multi products $s\cup s'$ in posets.
+  \end{itemize}
+\end{mdframed}
 
 \subsection{Grammar}
+
+Let $R$ a set of labels, $\mathcal{S}$ a set of posets and let $\varepsilon = \cup_{s_i\in S} E_i$ be the set of events in $\mathcal{S}$, where $E_i$ is the set of events in $s_i$.
+We denote $A,B$ elements of $R$ and $s$ elements of $\mathcal{S}$.
 
 \begin{align*}
   x ::= & x^e ~|~ x^s & \tag{variables on events and stories} \\
@@ -54,11 +61,11 @@ The evaluation of $\varphi$ is defined below, where a valuation function is need
   \enc{\varphi_1\wedge\varphi_2}_v &= \enc{\varphi_1}_v\wedge\enc{\varphi_2}_v\\
   \enc{t^e\in t^s}_v &= T\iff\enct{t^e}_v\in\enct{t^s}_v\\
   \enc{\labl(t^e) = A}_v &= T\iff\labl(\enct{t^e}_v)=A\\
-  \enc{t^e_1 <_{t^s} t^e_2} &= T\iff e_1 <_s e_2\text{ where }e_1 = \enc{t^e_1}_v,e_2 = \enc{t^e_2}_v,s = \enc{t^s}_v\\
-  \enc{t^e_1 \tleq_{t^s} t^e_2} &= T\iff e_1 \tleq_s e_2\text{ where }e_1 = \enc{t^e_1}_v,e_2 = \enc{t^e_2}_v,s = \enc{t^s}_v\\
+  \enc{t^e_1 <_{t^s} t^e_2} &= T\iff e_1 <_s e_2\text{ where }e_1 = \enct{t^e_1}_v,e_2 = \enct{t^e_2}_v,s = \enct{t^s}_v\\
+  \enc{t^e_1 \tleq_{t^s} t^e_2} &= T\iff e_1 \tleq_s e_2\text{ where }e_1 = \enct{t^e_1}_v,e_2 = \enct{t^e_2}_v,s = \enct{t^s}_v\\
   \enc{t^e_1\in t^s_1 \dashv t^e_2\in t^s_2}_v &= T\iff e_1\in s_1 \dashv e_2\in s_2\text{ where }
-  e_1 = \enc{t^e_1}_v,e_2 = \enc{t^e_2}_v,s_1 = \enc{t^s_1}_v,s_2 = \enc{t^s_2}_v\\
-  \enc{t^s_1\subseteq t^s_2}_v &= T\iff\enc{t^s_1}_v\subseteq \enc{t^s_2}_v\\
+  e_1 = \enct{t^e_1}_v,e_2 = \enct{t^e_2}_v,s_1 = \enct{t^s_1}_v,s_2 = \enct{t^s_2}_v\\
+  \enc{t^s_1\subseteq t^s_2}_v &= T\iff\enct{t^s_1}_v\emb \enct{t^s_2}_v\\
   \\
   \enct{x}_{v} &= v(x)\\
   \enct{e}_{v} &= e\\
@@ -68,8 +75,7 @@ The evaluation of $\varphi$ is defined below, where a valuation function is need
   \enct{t^s_1 \cup t^s_2}_{v} &= \enct{t^s_1}_v \cup \enct{t^s_2}_{v}\\
   \enct{t^s_1 \cap t^s_2}_{v} &= \enct{t^s_1}_v \cap \enct{t^s_2}_{v}\\
 \end{align*}
-%pred stands for predicates and func for the functions used in the grammar of $t^s$.
 
 A formula $\varphi$ is satisfiable if there exists $v$ such that $\enc{\varphi}_v = T$.
 
-The denotation of $\varphi$, denoted $\den{\varphi}$ is the set of valuations for which $\varphi$ evaluates to true. We give the denotation of a formula in~\autoref{app:denote}.
+The denotation of $\varphi$ is the set of valuations for which $\varphi$ evaluates to true. We give the denotation of a formula in~\autoref{app:denote}.

@@ -23,24 +23,28 @@
 \end{remark}
 
 \begin{definition}[Abstraction on a trace]
-
-  Define an \emph{abstraction} function $\alpha$ that maps a trace $\theta$ into a set of events $\varepsilon$:
-  \[
-  \alpha(\theta) = (\varepsilon,<,\labl) \text{ where }
-  \alpha(t_i:M_i\redl{e_i}M_{i+1}) = \abse_i \]
-  such that $\labl(\abse_i) = \labl(e_i)$ and
-  \[
-  \abse_i < \abse_j \iff e_i < e_j\text{ and }\alpha(e_i)< \alpha(e_j)
-  \]
+  Let $\Theta$ be a set of traces and let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace in $\Theta$. Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
+  \begin{itemize}
+  \item given a transition $M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
+    \[
+    \alpha(M\overset{m,p}{\Rightarrow} M') = e
+    \]
+    such that $\labl(e) = p$.
+  \item define a poset from a trace $\alpha(\theta) = (E,<,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence between transitions is preserved:
+    \begin{align*}
+      \alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
+      e_i < e_j \iff t_i < t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j
+    \end{align*}
+  \end{itemize}
 \end{definition}
 
 \begin{definition}[Set of stories]
-  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $\{\theta_1,\cdots,\theta_n\}$ be a set of traces of TS.
-  The set of stories is obtained by abstraction of the set of traces:
+  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of traces of $TS$.
+  Define the set of stories obtained by abstraction on $\Theta$ as follows
   \[
   \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)\text{ with }k\leq n
   \]
-  where $\alpha(\theta_i) = (\varepsilon_j,<,\labl)$ and $s_j = (\varepsilon_j,\tleq,\labl)$.
+  where for each poset $s = (E,\tleq,\labl)$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = (E,<,\labl)$ and where $\tleq$ is the reflexive and transitive closure of $<$.
 %  A \emph{story} of TS, $s$ $=$ $(E_s,<_s)$, is a subset of events $E_s\subseteq E$ equipped with a binary relation on events $<_s$ which is the restrictions of $<$ to the set $E_s$.
 \end{definition}
 
@@ -266,20 +270,34 @@ Let us show how we can interpret negative feedback loops. Let $e_1\in s_1\redl{-
 
 Any refinement of a story into a trace is a potential \emph{concretisation} function. In our construction, we obtain a set of traces each representing possible concretisations for a story.
 
-\begin{definition}[Concretisation of a story]
-  Let $s = (E,<,\labl)$ a story. Define $\textit{infl}$ a function that sends a poset into a set of posets
-  \[
-  \textit{infl}(s) =\{\overline{s}_1,\cdots\overline{s}_n\}
-  \]
-  where $\overline{s}_i = (E,\sqsubset,\labl)$ with $\sqsubset\subseteq E\times E\times G$ and such that
-  \[
-  e \sqsubset_O e' \implies e < e' \text{ and }\labl(e)\redl{+}_O \labl(e).
-  \]
+\begin{definition}[Concretisation of a poset]
+  Given a set of posets $\mathcal{S}$ let us define the concretisation function $\gamma:\mathcal{S}\subseteq\Theta$ that sends a poset to a set of traces.
+  \begin{itemize}
+  \item
+    Given a set of events $E$ and a labeling function $\labl$ on events, define a function $\mathit{decorate}:E\times E \to E\times E\times G$ that associates to a pair of events $(e,e')$ the following set
+    \[
+    \mathit{decorate}(e,e') = \{(e,e',O) : O\text{ is a graph such that }\labl(e)\redl{+}_O e'\}.
+    \]
 
-  For each poset $\overline{s}_i\in\textit{infl}(s)$ we define the refinement $\gamma(\overline{s}_i)$ as follows: for each pair of consecutive events $e \sqsubset_O e'$ construct the graph $G$ using the causal pair induce by $O$. Then propagate the graphs using the sequential and concurrent combinators.
-
-  The composition of the two functions $\gamma(\textit{infl}(s))$ is the concretisation function.
+    Let $s = (E,<,\labl)$ be a poset. Define $\mathit{decorate}$ a function that sends a poset $s$ into a set of posets as follows
+    \[
+    \mathit{decorate}(E,<,\labl) =\{(E,\sqsubset,\labl) : e\sqsubset_O e' \iff (e,e',O)\in\mathit{decorate}(e,e')\text{ and }
+    e<e'\}.
+    \]
+  \item Let $\overline{s}\in\mathit{decorate}(s)$ be a decorated poset. We define the refinement of a decorated poset into a trace $\mathit{refine}(\overline{s})$ as follows: for each pair of consecutive events $e \sqsubset_O e'$ construct the graph $G$ using the causal pair induce by $O$. Then propagate the graphs using the sequential and concurrent combinators.
+  \end{itemize}
+  The composition of the two functions $\gamma = \mathit{refine}(\mathit{decorate}(s))$ is the concretisation function.
 \end{definition}
+
+\begin{lemma}
+  $\theta\subseteq \gamma(\alpha(\theta))$.
+\end{lemma}
+\begin{proof}
+    \begin{mdframed}[backgroundcolor=blue!20]
+    to do
+  \end{mdframed}
+
+\end{proof}
 
 \subsection{Interpreting inhibition on stories}
 

@@ -58,11 +58,11 @@ An embedding or a mono, denoted $h:G\lemb H$, is an injective morphism on edges,
   Site-graphs and morphisms form a category.
 \end{lemma}
 
-
 \begin{definition}[Rules]
-  A rule, or an action map, $\alpha:L \action R$ is a span $L\overset{h}{\remb} D \overset{g}{\lemb} R$ such that $h$ and $g$ are monos on site graphs and the following hold
+  \label{def:rule_site}
+  A rule is a span $L\overset{h}{\remb} D \overset{g}{\lemb} R$ such that $h$ and $g$ are monos on site graphs and the following hold
   \begin{itemize}
-  %\item for any span $L\overset{h'}{\remb} D' \overset{g'}{\lemb} R$ and any embedding $D\overset{f}{\lemb}D'$ such that $h=h'f$ and $g=g'f$ then $f$ is an isomorphism;
+   %\item for any span $L\overset{h'}{\remb} D' \overset{g'}{\lemb} R$ and any embedding $D\overset{f}{\lemb}D'$ such that $h=h'f$ and $g=g'f$ then $f$ is an isomorphism;
   \item $\forall a\in\ag_D$, $(a,i)\in\nodes_D\iff (h(a),i)\in\nodes_L \iff (g(a),i)\in\nodes_R$;
   %\item if $[(g(a),i),x] \in\links_R$ with $x\in\text{Ext}\setminus \sfree$, then $[(h(a),i),x] \in\links_D$;
   %\item if $[(a,i),x] \in\links_R$ and $\nexists b$ such that $h(b)=a$ or $\nexists y$ such that $[(b,i),y]\in\links_D$ then $x\in\sites_R$;
@@ -71,11 +71,11 @@ An embedding or a mono, denoted $h:G\lemb H$, is an injective morphism on edges,
 \end{definition}
 
 \begin{example}
-For the rule
+In Kappa, we write rules $L\action R$ and derive the domain of definition. For instance, for the rule
 \begin{verbatim}
   A(x!1), C(y!1), B(y) -> A(x!1), C(y), B(y!1)
 \end{verbatim}
-the domain of definition is \verb|A(x?), C(y?), B(y?)|.
+we obtain the domain of definition \verb|A(x?), C(y?), B(y?)|. This is not in the scope of our paper, please see~\autoref{app:prefix_convention} for more details.
 \end{example}
 
 The category of site graphs and morphisms does not have all the pushouts. %but does have all pullbacks.
@@ -103,7 +103,6 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
   %% \]
 \end{example}
 
-
 \begin{lemma}
   Let $L\overset{h}{\remb} K \overset{g}{\lemb} R$ be a rule and let $M$ and $m:L\emb M$ be a site graph and matching, respectively. The DPO rewriting can be applied whenever the gluing conditions hold.
 \end{lemma}
@@ -126,13 +125,48 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
   \end{tikzpicture}
   \]
   Let us first construct $D$ and show that it is the pushout complement. Secondly, we construct $N$ and show that it is the pushout.
-  \begin{enumerate}
-  \item
+  %% \begin{enumerate}
+  %% \item
 
-
-  \end{enumerate}
-
+  %% \end{enumerate}
   \begin{mdframed}[backgroundcolor=blue!20]
     to do
   \end{mdframed}
 \end{proof}
+
+\begin{mdframed}[backgroundcolor=blue!20]
+  \begin{itemize}
+  \item stories: posets with an additional relation of non-causal precedence;
+\begin{remark}[Stories in Kappa]
+In site graph we can express a dependence between events that is neither sequential dependence nor inhibition. It comes from the distinction between low res and medium res influence.
+
+Let us consider an example, with the following three rules
+
+\begin{verbatim}
+  r1: C(y),A(x!1,y),B(x!1)-> C(y!2),A(x!1,y!2),B(x!1)
+  r2: A(x!1), B(x!1) -> A(x), B(x)
+  r3: C(y!2),A(x,y!2) -> C(y!2),A(x~p,y!2)
+\end{verbatim}
+
+We have that $r_1\xrightarrow[low]{+} r_3$, $r_2\xrightarrow[medium]{+} r_3$ and $r_2\xrightarrow[medium]{-} r_1$.
+
+Let $e_1$, $e_2$ and $e_3$ be three events such that $r_1$, $r_2$ and $r_3$ are their corresponding labels. We can exhibit contexts for the sequential dependence between $e_2$ and $e_3$ and for the inhibition of $e_1$ by $e_2$, but none of them express the dependence relation between $e_1$ and $e_3$.
+
+Thus, we denote $e<^{\star}e'$ whenever $\labl(e)\xrightarrow[low]{+} \labl(e')$. Stories in Kappa are sets of events equipped with three binary relations $<$, $\dashv$ and $<^{\star}$ and the following properties hold between them:
+\begin{align*}
+  e < e' \implies e<^{\star}e'\text{ but not the reverse; }\\
+\labl(e)\xrightarrow[medium]{+} \labl(e') \implies \labl(e)\xrightarrow[low]{+} \labl(e')\text{ but not the reverse; }\\
+  e<^{\star}e'\text{ and }\neg(\labl(e)\xrightarrow[medium]{+} \labl(e'))\implies \exists e'', e''\dashv e\text{ and }e''< e'.
+\end{align*}
+%% Note that if $e_1\ll e_2$ there are three cases possible:
+%% \begin{itemize}
+%% \item $e_1< e_2$
+%% \item $\labl(e)\xrightarrow{+}\labl(e')$ and $\neg(e_1 < e_2)$
+%% \item $\neg(\labl(e)\xrightarrow{+}\labl(e'))$
+%% \end{itemize}
+\end{remark}
+
+  \item add non-causal precedence to the concretisation function;
+  \item no context of inihibition: detect conflict in the site graph.
+  \end{itemize}
+\end{mdframed}
