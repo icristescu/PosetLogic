@@ -248,7 +248,6 @@ let obs = function
 
 let negative_influence = function
     (Domain.Ev e1, Domain.Pos p1, Domain.Ev e2, Domain.Pos p2) ->
-    let () = Site_graph.test () in
     true
    | _ ->  raise(ExceptionDefn.Malformed_Args("negative_influence"))
 
