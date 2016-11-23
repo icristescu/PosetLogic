@@ -127,17 +127,25 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
   Let us first construct $D$ and show that it is the pushout complement. Secondly, we construct $N$ and show that it is the pushout.
   %% \begin{enumerate}
   %% \item
-
   %% \end{enumerate}
   \begin{mdframed}[backgroundcolor=blue!20]
     to do
   \end{mdframed}
 \end{proof}
 
-\begin{mdframed}[backgroundcolor=blue!20]
+
+\subsection{Stories}
+
+\begin{definition}
+  A story $s=\{E,<,\dashv,\sqsubset,\labl\}$ consists of a set of events $E$, a labelling function $\labl:E\to\mathcal{R}$ and three binary relations defined on events such that
   \begin{itemize}
-  \item stories: posets with an additional relation of non-causal precedence;
-\begin{remark}[Stories in Kappa]
+  \item $e<e'\implies\labl(e)\xrightarrow[medium]{+} \labl(e')$;
+  \item $e\dashv e'\implies\labl(e)\xrightarrow[medium]{-} \labl(e')$;
+  \item $e\sqsubset e'\implies\text{ either }e<e'\text{ or }\exists e''. (e''<e'\text{ and }e'\dashv e'')$.
+  \end{itemize}
+\end{definition}
+
+\begin{example}
 In site graph we can express a dependence between events that is neither sequential dependence nor inhibition. It comes from the distinction between low res and medium res influence.
 
 Let us consider an example, with the following three rules
@@ -150,22 +158,24 @@ Let us consider an example, with the following three rules
 
 We have that $r_1\xrightarrow[low]{+} r_3$, $r_2\xrightarrow[medium]{+} r_3$ and $r_2\xrightarrow[medium]{-} r_1$.
 
-Let $e_1$, $e_2$ and $e_3$ be three events such that $r_1$, $r_2$ and $r_3$ are their corresponding labels. We can exhibit contexts for the sequential dependence between $e_2$ and $e_3$ and for the inhibition of $e_1$ by $e_2$, but none of them express the dependence relation between $e_1$ and $e_3$.
+Let $e_1$, $e_2$ and $e_3$ be three events such that $r_1$, $r_2$ and $r_3$ are their corresponding labels. We can exhibit contexts for the sequential dependence between $e_2$ and $e_3$ and for the inhibition of $e_1$ by $e_2$, but none of them express the dependence relation between $e_1$ and $e_3$. We call this dependence \emph{non-causal precedence}.
+\end{example}
 
-Thus, we denote $e<^{\star}e'$ whenever $\labl(e)\xrightarrow[low]{+} \labl(e')$. Stories in Kappa are sets of events equipped with three binary relations $<$, $\dashv$ and $<^{\star}$ and the following properties hold between them:
-\begin{align*}
-  e < e' \implies e<^{\star}e'\text{ but not the reverse; }\\
-\labl(e)\xrightarrow[medium]{+} \labl(e') \implies \labl(e)\xrightarrow[low]{+} \labl(e')\text{ but not the reverse; }\\
-  e<^{\star}e'\text{ and }\neg(\labl(e)\xrightarrow[medium]{+} \labl(e'))\implies \exists e'', e''\dashv e\text{ and }e''< e'.
-\end{align*}
+
+\begin{mdframed}[backgroundcolor=blue!20]
+  \begin{itemize}
+%% Thus, we denote $e<^{\star}e'$ whenever $\labl(e)\xrightarrow[low]{+} \labl(e')$. Stories in Kappa are sets of events equipped with three binary relations $<$, $\dashv$ and $<^{\star}$ and the following properties hold between them:
+%% \begin{align*}
+%%   e < e' \implies e<^{\star}e'\text{ but not the reverse; }\\
+%% \labl(e)\xrightarrow[medium]{+} \labl(e') \implies \labl(e)\xrightarrow[low]{+} \labl(e')\text{ but not the reverse; }\\
+%%   e<^{\star}e'\text{ and }\neg(\labl(e)\xrightarrow[medium]{+} \labl(e'))\implies \exists e'', e''\dashv e\text{ and }e''< e'.
+%% \end{align*}
 %% Note that if $e_1\ll e_2$ there are three cases possible:
 %% \begin{itemize}
 %% \item $e_1< e_2$
 %% \item $\labl(e)\xrightarrow{+}\labl(e')$ and $\neg(e_1 < e_2)$
 %% \item $\neg(\labl(e)\xrightarrow{+}\labl(e'))$
 %% \end{itemize}
-\end{remark}
-
   \item add non-causal precedence to the concretisation function;
   \item no context of inihibition: detect conflict in the site graph.
   \end{itemize}

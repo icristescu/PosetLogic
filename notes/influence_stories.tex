@@ -38,15 +38,17 @@
   \end{itemize}
 \end{definition}
 
-\begin{definition}[Set of stories]
+\begin{definition}[Set of posets]
   Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of traces of $TS$.
-  Define the set of stories obtained by abstraction on $\Theta$ as follows
+  Define the set of posets obtained by abstraction on $\Theta$ as follows
   \[
   \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)\text{ with }k\leq n
   \]
   where for each poset $s = (E,\tleq,\labl)$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = (E,<,\labl)$ and where $\tleq$ is the reflexive and transitive closure of $<$.
 %  A \emph{story} of TS, $s$ $=$ $(E_s,<_s)$, is a subset of events $E_s\subseteq E$ equipped with a binary relation on events $<_s$ which is the restrictions of $<$ to the set $E_s$.
 \end{definition}
+
+Henceforth the set of posets $\mathcal{S}$ stands for the set defined above.
 
 %Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$. We equip the set of stories $\mathcal{S}$ with the binary relation $\dashv_{\mathcal{S}}$, which is the restriction of $\dashv$ to the set of events $\cup_{s\in\mathcal{S}} E_s$.
 
@@ -56,7 +58,7 @@ In the following subsection we define the \emph{concretisation} function.
 
 \subsection{Refinement of graph rewriting rules}
 
-In a story we have that for any event, its immediate causes have a positive influence on it (\autoref{lemma:pos_infl}). For every pair of causal events in a story we can build a context $M$ as in~\autoref{def:causal_pair}. We propagate these contexts to the entire causal chain.
+In a poset of $\mathcal{S}$, we have that for any event, its immediate causes have a positive influence on it (\autoref{lemma:pos_infl}). For every pair of causal events in a poset we can build a context $M$ as in~\autoref{def:causal_pair}. We propagate these contexts to the entire causal chain.
 
 \begin{example}
 \label{ex:e1e2e3}
@@ -217,12 +219,12 @@ Finally we propagate the context $N'$ to obtain
   \draw [->] (n3) -- (np3);
 \end{tikzpicture}
 \]
-The refinement of our story is then the set of transitions $N_0'\Rightarrow N_1'\Rightarrow N'\Rightarrow N_3'$ and $N_4'\Rightarrow N'$.
+The refinement of our poset is then the set of transitions $N_0'\Rightarrow N_1'\Rightarrow N'\Rightarrow N_3'$ and $N_4'\Rightarrow N'$.
 
 \end{example}
 
-\begin{definition}[Refinement of a story]
-  Given a story $s=(E,<)$ of graph rewriting events, define a refinement of $s$ as a sequence $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$,  such that there is a bijection $\imath$ between events $e\in E$ and transitions $M\overset{m,p}{\Rightarrow} M'$ which preserves label, i.e. $\labl(e)=p$ and such that for all $e_1,e_2\in E$, if $e_1<e_2$ and $\imath(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$, $\imath(e_1) =M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ then $M_1'\iso M_2$.
+\begin{definition}[Refinement of a poset]
+  Given a poset $s=(E,<,\labl)$ of graph rewriting events, define a refinement of $s$ as a sequence $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$,  such that there is a bijection $\imath$ between events $e\in E$ and transitions $M\overset{m,p}{\Rightarrow} M'$ which preserves label, i.e. $\labl(e)=p$ and such that for all $e_1,e_2\in E$, if $e_1<e_2$ and $\imath(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$, $\imath(e_1) =M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ then $M_1'\iso M_2$.
 \end{definition}
 
 %Before giving the construction of a refinement $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$ let us first introduce some combinators of contexts.
@@ -268,7 +270,7 @@ Let us show how we can interpret negative feedback loops. Let $e_1\in s_1\redl{-
 \]
 \end{example}
 
-Any refinement of a story into a trace is a potential \emph{concretisation} function. In our construction, we obtain a set of traces each representing possible concretisations for a story.
+Any refinement of a poset into a trace is a potential \emph{concretisation} function. In our construction, we obtain a set of traces each representing possible concretisations for a poset.
 
 \begin{definition}[Concretisation of a poset]
   Given a set of posets $\mathcal{S}$ let us define the concretisation function $\gamma:\mathcal{S}\subseteq\Theta$ that sends a poset to a set of traces.
@@ -299,12 +301,12 @@ Any refinement of a story into a trace is a potential \emph{concretisation} func
 
 \end{proof}
 
-\subsection{Interpreting inhibition on stories}
+\subsection{Interpreting inhibition on posets}
 
 In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a set of events $\cup_{s\in\mathcal{S}} E_s$.
 
-\begin{definition}[Refinement of an event in a story]
-  Let $e$ be an event in a story $s$. Let $t = M_1{\Rightarrow} M_2\cdots {\Rightarrow} M_n$ be a trace in $\gamma(\textit{infl}(s))$ and $\imath$ a bijection between $s$ and $t$.
+\begin{definition}[Refinement of an event in a poset]
+  Let $e$ be an event in a poset $s$. Let $t = M_1{\Rightarrow} M_2\cdots {\Rightarrow} M_n$ be a trace in $\gamma(\textit{infl}(s))$ and $\imath$ a bijection between $s$ and $t$.
 
   Define $\mathcal{R}(e\in s) = M$ such that $\imath(e) = M{\Rightarrow}M'$. We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
 \end{definition}

@@ -8,28 +8,14 @@
   A labelled poset $s=\{E,\tleq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
 \end{definition}
 
-\begin{definition}[Morphisms on posets]
-  Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the cover relation. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
-
-  A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
-\end{definition}
-
-\begin{mdframed}[backgroundcolor=blue!20]
-  to do:
-  \begin{itemize}
-  \item prove its a category
-  \item define multi sums $s\cap s'$ and multi products $s\cup s'$ in posets.
-  \end{itemize}
-\end{mdframed}
-
 \subsection{Grammar}
 
 Let $R$ a set of labels, $\mathcal{S}$ a set of posets and let $\varepsilon = \cup_{s_i\in S} E_i$ be the set of events in $\mathcal{S}$, where $E_i$ is the set of events in $s_i$.
 We denote $A,B$ elements of $R$ and $s$ elements of $\mathcal{S}$.
 
 \begin{align*}
-  x ::= & x^e ~|~ x^s & \tag{variables on events and stories} \\
-  t^s ::= & x^s ~|~ s ~|~ \text{min}(t^s) ~|~ \text{max}(t^s) ~|~ t^s_1 \cup t^s_2 ~|~ t^s_1 \cap t^s_2 &\tag{terms on posets} \\
+  x ::= & x^e ~|~ x^s & \tag{variables on events and posets} \\
+  t^s ::= & x^s ~|~ s ~|~ \text{min}(t^s) ~|~ \text{max}(t^s) ~|~ t^s_1 \cap t^s_2 &\tag{terms on posets} \\
   t^e ::= & x^e ~|~ e & \tag{terms on events}\\
   t ::= & t^s ~|~ t^e & \tag{terms}\\
   \\
@@ -44,9 +30,12 @@ We define the logical connectors $\vee$, $\implies$ in the usual manner.
 \subsection{Interpretation}
 
 We interpret the logic on the domain of events and posets.
+
 %an interpretation is the link between syntax and semantics. The functions and predicates are interpreted as their corresponding operations on events and posets.
 
-All function and predicates used in our logic have standard interpretation on posets, with maybe the exception of $\dashv$. We can interpret it as any predicates that relates events in different posets. Our interpretation in the restrainted case of graph rewriting systems (and in Kappa) will be that of inhibition (\autoref{def:ref_neg_infl}).
+The predicates $s_1 = s_2$ and $s_1\subseteq s_2$ are interpreted using isomorphisms and embedings in the category of posets defined below (\autoref{sec:posets}).
+
+The interpretation of $s_1\cap s_2$ is the set of common substructures in $s_1$ and $s_2$. We introduce it formally in \autoref{sec:posets}. The predicate $\dashv$ can be seen as a predicate that relates events in different posets. Our interpretation in the restrainted case of graph rewriting systems (and in Kappa) will be that of inhibition (\autoref{def:ref_neg_infl}), as we will see in the next sections. The remaining of function and predicates used in our logic have a standard interpretation.
 
 A \emph{valuation} for $\varphi$ is a function
 $v:\text{fv}(\varphi)\to\mathcal{E}\uplus\mathcal{S}$
@@ -72,10 +61,84 @@ The evaluation of $\varphi$ is defined below, where a valuation function is need
   \enct{s}_{v} &= s\\
   \enct{\text{min}(t^s)}_{v} &= \text{min}(\enct{t^s})\\
   \enct{\text{max}(t^s)}_{v} &= \text{max}(\enct{t^s})\\
-  \enct{t^s_1 \cup t^s_2}_{v} &= \enct{t^s_1}_v \cup \enct{t^s_2}_{v}\\
-  \enct{t^s_1 \cap t^s_2}_{v} &= \enct{t^s_1}_v \cap \enct{t^s_2}_{v}\\
+%  \enct{t^s_1 \cup t^s_2}_{v} &= \enct{t^s_1}_v \cup \enct{t^s_2}_{v}\\
+  \enct{t^s_1 \cap t^s_2}_{v} &= \enct{t^s_1}_v \otimes \enct{t^s_2}_{v}\\
 \end{align*}
 
 A formula $\varphi$ is satisfiable if there exists $v$ such that $\enc{\varphi}_v = T$.
 
 The denotation of $\varphi$ is the set of valuations for which $\varphi$ evaluates to true. We give the denotation of a formula in~\autoref{app:denote}.
+
+\subsection{Category of posets}
+\label{sec:posets}
+
+\begin{definition}[Morphisms on posets]
+  Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the cover relation. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
+
+  A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
+\end{definition}
+
+\begin{lemma}
+  Posets and their morphisms form a category.
+\end{lemma}
+
+Let us introduce now what we mean by a common substructure to posets.
+
+\begin{definition}
+  Let $s_1$ and $s_2$ be two posets.
+  A common substructure of $s_1$ and $s_2$ is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ such that $\mathit{image}(f_i) \iso \mathit{image}(g_i)$, that is $\forall e\in m_i$, $\labl(f_i(e)) = \labl(g_i(e))$.
+\end{definition}
+
+Instead of returning all common substructures we are interested in the "maximal" ones, in the sense of embeddings.
+
+\begin{definition}
+  \begin{itemize}
+  \item The \emph{multiproduct} of $s_1$ and $s_2$ is the family of spans $(s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2)_i$ where for any other span $s_1\overset{f'}{\remb} m'\overset{g'}{\emb} s_2$ there exists a unique $m_i$ and a unique injective morphism $m'\emb m_i$ such that the diagram commutes:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (s1) at (-2,0) {\(s_1\)};
+    \node (s2) at (2,0) {\(s_2\)};
+    \node (m1) at (0,0) {\(m_i\)};
+    \node (m2) at (0,-1) {\(m'\)};
+    \draw [right hook->] (m1) -- (s1);
+    \draw [left hook->] (m1) -- (s2);
+    \draw [right hook->] (m2) -- (s1);
+    \draw [left hook->] (m2) -- (s2);
+    \draw [left hook->, dotted] (m2) -- (m1);
+  \end{tikzpicture}
+  \]
+
+  \item The restriction of a poset $m=\{E,<,\labl\}$ to a set of events $D\subseteq E$ is the poset $m|D = \{D,<|_D,\labl|_D\}$ where $<|_D$ and $\labl|_D$ is the restriction of $<$ and $\labl$ respectively to the set $D$.
+
+  \item Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i'}{\remb} m_i'\overset{g_i'}{\emb} s_2)_i$ such that for each span in $s_1\otimes s_2$ there is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ in the multiproduct of $s_1$ and $s_2$ with
+   \[ m_i' = m_i|D_i \]
+    for $D_i = \{ e\in m_i : \labl(f_i(e)) = \labl(g_i(e))\}$.
+  \end{itemize}
+\end{definition}
+
+%% \begin{lemma}
+%%   The product of two posets $s_0=\{E_0,<,\labl_0\}$ and $s_1=\{E_1,<,\labl_1\}$, denoted $s_0\times s_1 = \{E,<,\labl\}$, is the poset obtained as follows:
+%%   \begin{itemize}
+%%   \item $E=E_0\times E_1$ is the product on sets, with $e=(e_0,e_1)\in E$ and the two projections $\pi_0(e_0,e_1) = e_0$ and $\pi_1(e_0,e_1) = e_1$;
+%%   \item $\labl:E_0\times E_1 \to \mathcal{R}\times\mathcal{R}$ is defined as $\labl(e) = \big(\labl(\pi_0(e)),\labl(\pi_1(e))\big)$. Let us also introduce the two projections on labels $\lambda_{0,1}:\mathcal{R}\times\mathcal{R}\to\mathcal{R}$, defined as $\lambda_0(A,B)=A$ and $\lambda_1(A,B)=B$.
+%%   \item $e< e' \iff \pi_0(e)<\pi_0(e')$ and $\pi_1(e)<\pi_1(e')$
+%%   \end{itemize}
+%%   The two projections morphisms $(\pi_0,\lambda_0):s_0\times s_1\to s_0$ and $(\pi_1,\lambda_1):s_1\times s_1\to s_1$ are given by the projections on the underlying sets and labels.
+%% \end{lemma}
+
+%% \begin{definition}
+%%   \begin{itemize}
+%%   \item A synchronisation algebra on the set of labels $\mathcal{R}\cup\{0\}$ consists of a binary, commutative and associative operation $\cdot$ such that
+%%     \[ A\cdot A = A \text{ and }A\cdot B = 0\text{ when }A\neq B\]
+%%     for all $A,B\in \mathcal{R}\cup\{0\}$.
+%%   \item The synchronised product of two posets $s_0=\{E_0,<,\labl_0\}$ and $s_1=\{E_1,<,\labl_1\}$, denoted $s_0\otimes s_1 = \{E,<,\labl\}$, is obtained as follows:
+%%     \begin{itemize}
+%%     \item let $s_{\text{prod}} = s_0\times s_1$ be the product with $(\pi_0,\lambda_0)$ and $(\pi_1,\lambda_1)$ the two projections;
+%%     \item define $D\subseteq\mathcal{R}\times\mathcal{R}$ a set of labels such that
+%%       \[ D = \{ a\in \mathcal{R}\times\mathcal{R} : \lambda_0(a)\cdot \lambda_1(a) = 0\}; \]
+%%     \item remove from $s_{\text{prod}}$ the set of events $E_D = \{e\in E_{\text{prod}} : \labl(e)\in D \}$;
+%%     \item define $s_0\otimes s_1 = \{E_{\text{prod}}\setminus E_D,<,r\circ\labl\}$ where $r$ is the following relabelling function
+%%       \[ r(a) = \lambda_0(a)\cdot \lambda_1(a). \]
+%%     \end{itemize}
+%%   \end{itemize}
+%% \end{definition}
