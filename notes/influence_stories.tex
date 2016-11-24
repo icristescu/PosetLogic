@@ -1,6 +1,6 @@
 \section{Posets of graph rewriting events}
 
-\subsection{From transition systems to posets of events}
+\subsection{From transition systems to posets}
 
 \begin{lemma}
   \label{lemma:pos_infl}
@@ -54,15 +54,34 @@ Henceforth the set of posets $\mathcal{S}$ stands for the set defined above.
 
 %We are not interested in the extraction mechanism, as long as the identity of events and the relationships between them (causality and inihibition) are preserved.
 
-In the following subsection we define the \emph{concretisation} function.
+%In the following subsection we define the \emph{concretisation} function.
 
 \subsection{Refinement of graph rewriting rules}
 
-In a poset of $\mathcal{S}$, we have that for any event, its immediate causes have a positive influence on it (\autoref{lemma:pos_infl}). For every pair of causal events in a poset we can build a context $M$ as in~\autoref{def:causal_pair}. We propagate these contexts to the entire causal chain.
+In a poset of $\mathcal{S}$, we have that for any event, its immediate causes have a positive influence on it (\autoref{lemma:pos_infl}).
+
+\begin{definition}[Decorate posets with the positive influence]
+   Given a set of events $E$ and a labeling function $\labl$ on events, define a function $\mathit{decorate}:E\times E \to E\times E\times G$ that associates to a pair of events $(e,e')$ the following set
+    \[
+    \mathit{decorate}(e,e') = \{(e,e',O) : O\text{ is a graph such that }\labl(e)\redl{+}_O e'\}.
+    \]
+
+    Let $s = (E,<,\labl)$ be a poset. Define $\mathit{decorate}$ a function that sends a poset $s$ into a set of posets as follows
+    \[
+    \mathit{decorate}(E,<,\labl) =\{(E,\sqsubset,\labl) : e\sqsubset_O e' \iff (e,e',O)\in\mathit{decorate}(e,e')\text{ and }
+    e<e'\}.
+    \]
+\end{definition}
+
+For every pair of causal events in a poset we can build a context $M$ as in~\autoref{def:causal_pair}. We propagate these contexts to the entire causal chain.
 
 \begin{example}
 \label{ex:e1e2e3}
-Let us consider the poset $(\{e_1,e_2,e_3,e_4\},<)$ where $e_1<e_2<e_3$, $e_4<e_3$ and $\labl(e_1)=r_1$, $\labl(e_2)=r_2$, $\labl(e_3)=r_3$, $\labl(e_4)=r_4$. First we compute the two contexts for $r_1\redl{+}_{O_1} r_2$ and $r_2\redl{+}_{O_2} r_3$ using \autoref{def:low_res}:
+\begin{mdframed}[backgroundcolor=blue!20]
+  update
+\end{mdframed}
+
+Let us consider the poset $(\{e_1,e_2,e_3,e_4\},\sqsubset)$ where $e_1\sqsubset_{O_1}e_2\sqsubset_{O_2}e_3$, $e_4\sqsubset_{O_4}e_3$ and $\labl(e_1)=r_1$, $\labl(e_2)=r_2$, $\labl(e_3)=r_3$, $\labl(e_4)=r_4$. First we compute the two contexts for $r_1\redl{+}_{O_1} r_2$ and $r_2\redl{+}_{O_2} r_3$ using \autoref{def:low_res}:
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (o1) at (0,-1) {\(O_1\)};
@@ -223,98 +242,131 @@ The refinement of our poset is then the set of transitions $N_0'\Rightarrow N_1'
 
 \end{example}
 
+\begin{definition}[Refinement of a rule~\cite{PhysicPaper}]
+  Let $r:L{\Rightarrow} R$ be a rule and let $m:L\emb M$ be a matching in a graph $M$. The production $M\Rightarrow N$ obtained by DPO rewriting of $M$ using the rule $r$ is called a \emph{refinement} of $r$.
+\end{definition}
+
 \begin{definition}[Refinement of a poset]
-  Given a poset $s=(E,<,\labl)$ of graph rewriting events, define a refinement of $s$ as a sequence $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$,  such that there is a bijection $\imath$ between events $e\in E$ and transitions $M\overset{m,p}{\Rightarrow} M'$ which preserves label, i.e. $\labl(e)=p$ and such that for all $e_1,e_2\in E$, if $e_1<e_2$ and $\imath(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$, $\imath(e_1) =M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ then $M_1'\iso M_2$.
+  Given a poset $s=(E,<,\labl)$ of graph rewriting events, the \emph{refinement} of $s$, is a bijection $\imath$ between events $e\in E$ and transitions $M\overset{m,p}{\Rightarrow} M'$ such that
+  \begin{itemize}
+  \item labels are preserved, i.e. $\labl(e)=p$;
+  \item  for all $e_1,e_2\in E$, if $e_1<e_2$ and $\imath(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$, $\imath(e_1) =M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ then $M_1'\iso M_2$.
+  \end{itemize}
 \end{definition}
 
 %Before giving the construction of a refinement $(M_i\overset{m_i,p_i}{\Rightarrow} M_{i+1})_{e_i\in E}$ let us first introduce some combinators of contexts.
 
-\begin{definition}[Propagate a context]
-  \label{def:propagate}
-  Given a sequence $M_1{\Rightarrow} M_2\cdots {\Rightarrow} M_n\cdots {\Rightarrow} M_{m}$ and a graph $M_{n}'$ with $M_n\emb M_{n}'$ define the \emph{propagation} of $M_{n}'$ as the sequence  $M_1'{\Rightarrow} M_2'\cdots {\Rightarrow} M_n'\cdots {\Rightarrow} M_{m}'$ where
-  \begin{itemize}
-  \item $M_i'$, for $i<n$, is obtained by the reverse of the production $M_i\Rightarrow M_{i+1}$ applied to the new contexts;
-  \item $M_i'$, for $n<i\leq m$, is obtained by the production $M_i\Rightarrow M_{i+1}$ applied to the new contexts.
-  \end{itemize}
-\end{definition}
+%% \begin{definition}[Propagate a context]
+%%   \label{def:propagate}
+%%   Given a sequence $M_1{\Rightarrow} M_2\cdots {\Rightarrow} M_n\cdots {\Rightarrow} M_{m}$ and a graph $M_{n}'$ with $M_n\emb M_{n}'$ define the \emph{propagation} of $M_{n}'$ as the sequence  $M_1'{\Rightarrow} M_2'\cdots {\Rightarrow} M_n'\cdots {\Rightarrow} M_{m}'$ where
+%%   \begin{itemize}
+%%   \item $M_i'$, for $i<n$, is obtained by the reverse of the production $M_i\Rightarrow M_{i+1}$ applied to the new contexts;
+%%   \item $M_i'$, for $n<i\leq m$, is obtained by the production $M_i\Rightarrow M_{i+1}$ applied to the new contexts.
+%%   \end{itemize}
+%% \end{definition}
 
 \begin{definition}[Sequential combinator]
 \label{def:seq_comb}
-  Let $M_1\Rightarrow N_1$ and $M_2\Rightarrow N_2$ be two productions such that there exists $N_1\lemb R \remb M_2$ a cospan.
-  Define $M_1\Rightarrow N_1\oplus_R M_2\Rightarrow N_2$ the productions $M_1'\Rightarrow M$ and $M\Rightarrow N_2'$, where $M$ is the pushout of the cospan $N_1\lemb R \remb M_2$ and $M_1'$, $N_2'$ are obtained by the propagation of $M$ to the two initial productions.
+  Let $M\Rightarrow N$ and $L\Rightarrow R$ be two productions such that there exists $N\lemb O \remb L$ a cospan.
+  \[
+  (M\Rightarrow N)\oplus_O (L\Rightarrow R) = M'\Rightarrow N'
+  \]
+  where $N\emb M' \remb L$ is the pushout of the cospan $N\lemb O \remb L$ and $N'$ is obtained by a DPO rewriting of $M'$ by the production $L\Rightarrow R$.
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (0,-1) {\(O\)};
+    \node (mp) at (0,1) {\(M'\)};
+    \node (m) at (-2,0) {\(M\)};
+    \node (n) at (-1,0) {\(N\)};
+    \node (l) at (1,0) {\(L\)};
+    \node (r) at (2,0) {\(R\)};
+    \node (np) at (2,1) {\(N'\)};
+    \draw [->] (o) -- (n);
+    \draw [->] (o) -- (l);
+    \draw [->] (n) -- (mp);
+    \draw [->] (l) -- (mp);
+    \draw [->] (r) -- (np);
+    \draw [>=latex, ->] (m) -- (n);
+    \draw [>=latex, ->] (l) -- (r);
+    \draw [>=latex, ->] (mp) -- (np);
+  \end{tikzpicture}
+  \]
+\end{definition}
+
+\begin{definition}[Wide pushout]
+  \begin{mdframed}[backgroundcolor=blue!20]
+    to do
+  \end{mdframed}
 \end{definition}
 
 \begin{definition}[Concurrent combinator]
-\label{def:conc_comb}
-  Let $M_1\Rightarrow N_1$ and $M_2\Rightarrow N_2$ be two productions such that there exists $N_1\lemb L \remb N_2$ a cospan.
-  Define $M_1\Rightarrow N_1\otimes_L M_2\Rightarrow N_2$ the productions $M_1'\Rightarrow M$ and $M_2'\Rightarrow M$, where $M$ is the pushout of the cospan $N_1\lemb L \remb N_2$ and $M_1'$, $M_2'$ are obtained by the propagation of $M$ to the two initial productions.
+  \label{def:conc_comb}
+  Let $M_1, M_2, \cdots M_n$ be graphs and let $(L\emb M_i)_i$ a family of injective morphisms.
+  \[
+  \otimes_{L\Rightarrow R}(M_1, M_2, \cdots M_n) = M \Rightarrow N
+  \]
+  where $M$ is the wide pushout of the family of morphisms $(L\emb M_i)_i$ and $N$ is obtained by a DPO rewriting of $M'$ by the production $L\Rightarrow R$.
 \end{definition}
 
-\begin{example}[Feedback loops]
-Let us show how we can interpret negative feedback loops. Let $e_1\in s_1\redl{-} e_2\in s_2$ such that $s_2\subset s_1$. Then $e_2\leq_{s_1} e_2$. However this additional constraint does not change the way we interpret negative influence, that is the influence is realised if there exists $M$ such that the following diagram commutes:
-\[
-\begin{tikzpicture} %[scale=0.8]
-  \node (o) at (0,0) {\(O\)};
-  \node (n) at (0,2) {\(M\)};
-  \node (l1) at (-1,0) {\(L_1\)};
-  \node (l2) at (1,0) {\(L_2\)};
-  \node (n1) at (-1,1) {\(M_1\)};
-  \node (n2) at (1,1) {\(M_2\)};
-  \draw [->] (l1) -- (n1);
-  \draw [->] (l2) -- (n2);
-  \draw [->] (o) -- (n1);
-  \draw [->] (o) -- (n2);
-  \draw [->] (n1) -- (n);
-  \draw [->] (n2) -- (n);
-\end{tikzpicture}
-\]
-\end{example}
-
-Any refinement of a poset into a trace is a potential \emph{concretisation} function. In our construction, we obtain a set of traces each representing possible concretisations for a poset.
-
-\begin{definition}[Concretisation of a poset]
-  Given a set of posets $\mathcal{S}$ let us define the concretisation function $\gamma:\mathcal{S}\subseteq\Theta$ that sends a poset to a set of traces.
-  \begin{itemize}
-  \item
-    Given a set of events $E$ and a labeling function $\labl$ on events, define a function $\mathit{decorate}:E\times E \to E\times E\times G$ that associates to a pair of events $(e,e')$ the following set
-    \[
-    \mathit{decorate}(e,e') = \{(e,e',O) : O\text{ is a graph such that }\labl(e)\redl{+}_O e'\}.
-    \]
-
-    Let $s = (E,<,\labl)$ be a poset. Define $\mathit{decorate}$ a function that sends a poset $s$ into a set of posets as follows
-    \[
-    \mathit{decorate}(E,<,\labl) =\{(E,\sqsubset,\labl) : e\sqsubset_O e' \iff (e,e',O)\in\mathit{decorate}(e,e')\text{ and }
-    e<e'\}.
-    \]
-  \item Let $\overline{s}\in\mathit{decorate}(s)$ be a decorated poset. We define the refinement of a decorated poset into a trace $\mathit{refine}(\overline{s})$ as follows: for each pair of consecutive events $e \sqsubset_O e'$ construct the graph $G$ using the causal pair induce by $O$. Then propagate the graphs using the sequential and concurrent combinators.
-  \end{itemize}
-  The composition of the two functions $\gamma = \mathit{refine}(\mathit{decorate}(s))$ is the concretisation function.
+\begin{definition}[Refinement propagation]
+  Let us define two functions the forward propagator $\fp$, and the backward propagator $\bp$, that map events in a poset $\{E,<,\labl\}$ to transitions.
+We proceed by induction on the cover relation $<$ and start with the minimal events for the definition of $\fp$ and by induction on the reverse relation $<^{-1}$ starting with the maximal events for $\bp$:
+\begin{align*}
+  \text{forward propagator}\\
+  &\fp(e) = \labl(e)&\text{ if }e\in\text{min}(s)\\
+  &\fp(e) = M\Rightarrow N&\text{ where }\forall e_i, e_i\sqsubset_{O_i}e, \fp(e_i)\oplus_{O_i}\labl(e) = M_i\Rightarrow N_i\\
+  &&\otimes_{\labl(e)}(M_1, M_2, \cdots M_n) = M \Rightarrow N\\
+  \\
+  \text{backward propagator}\\
+  &\bp(e) = \fp(e)&\text{ if }e\in\text{max}(s)\\
+  &\bp(e) = M\Rightarrow N&\text{ where }\forall e_i, e\sqsubset_{O_i}e_i, \bp(e_i) = M_i\Rightarrow N_i\\
+  &&\otimes_{\labl(e)^{-1}}(M_1, M_2, \cdots M_n) = M \Rightarrow N
+\end{align*}
 \end{definition}
 
 \begin{lemma}
-  $\theta\subseteq \gamma(\alpha(\theta))$.
+  $\{E, <,\labl, \bp\}$ is a refinement of $\{E, <,\labl\}$.
 \end{lemma}
 \begin{proof}
-    \begin{mdframed}[backgroundcolor=blue!20]
+  \begin{mdframed}[backgroundcolor=blue!20]
     to do
   \end{mdframed}
-
 \end{proof}
+
+%% \begin{example}[Feedback loops]
+%% Let us show how we can interpret negative feedback loops. Let $e_1\in s_1\redl{-} e_2\in s_2$ such that $s_2\subset s_1$. Then $e_2\leq_{s_1} e_2$. However this additional constraint does not change the way we interpret negative influence, that is the influence is realised if there exists $M$ such that the following diagram commutes:
+%% \[
+%% \begin{tikzpicture} %[scale=0.8]
+%%   \node (o) at (0,0) {\(O\)};
+%%   \node (n) at (0,2) {\(M\)};
+%%   \node (l1) at (-1,0) {\(L_1\)};
+%%   \node (l2) at (1,0) {\(L_2\)};
+%%   \node (n1) at (-1,1) {\(M_1\)};
+%%   \node (n2) at (1,1) {\(M_2\)};
+%%   \draw [->] (l1) -- (n1);
+%%   \draw [->] (l2) -- (n2);
+%%   \draw [->] (o) -- (n1);
+%%   \draw [->] (o) -- (n2);
+%%   \draw [->] (n1) -- (n);
+%%   \draw [->] (n2) -- (n);
+%% \end{tikzpicture}
+%% \]
+%% \end{example}
+
 
 \subsection{Interpreting inhibition on posets}
 
 In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a set of events $\cup_{s\in\mathcal{S}} E_s$.
 
 \begin{definition}[Refinement of an event in a poset]
-  Let $e$ be an event in a poset $s$. Let $t = M_1{\Rightarrow} M_2\cdots {\Rightarrow} M_n$ be a trace in $\gamma(\textit{infl}(s))$ and $\imath$ a bijection between $s$ and $t$.
-
-  Define $\mathcal{R}(e\in s) = M$ such that $\imath(e) = M{\Rightarrow}M'$. We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
+  Let $e$ be an event in a poset $s=\{E,<,\labl\}$.
+  Define $\mathcal{R}(e\in s) = M\Rightarow N$ where $\{E,<,\labl,\imath\}$ is a refinement of $s$ and $\imath(e) = M\Rightarow N$.
+  %We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
 \end{definition}
-
 
 \begin{definition}[Refinement based on negative influence]
 \label{def:ref_neg_infl}
-  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements $\mathcal{R}(e_1\in s_1) = M_1$ and $\mathcal{R}(e_2\in s_2) = M_2$. Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
+  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements $\mathcal{R}(e_1\in s_1) = M_1\Rightarow N_1$ and $\mathcal{R}(e_2\in s_2) = M_2\Rightarow N_2$. Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (0,0) {\(O\)};
@@ -331,5 +383,34 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
     \draw [->] (n2) -- (n);
   \end{tikzpicture}
   \]
-  where $\labl(e_1)\redl{-}_O\labl(e_2)$.
+  where $\labl(e_1)\redl{-}_O\labl(e_2)$, for some graph $O$.
 \end{definition}
+
+\subsection{From posets to traces}
+
+Let us now construct a trace from
+A refinement of a poset is a
+
+Any refinement of a poset into a trace is a potential \emph{concretisation} function. In our construction, we obtain a set of traces each representing possible concretisations for a poset.
+
+\begin{definition}[Concretisation of a poset]
+  Given a set of posets $\mathcal{S}$ let us define the concretisation function $\gamma:\mathcal{S}\subseteq\Theta$ that sends a poset to a set of traces.
+  \begin{itemize}
+  \item Let $\overline{s}\in\mathit{decorate}(s)$ be a decorated poset. We define the refinement of a decorated poset into a trace $\mathit{refine}(\overline{s})$ as follows: for each pair of consecutive events $e \sqsubset_O e'$ construct the graph $G$ using the causal pair induce by $O$. Then propagate the graphs using the sequential and concurrent combinators.
+  \item
+    \begin{mdframed}[backgroundcolor=blue!20]
+      to do
+    \end{mdframed}
+  \end{itemize}
+  The composition of the two functions $\gamma = \mathit{refine}(\mathit{decorate}(s))$ is the concretisation function.
+\end{definition}
+
+\begin{lemma}
+  $\theta\subseteq \gamma(\alpha(\theta))$.
+\end{lemma}
+\begin{proof}
+    \begin{mdframed}[backgroundcolor=blue!20]
+    to do
+  \end{mdframed}
+
+\end{proof}
