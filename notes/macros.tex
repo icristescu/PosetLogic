@@ -183,7 +183,12 @@
 
 \usetikzlibrary{arrows, decorations.markings}
 
-
+\tikzstyle{vecArrow} = [thick, decoration={markings,mark=at position
+   1 with {\arrow[semithick]{open triangle 60}}},
+   double distance=1.4pt, shorten >= 5.5pt,
+   preaction = {decorate},
+   postaction = {draw,line width=1.4pt, white,shorten >= 4.5pt}]
+\tikzstyle{innerWhite} = [semithick, white,line width=1.4pt, shorten >= 4.5pt]
 
 %colors
 \definecolor{colorp1}{RGB}{192,192,192}

@@ -73,72 +73,88 @@ In a poset of $\mathcal{S}$, we have that for any event, its immediate causes ha
     \]
 \end{definition}
 
-For every pair of causal events in a poset we can build a context $M$ as in~\autoref{def:causal_pair}. We propagate these contexts to the entire causal chain.
-
+Let us first give an example of a refinement of a poset and then introduce all notions we need formally.
 \begin{example}
 \label{ex:e1e2e3}
-\begin{mdframed}[backgroundcolor=blue!20]
-  update
-\end{mdframed}
+Let us consider the poset $(\{e_1,e_2,e_3,e_4\},\sqsubset)$ where $e_1\sqsubset_{O_1}e_2\sqsubset_{O_2}e_3$, $e_4\sqsubset_{O_4}e_3$ and $\labl(e_1)=r_1$, $\labl(e_2)=r_2$, $\labl(e_3)=r_3$, $\labl(e_4)=r_4$.
 
-Let us consider the poset $(\{e_1,e_2,e_3,e_4\},\sqsubset)$ where $e_1\sqsubset_{O_1}e_2\sqsubset_{O_2}e_3$, $e_4\sqsubset_{O_4}e_3$ and $\labl(e_1)=r_1$, $\labl(e_2)=r_2$, $\labl(e_3)=r_3$, $\labl(e_4)=r_4$. First we compute the two contexts for $r_1\redl{+}_{O_1} r_2$ and $r_2\redl{+}_{O_2} r_3$ using \autoref{def:low_res}:
+First we refine $r_2$ using the relation $r_1\redl{+}_{O_1} r_2$, (as we have seen in~\autoref{def:low_res}):
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (o1) at (0,-1) {\(O_1\)};
   \node (m1) at (0,1) {\(M_1\)};
+  \node (n1) at (2,1) {\(N_1\)};
   \node (r1) at (-1,0) {\(R_1\)};
-  \node (l1) at (-2,0) {\(L_1\)};
+  \node (l1) at (-2.5,0) {\(L_1\)};
   \node (l2) at (1,0) {\(L_2\)};
-  \node (r2) at (2,0) {\(R_2\)};
-  \node (o2) at (3,-1) {\(O_2\)};
-  \node (m2) at (3,1) {\(M_2\)};
-  \node (l3) at (4,0) {\(L_3\)};
-  \node (r3) at (5,0) {\(R_3\)};
+  \node (r2) at (2.5,0) {\(R_2\)};
   \draw [->] (o1) -- (r1);
   \draw [->] (o1) -- (l2);
   \draw [->] (r1) -- (m1);
+  \draw [->] (r2) -- (n1);
   \draw [->] (l2) -- (m1);
-  \draw [->] (o2) -- (r2);
-  \draw [->] (o2) -- (l3);
-  \draw [->] (r2) -- (m2);
-  \draw [->] (l3) -- (m2);
-  \draw [>=latex, ->] (l1) -- (r1);
-  \draw [>=latex, ->] (l2) -- (r2);
-  \draw [>=latex, ->] (l3) -- (r3);
+  \draw [vecArrow] (l1) -- (r1);
+  \draw [vecArrow] (m1) -- (n1);
+  \draw [vecArrow] (l2) -- (r2);
 \end{tikzpicture}
 \]
-We then apply the rewriting of $M_1$ using $r_2$ and combine the context with $M_2$ (this step is formally defined in~\autoref{def:seq_comb}):
+We apply a rewriting step to $M_1$ using rule $r_2$ to obtain $N_2$. We refine then $r_3$ using $N_2$ (this step is formally defined in~\autoref{def:seq_comb}):
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (o1) at (0,-1) {\(O_1\)};
   \node (m1) at (0,1) {\(M_1\)};
   \node (r1) at (-1,0) {\(R_1\)};
-  \node (l1) at (-2,0) {\(L_1\)};
+  \node (l1) at (-2.5,0) {\(L_1\)};
   \node (l2) at (1,0) {\(L_2\)};
-  \node (r2) at (2,0) {\(R_2\)};
-  \node (o2) at (3,-1) {\(O_2\)};
-  \node (m2) at (3,1) {\(M_2\)};
-  \node (l3) at (4,0) {\(L_3\)};
-  \node (r3) at (5,0) {\(R_3\)};
-  \node (m2p) at (2,1) {\(M_2'\)};
-  \node (n) at (2.5,2) {\(N\)};
+  \node (r2) at (2.5,0) {\(R_2\)};
+  \node (o2) at (3.5,-1) {\(O_2\)};
+  \node (l3) at (4.5,0) {\(L_3\)};
+  \node (r3) at (6,0) {\(R_3\)};
+  \node (m2p) at (2.5,1) {\(N_1\)};
+  \node (n) at (3.5,2) {\(M_2\)};
+  \node (n2) at (5,2) {\(N_2\)};
   \draw [->] (o1) -- (r1);
   \draw [->] (o1) -- (l2);
   \draw [->] (r1) -- (m1);
   \draw [->] (l2) -- (m1);
   \draw [->] (o2) -- (r2);
   \draw [->] (o2) -- (l3);
-  \draw [->] (r2) -- (m2);
-  \draw [->] (l3) -- (m2);
-  \draw [->] (m2) -- (n);
+  \draw [->] (l3) -- (n);
   \draw [->] (m2p) -- (n);
   \draw [->] (r2) -- (m2p);
-  \draw [>=latex, ->] (l1) -- (r1);
-  \draw [>=latex, ->] (l2) -- (r2);
-  \draw [>=latex, ->] (l3) -- (r3);
-  \draw [>=latex, ->] (m1) -- (m2p);
+  \draw [->] (r3) -- (n2);
+  \draw [vecArrow] (l1) -- (r1);
+  \draw [vecArrow] (l2) -- (r2);
+  \draw [vecArrow] (l3) -- (r3);
+  \draw [vecArrow] (m1) -- (m2p);
+  \draw [vecArrow] (n) -- (n2);
 \end{tikzpicture}
 \]
+Let us now integrate $e_4\sqsubset_{O_4} e_3$ in the sequence. Let $R_4\lemb M_3\remb L_3$ be the cospan obtained from $\labl(e_4)\redl{+}_O\labl(e_3)$.
+We combine $M_2$ and $M_3$ using $L_3$ (concurrent combinator is formally introduced in~\autoref{def:conc_comb}):
+\[
+\begin{tikzpicture} %[scale=0.8]
+  \node (l4) at (0.5,0) {\(L_4\)};
+  \node (r4) at (2,0) {\(R_4\)};
+  \node (o4) at (3,-1) {\(O_4\)};
+  \node (m4) at (3,1) {\(M_3\)};
+  \node (l3) at (4,0) {\(L_3\)};
+  \node (r3) at (5.5,0) {\(R_3\)};
+  \node (m2p) at (5,1) {\(M_2\)};
+  \node (n) at (4,2) {\(M_4\)};
+  \draw [->] (o4) -- (r4);
+  \draw [->] (o4) -- (l3);
+  \draw [->] (r4) -- (m4);
+  \draw [->] (l3) -- (m4);
+  \draw [->] (m4) -- (n);
+  \draw [->] (m2p) -- (n);
+  \draw [->] (l3) -- (m2p);
+  \draw [vecArrow] (l4) -- (r4);
+  \draw [vecArrow] (l3) -- (r3);
+\end{tikzpicture}
+\]
+Lastly we have to propagate $M_4$ backwards to events $e_1$, $e_2$ and $e_4$.
+
 We apply the rewriting steps on $N$ and obtain the refined sequence $N_0\action N_1\action N\action N_3$ (that we will formally introduce in~\autoref{def:propagate}):
 \[
 \begin{tikzpicture} %[scale=0.8]
@@ -180,29 +196,6 @@ We apply the rewriting steps on $N$ and obtain the refined sequence $N_0\action 
   \draw [>=latex, ->] (n) -- (n3);
 \end{tikzpicture}
 \]
-Let us now integrate $e_4<e_3$ in the sequence. Let $R_4\lemb M_4\remb L_3$ be the cospan obtained from $\labl(e_4)\redl{+}_O\labl(e_3)$.
-The concurrent contexts $M_4$ and $N$ combine using their common subpart $L_3$ (formally introduced in~\autoref{def:conc_comb}):
-\[
-\begin{tikzpicture} %[scale=0.8]
-  \node (l4) at (1,0) {\(L_4\)};
-  \node (r4) at (2,0) {\(R_4\)};
-  \node (o4) at (3,-1) {\(O_4\)};
-  \node (m4) at (3,1) {\(M_4\)};
-  \node (l3) at (4,0) {\(L_3\)};
-  \node (r3) at (5,0) {\(R_3\)};
-  \node (m2p) at (5,1) {\(N\)};
-  \node (n) at (4,2) {\(N'\)};
-  \draw [->] (o4) -- (r4);
-  \draw [->] (o4) -- (l3);
-  \draw [->] (r4) -- (m4);
-  \draw [->] (l3) -- (m4);
-  \draw [->] (m4) -- (n);
-  \draw [->] (m2p) -- (n);
-  \draw [->] (l3) -- (m2p);
-  \draw [>=latex, ->] (l4) -- (r4);
-  \draw [>=latex, ->] (l3) -- (r3);
-\end{tikzpicture}
-\]
 Finally we propagate the context $N'$ to obtain
 \[
 \begin{tikzpicture} %[scale=0.8]
@@ -239,10 +232,9 @@ Finally we propagate the context $N'$ to obtain
 \end{tikzpicture}
 \]
 The refinement of our poset is then the set of transitions $N_0'\Rightarrow N_1'\Rightarrow N'\Rightarrow N_3'$ and $N_4'\Rightarrow N'$.
-
 \end{example}
 
-\begin{definition}[Refinement of a rule~\cite{PhysicPaper}]
+\begin{definition}[Refinement of a rule~\cite{information_carriers}]
   Let $r:L{\Rightarrow} R$ be a rule and let $m:L\emb M$ be a matching in a graph $M$. The production $M\Rightarrow N$ obtained by DPO rewriting of $M$ using the rule $r$ is called a \emph{refinement} of $r$.
 \end{definition}
 
@@ -276,27 +268,44 @@ The refinement of our poset is then the set of transitions $N_0'\Rightarrow N_1'
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (0,-1) {\(O\)};
     \node (mp) at (0,1) {\(M'\)};
-    \node (m) at (-2,0) {\(M\)};
+    \node (m) at (-2.5,0) {\(M\)};
     \node (n) at (-1,0) {\(N\)};
     \node (l) at (1,0) {\(L\)};
-    \node (r) at (2,0) {\(R\)};
+    \node (r) at (2.5,0) {\(R\)};
     \node (np) at (2,1) {\(N'\)};
     \draw [->] (o) -- (n);
     \draw [->] (o) -- (l);
     \draw [->] (n) -- (mp);
     \draw [->] (l) -- (mp);
     \draw [->] (r) -- (np);
-    \draw [>=latex, ->] (m) -- (n);
-    \draw [>=latex, ->] (l) -- (r);
-    \draw [>=latex, ->] (mp) -- (np);
+    \draw [vecArrow] (m) -- (n);
+    \draw [vecArrow] (l) -- (r);
+    \draw [vecArrow] (mp) -- (np);
   \end{tikzpicture}
   \]
 \end{definition}
 
-\begin{definition}[Wide pushout]
-  \begin{mdframed}[backgroundcolor=blue!20]
-    to do
-  \end{mdframed}
+\begin{definition}[Wide pushout~\cite{wide}]
+The wide pushout of a family of morphisms $(L\to M_i)_i$ consists of a graph $M$ and a family of morphisms $(M_i\to M)_i$ such that the diagram commutes
+\[
+\begin{tikzpicture} %[scale=0.8]
+  \node (o) at (0,-1) {\(L\)};
+  \node (m1) at (-1,0) {\(M_1\)};
+  \node (m2) at (0,0) {\(M_2\)};
+  \node (text) at (1,0) {\(\cdots\)};
+  \node (mn) at (2,0) {\(M_n\)};
+  \node (m) at (0,1) {\(M\)};
+  \draw [->] (o) --  (m1);
+  \draw [->] (o) --  (m2);
+  \draw [->] (o) --  (mn);
+  \draw [->] (m1) --  (m);
+  \draw [->] (m2) --  (m);
+  \draw [->] (mn) --  (m);
+\end{tikzpicture}
+\]
+for any other $M'$ and family of morphisms $(M_i\to M')_i$ there exists a unique morphism $M\to M'$ that commutes.
+
+The wide pushout is equivalent to computing the pushout pairwise on $(L\to M_i)_i$.
 \end{definition}
 
 \begin{definition}[Concurrent combinator]
@@ -360,13 +369,13 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
 
 \begin{definition}[Refinement of an event in a poset]
   Let $e$ be an event in a poset $s=\{E,<,\labl\}$.
-  Define $\mathcal{R}(e\in s) = M\Rightarow N$ where $\{E,<,\labl,\imath\}$ is a refinement of $s$ and $\imath(e) = M\Rightarow N$.
+  Define $\mathcal{R}(e\in s) = M\Rightarrow N$ where $\{E,<,\labl,\imath\}$ is a refinement of $s$ and $\imath(e) = M\Rightarrow N$.
   %We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
 \end{definition}
 
 \begin{definition}[Refinement based on negative influence]
 \label{def:ref_neg_infl}
-  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements $\mathcal{R}(e_1\in s_1) = M_1\Rightarow N_1$ and $\mathcal{R}(e_2\in s_2) = M_2\Rightarow N_2$. Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
+  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements $\mathcal{R}(e_1\in s_1) = M_1\Rightarrow N_1$ and $\mathcal{R}(e_2\in s_2) = M_2\Rightarrow N_2$. Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (0,0) {\(O\)};
@@ -388,15 +397,57 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
 
 \subsection{From posets to traces}
 
-Let us now construct a trace from
-A refinement of a poset is a
+\begin{lemma}
+\label{lem:rewrite_concurrent}
+  Let $M_1\overset{e_1}{\Rightarrow} M_1'$ and $M_2\overset{e_2}{\Rightarrow} M_2'$ two indepedent productions.
+  \begin{enumerate}
+  \item if the two productions are co-initial, i.e. $M_1\iso M_2$ then there exists $M'$ such that the diagram commutes
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (m2) at (0,0) {\(\circ\)};
+    \node (m1) at (0,1) {\(\circ\)};
+    \node (m) at (-2,1) {\(M\)};
+    \node (implies) at (2,1) {\(\implies\)};
+    \node (mm2) at (4.5,0) {\(\circ\)};
+    \node (mm1) at (4.5,1) {\(\circ\)};
+    \node (n) at (6,1) {\(M'\)};
+    \node (mm) at (3,1) {\(M\)};
+    \draw [->] (m) -- node [left,above] {\(e_1\)} (m1);
+    \draw [->] (m) -- node [left,below] {\(e_2\)} (m2);
+    \draw [->] (mm) -- node [left,above] {\(e_1\)} (mm1);
+    \draw [->] (mm) -- node [left,below] {\(e_2\)} (mm2);
+    \draw [->] (mm1) -- node [left,above] {\(e_2'\)} (n);
+    \draw [->] (mm2) -- node [left,below] {\(e_1'\)} (n);
+  \end{tikzpicture}
+  \]
 
-Any refinement of a poset into a trace is a potential \emph{concretisation} function. In our construction, we obtain a set of traces each representing possible concretisations for a poset.
+  \item if the two productions are co-final, i.e. $M_1'\iso M_2'$ then there exists $M'$ such that the diagram commutes
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (m2) at (-2,0) {\(\circ\)};
+    \node (m1) at (-2,1) {\(\circ\)};
+    \node (m) at (0,1) {\(M\)};
+    \node (implies) at (2,1) {\(\implies\)};
+    \node (mm2) at (4.5,0) {\(\circ\)};
+    \node (mm1) at (4.5,1) {\(\circ\)};
+    \node (n) at (3,1) {\(M'\)};
+    \node (mm) at (6,1) {\(M\)};
+    \draw [->] (m1) -- node [left,above] {\(e_1\)} (m);
+    \draw [->] (m2) -- node [left,below] {\(e_2\)} (m);
+    \draw [->] (mm1) -- node [left,above] {\(e_1\)} (mm);
+    \draw [->] (mm2) -- node [left,below] {\(e_2\)} (mm);
+    \draw [->] (n) -- node [left,above] {\(e_2'\)} (mm1);
+    \draw [->] (n) -- node [left,below] {\(e_1'\)} (mm2);
+  \end{tikzpicture}
+  \]
+  \end{enumerate}
+\end{lemma}
 
 \begin{definition}[Concretisation of a poset]
   Given a set of posets $\mathcal{S}$ let us define the concretisation function $\gamma:\mathcal{S}\subseteq\Theta$ that sends a poset to a set of traces.
   \begin{itemize}
-  \item Let $\overline{s}\in\mathit{decorate}(s)$ be a decorated poset. We define the refinement of a decorated poset into a trace $\mathit{refine}(\overline{s})$ as follows: for each pair of consecutive events $e \sqsubset_O e'$ construct the graph $G$ using the causal pair induce by $O$. Then propagate the graphs using the sequential and concurrent combinators.
+  \item For $s\in\mathcal{S}$, let $\overline{s}\in\mathit{decorate}(s)$ be a decorated poset.
+    We define the refinement of a decorated poset $\mathit{refine}(\overline{s}) = \{E,\sqsubset,\labl,\bp\}$, where $\overline{s} = \{E,\sqsubset,\labl\}$.
   \item
     \begin{mdframed}[backgroundcolor=blue!20]
       to do
@@ -404,6 +455,78 @@ Any refinement of a poset into a trace is a potential \emph{concretisation} func
   \end{itemize}
   The composition of the two functions $\gamma = \mathit{refine}(\mathit{decorate}(s))$ is the concretisation function.
 \end{definition}
+
+We can complete any diagram by applying~\autoref{lem:rewrite_concurrent}.
+\[
+\begin{tikzpicture} %[scale=0.8]
+  \node (n2) at (-1,1) {\(\circ\)};
+  \node (m2) at (0,0) {\(\circ\)};
+  \node (m1) at (0,1) {\(\circ\)};
+  \node (n) at (1,1) {\(\circ\)};
+  \node (implies) at (2,1) {\(\leadsto\)};
+  \node (mm2) at (5.6,0) {\(\circ\)};
+  \node (mm1) at (5.6,1) {\(\circ\)};
+  \node (nn) at (6.9,1) {\(\circ\)};
+  \node (mm) at (4.3,0) {\(\circ\)};
+  \node (nn1) at (3,0) {\(\circ\)};
+  \node (nn2) at (4.3,1) {\(\circ\)};
+  \node (text) at (0.8,0.4) {\(e_3\)};
+  \node (text1) at (5.3,0.5) {\(e_3'\)};
+  \draw [->] (n2) -- node [left,above] {\(e_1\)} (m1);
+  \draw [->] (m1) -- node [left,above] {\(e_2\)} (n);
+  \draw [->] (m2) -- (n);
+  \draw [->] (nn2) -- node [left,above] {\(e_1\)} (mm1);
+  \draw [->] (mm1) -- node [left,above] {\(e_2\)} (nn);
+  \draw [->] (mm2) -- node [left,below] {\(e_3\)} (nn);
+  \draw [->] (mm) -- node [left,below] {\(e_2'\)} (mm2);
+  \draw [->] (mm) -- (mm1);
+  \draw [->] (nn1) -- node [above] {\(e_3''\)} (nn2);
+  \draw [->] (nn1) -- node [left,below] {\(e_1'\)} (mm);
+\end{tikzpicture}
+\]
+\[
+\begin{tikzpicture} %[scale=0.8]
+  \node (m2) at (0,0) {\(\circ\)};
+  \node (m1) at (0,1) {\(\circ\)};
+  \node (n) at (1,1) {\(\circ\)};
+  \node (n1) at (2,1) {\(\circ\)};
+  \node (n2) at (2,0) {\(\circ\)};
+  \node (implies) at (3,1) {\(\leadsto\)};
+  \node (m) at (4,1) {\(\circ\)};
+  \node (mm2) at (5,0) {\(\circ\)};
+  \node (mm1) at (5,1) {\(\circ\)};
+  \node (nn) at (6,1) {\(\circ\)};
+  \node (nn1) at (7,1) {\(\circ\)};
+  \node (nn2) at (7,0) {\(\circ\)};
+  \node (p) at (8,1) {\(\circ\)};
+  \draw [->] (n) -- node [left,above] {\(e_3\)} (n1);
+  \draw [->] (n) -- node [left,below] {\(e_4\)} (n2);
+  \draw [->] (m1) -- node [left,above] {\(e_1\)} (n);
+  \draw [->] (m2) -- node [left,below] {\(e_2\)} (n);
+  \draw [->] (nn) -- node [left,above] {\(e_3\)} (nn1);
+  \draw [->] (nn) -- node [left,below] {\(e_4\)} (nn2);
+  \draw [->] (mm1) -- node [left,above] {\(e_1\)} (nn);
+  \draw [->] (mm2) -- node [left,below] {\(e_2\)} (nn);
+  \draw [->] (m) -- node [left,above] {\(e_2'\)} (mm1);
+  \draw [->] (m) -- node [left,below] {\(e_1'\)} (mm2);
+  \draw [->] (nn1) -- node [left,above] {\(e_3'\)} (p);
+  \draw [->] (nn2) -- node [left,below] {\(e_4'\)} (p);
+\end{tikzpicture}
+\]
+\[
+\begin{tikzpicture} %[scale=0.8]
+  \node (m) at (-1,1) {\(\circ\)};
+  \node (m2) at (0,0) {\(\circ\)};
+  \node (m1) at (0,1) {\(\circ\)};
+  \node (n) at (1,1) {\(\circ\)};
+  \node (implies) at (2,1) {\(\leadsto\)};
+  \node (implies2) at (7,1) {\(~\)};
+  \draw [->] (m) -- node [left,above] {\(e_1\)} (m1);
+  \draw [->] (m) -- node [left,below] {\(e_2\)} (m2);
+  \draw [->] (m1) -- node [left,above] {\(e_3\)} (n);
+  \draw [->] (m2) -- node [left,below] {\(e_4\)} (n);
+\end{tikzpicture}
+\]
 
 \begin{lemma}
   $\theta\subseteq \gamma(\alpha(\theta))$.

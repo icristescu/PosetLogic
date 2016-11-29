@@ -1,5 +1,8 @@
 \section{Logic on posets}
 
+\subsection{Category of posets}
+\label{sec:posets}
+
 \begin{definition}[Poset]
   \label{def:poset}
   A poset $s=\{E,\tleq\}$ is a finite set of events $E$ and a partial order on events $\tleq\subseteq E\times E$. The \emph{cover} relation on events $\leq\subseteq E\times E$ is the transitive reflexive reduction of $\tleq$.
@@ -7,6 +10,38 @@
 
   A labelled poset $s=\{E,\tleq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
 \end{definition}
+
+\begin{definition}[Morphisms on posets]
+  Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the cover relation. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
+
+  A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
+\end{definition}
+
+\begin{lemma}
+  Posets and their morphisms form a category.
+\end{lemma}
+\begin{mdframed}[backgroundcolor=blue!20]
+  \begin{proof}
+    to do
+  \end{proof}
+\end{mdframed}
+
+\begin{definition}
+\label{def:posets_otimes}
+  Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i}{\remb} s_i\overset{g_i}{\emb} s_2)_i$ such that
+  \begin{align*}
+    s_1\times s_2 =& \big\{ s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \big\}\\
+    s_1\otimes s_2 =& \big\{ s : s_1\overset{f}{\remb} s\overset{g}{\emb} s_2\in (s_1\times s_2)\text{ and }\nexists s'\text{ s.t. }s\emb s'
+    \text{ and }s_1\overset{f'}{\remb} s'\overset{g'}{\emb} s_2\in (s_1\times s_2)\big\}
+  \end{align*}
+\end{definition}
+
+\begin{property}
+  For all $s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \in (s_1\times s_2)$, $\mathit{image}(f) \iso \mathit{image}(g)$.
+\end{property}
+\begin{proof}
+  The function $h:\mathit{image}(f)\to\mathit{image}(g)$ is defined $h = g \circ f^{-1}$ and the reverse $h^{-1} = f \circ g^{-1}$. $h$ is a morphism, it follows from $f$ and $g$ being bijective morphisms.
+\end{proof}
 
 \subsection{Grammar}
 
@@ -35,7 +70,7 @@ We interpret the logic on the domain of events and posets.
 
 The predicates $s_1 = s_2$ and $s_1\subseteq s_2$ are interpreted using isomorphisms and embedings in the category of posets defined below (\autoref{sec:posets}).
 
-The interpretation of $s_1\cap s_2$ is the set of common substructures in $s_1$ and $s_2$. We introduce it formally in \autoref{sec:posets}. The predicate $\dashv$ can be seen as a predicate that relates events in different posets. Our interpretation in the restrainted case of graph rewriting systems (and in Kappa) will be that of inhibition (\autoref{def:ref_neg_infl}), as we will see in the next sections. The remaining of function and predicates used in our logic have a standard interpretation.
+The interpretation of $s_1\cap s_2$ is the set $s_1\otimes s_2$, introduced in \autoref{def:posets_otimes}. The predicate $\dashv$ can be seen as a predicate that relates events in different posets. Our interpretation in the restrainted case of graph rewriting systems (and in Kappa) will be that of inhibition (\autoref{def:ref_neg_infl}), as we will see in the next sections. The remaining of function and predicates used in our logic have a standard interpretation.
 
 A \emph{valuation} for $\varphi$ is a function
 $v:\text{fv}(\varphi)\to\mathcal{E}\uplus\mathcal{S}$
@@ -69,52 +104,39 @@ A formula $\varphi$ is satisfiable if there exists $v$ such that $\enc{\varphi}_
 
 The denotation of $\varphi$ is the set of valuations for which $\varphi$ evaluates to true. We give the denotation of a formula in~\autoref{app:denote}.
 
-\subsection{Category of posets}
-\label{sec:posets}
+%% Let us introduce now what we mean by a common substructure to posets.
 
-\begin{definition}[Morphisms on posets]
-  Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the cover relation. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
+%% \begin{definition}
+%%   Let $s_1$ and $s_2$ be two posets.
+%%   A common substructure of $s_1$ and $s_2$ is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ such that $\mathit{image}(f_i) \iso \mathit{image}(g_i)$, that is $\forall e\in m_i$, $\labl(f_i(e)) = \labl(g_i(e))$.
+%% \end{definition}
 
-  A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
-\end{definition}
+%% Instead of returning all common substructures we are interested in the "maximal" ones, in the sense of embeddings.
 
-\begin{lemma}
-  Posets and their morphisms form a category.
-\end{lemma}
+%% \begin{definition}
+%%   \begin{itemize}
+%%   \item The \emph{multiproduct} of $s_1$ and $s_2$ is the family of spans $(s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2)_i$ where for any other span $s_1\overset{f'}{\remb} m'\overset{g'}{\emb} s_2$ there exists a unique $m_i$ and a unique injective morphism $m'\emb m_i$ such that the diagram commutes:
+%%   \[
+%%   \begin{tikzpicture} %[scale=0.8]
+%%     \node (s1) at (-2,0) {\(s_1\)};
+%%     \node (s2) at (2,0) {\(s_2\)};
+%%     \node (m1) at (0,0) {\(m_i\)};
+%%     \node (m2) at (0,-1) {\(m'\)};
+%%     \draw [right hook->] (m1) -- (s1);
+%%     \draw [left hook->] (m1) -- (s2);
+%%     \draw [right hook->] (m2) -- (s1);
+%%     \draw [left hook->] (m2) -- (s2);
+%%     \draw [left hook->, dotted] (m2) -- (m1);
+%%   \end{tikzpicture}
+%%   \]
 
-Let us introduce now what we mean by a common substructure to posets.
+%%   \item The restriction of a poset $m=\{E,<,\labl\}$ to a set of events $D\subseteq E$ is the poset $m|D = \{D,<|_D,\labl|_D\}$ where $<|_D$ and $\labl|_D$ is the restriction of $<$ and $\labl$ respectively to the set $D$.
 
-\begin{definition}
-  Let $s_1$ and $s_2$ be two posets.
-  A common substructure of $s_1$ and $s_2$ is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ such that $\mathit{image}(f_i) \iso \mathit{image}(g_i)$, that is $\forall e\in m_i$, $\labl(f_i(e)) = \labl(g_i(e))$.
-\end{definition}
-
-Instead of returning all common substructures we are interested in the "maximal" ones, in the sense of embeddings.
-
-\begin{definition}
-  \begin{itemize}
-  \item The \emph{multiproduct} of $s_1$ and $s_2$ is the family of spans $(s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2)_i$ where for any other span $s_1\overset{f'}{\remb} m'\overset{g'}{\emb} s_2$ there exists a unique $m_i$ and a unique injective morphism $m'\emb m_i$ such that the diagram commutes:
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (s1) at (-2,0) {\(s_1\)};
-    \node (s2) at (2,0) {\(s_2\)};
-    \node (m1) at (0,0) {\(m_i\)};
-    \node (m2) at (0,-1) {\(m'\)};
-    \draw [right hook->] (m1) -- (s1);
-    \draw [left hook->] (m1) -- (s2);
-    \draw [right hook->] (m2) -- (s1);
-    \draw [left hook->] (m2) -- (s2);
-    \draw [left hook->, dotted] (m2) -- (m1);
-  \end{tikzpicture}
-  \]
-
-  \item The restriction of a poset $m=\{E,<,\labl\}$ to a set of events $D\subseteq E$ is the poset $m|D = \{D,<|_D,\labl|_D\}$ where $<|_D$ and $\labl|_D$ is the restriction of $<$ and $\labl$ respectively to the set $D$.
-
-  \item Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i'}{\remb} m_i'\overset{g_i'}{\emb} s_2)_i$ such that for each span in $s_1\otimes s_2$ there is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ in the multiproduct of $s_1$ and $s_2$ with
-   \[ m_i' = m_i|D_i \]
-    for $D_i = \{ e\in m_i : \labl(f_i(e)) = \labl(g_i(e))\}$.
-  \end{itemize}
-\end{definition}
+%%   \item Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i'}{\remb} m_i'\overset{g_i'}{\emb} s_2)_i$ such that for each span in $s_1\otimes s_2$ there is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ in the multiproduct of $s_1$ and $s_2$ with
+%%    \[ m_i' = m_i|D_i \]
+%%     for $D_i = \{ e\in m_i : \labl(f_i(e)) = \labl(g_i(e))\}$.
+%%   \end{itemize}
+%% \end{definition}
 
 %% \begin{lemma}
 %%   The product of two posets $s_0=\{E_0,<,\labl_0\}$ and $s_1=\{E_1,<,\labl_1\}$, denoted $s_0\times s_1 = \{E,<,\labl\}$, is the poset obtained as follows:
