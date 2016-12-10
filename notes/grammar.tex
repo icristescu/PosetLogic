@@ -26,22 +26,26 @@
   \end{proof}
 \end{mdframed}
 
-\begin{definition}
-\label{def:posets_otimes}
-  Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i}{\remb} s_i\overset{g_i}{\emb} s_2)_i$ such that
-  \begin{align*}
-    s_1\times s_2 =& \big\{ s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \big\}\\
-    s_1\otimes s_2 =& \big\{ s : s_1\overset{f}{\remb} s\overset{g}{\emb} s_2\in (s_1\times s_2)\text{ and }\nexists s'\text{ s.t. }s\emb s'
-    \text{ and }s_1\overset{f'}{\remb} s'\overset{g'}{\emb} s_2\in (s_1\times s_2)\big\}
-  \end{align*}
+\begin{definition}[Directed poset]
+  A directed poset $s=\{E,\tleq\}$ is a poset in which every pair of events has an upper bound.
 \end{definition}
 
-\begin{property}
-  For all $s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \in (s_1\times s_2)$, $\mathit{image}(f) \iso \mathit{image}(g)$.
-\end{property}
-\begin{proof}
-  The function $h:\mathit{image}(f)\to\mathit{image}(g)$ is defined $h = g \circ f^{-1}$ and the reverse $h^{-1} = f \circ g^{-1}$. $h$ is a morphism, it follows from $f$ and $g$ being bijective morphisms.
-\end{proof}
+%% \begin{definition}
+%% \label{def:posets_otimes}
+%%   Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i}{\remb} s_i\overset{g_i}{\emb} s_2)_i$ such that
+%%   \begin{align*}
+%%     s_1\times s_2 =& \big\{ s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \big\}\\
+%%     s_1\otimes s_2 =& \big\{ s : s_1\overset{f}{\remb} s\overset{g}{\emb} s_2\in (s_1\times s_2)\text{ and }\nexists s'\text{ s.t. }s\emb s'
+%%     \text{ and }s_1\overset{f'}{\remb} s'\overset{g'}{\emb} s_2\in (s_1\times s_2)\big\}
+%%   \end{align*}
+%% \end{definition}
+
+%% \begin{property}
+%%   For all $s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \in (s_1\times s_2)$, $\mathit{image}(f) \iso \mathit{image}(g)$.
+%% \end{property}
+%% \begin{proof}
+%%   The function $h:\mathit{image}(f)\to\mathit{image}(g)$ is defined $h = g \circ f^{-1}$ and the reverse $h^{-1} = f \circ g^{-1}$. $h$ is a morphism, it follows from $f$ and $g$ being bijective morphisms.
+%% \end{proof}
 
 \subsection{Grammar}
 
@@ -50,7 +54,7 @@ We denote $A,B$ elements of $R$ and $s$ elements of $\mathcal{S}$.
 
 \begin{align*}
   x ::= & x^e ~|~ x^s & \tag{variables on events and posets} \\
-  t^s ::= & x^s ~|~ s ~|~ \text{min}(t^s) ~|~ \text{max}(t^s) ~|~ t^s_1 \cap t^s_2 &\tag{terms on posets} \\
+  t^s ::= & x^s ~|~ s ~|~ \text{min}(t^s) ~|~ \text{max}(t^s) &\tag{terms on posets} \\
   t^e ::= & x^e ~|~ e & \tag{terms on events}\\
   t ::= & t^s ~|~ t^e & \tag{terms}\\
   \\
@@ -70,7 +74,8 @@ We interpret the logic on the domain of events and posets.
 
 The predicates $s_1 = s_2$ and $s_1\subseteq s_2$ are interpreted using isomorphisms and embedings in the category of posets defined below (\autoref{sec:posets}).
 
-The interpretation of $s_1\cap s_2$ is the set $s_1\otimes s_2$, introduced in \autoref{def:posets_otimes}. The predicate $\dashv$ can be seen as a predicate that relates events in different posets. Our interpretation in the restrainted case of graph rewriting systems (and in Kappa) will be that of inhibition (\autoref{def:ref_neg_infl}), as we will see in the next sections. The remaining of function and predicates used in our logic have a standard interpretation.
+%The interpretation of $s_1\cap s_2$ is the set $s_1\otimes s_2$, introduced in \autoref{def:posets_otimes}.
+The predicate $\dashv$ can be seen as a predicate that relates events in different posets. Our interpretation in the restrainted case of graph rewriting systems (and in Kappa) will be that of inhibition (\autoref{def:ref_neg_infl}), as we will see in the next sections. The remaining of function and predicates used in our logic have a standard interpretation.
 
 A \emph{valuation} for $\varphi$ is a function
 $v:\text{fv}(\varphi)\to\mathcal{E}\uplus\mathcal{S}$
@@ -97,7 +102,7 @@ The evaluation of $\varphi$ is defined below, where a valuation function is need
   \enct{\text{min}(t^s)}_{v} &= \text{min}(\enct{t^s})\\
   \enct{\text{max}(t^s)}_{v} &= \text{max}(\enct{t^s})\\
 %  \enct{t^s_1 \cup t^s_2}_{v} &= \enct{t^s_1}_v \cup \enct{t^s_2}_{v}\\
-  \enct{t^s_1 \cap t^s_2}_{v} &= \enct{t^s_1}_v \otimes \enct{t^s_2}_{v}\\
+%  \enct{t^s_1 \cap t^s_2}_{v} &= \enct{t^s_1}_v \otimes \enct{t^s_2}_{v}\\
 \end{align*}
 
 A formula $\varphi$ is satisfiable if there exists $v$ such that $\enc{\varphi}_v = T$.

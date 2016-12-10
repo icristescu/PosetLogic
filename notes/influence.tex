@@ -161,9 +161,45 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
 that is $n_1 = h_1\circ m_1$ and $n_2 = h\circ m_2$.
 \end{lemma}
 \begin{proof}
-  \begin{mdframed}[backgroundcolor=blue!20]
-    to do
-  \end{mdframed}
+  First note that for any injective morphism in the diagram we can define a bijection between the domain and the image of the morphism in the codomain. For example, in the diagram above we have $m_2:L_2\to M$ an injective morphism; for any $x\in \text{image}(m_2)(L_2)$ the morphism $m_2^{-1}(x)$ is well defined.
+  Secondly, we can always construct the pullback of the cospan $R_1\lemb G\remb L_2$ denoted $R_1\remb O \lemb L_2$ and the pullback of $K_1\lemb R_1\remb O$. We proceed by showing that in the diagram below
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+    \node (r1) at (1.5,0) {\(R_1\)};
+    \node (m1) at (2,1.5) {\(G\)};
+    \node (l2) at (2.5,0) {\(L_2\)};
+    \node (d1) at (0,1.5) {\(D_1\)};
+    \node (k1) at (0,0) {\(K_1\)};
+    \node (d2) at (4,1.5) {\(D_2\)};
+    \node (k2) at (4,0) {\(K_2\)};
+    \node (o) at (2,-1) {\(O\)};
+    \node (p) at (1,-2) {\(P\)};
+    \draw [->] (k1) -- (r1);
+    \draw [->] (k2) -- (l2);
+    \draw [->] (k1) -- node [left,midway] {\(k_1\)} (d1);
+    \draw [->] (k2) -- (d2);
+    \draw [->] (d1) -- node [above,midway] {\(g_1\)} (m1);
+    \draw [->] (d2) -- (m1);
+    \draw [->] (l2) -- node [right,midway] {\(m_2\)} (m1);
+    \draw [->] (r1) -- (m1);
+    \draw [dotted,->] (l2) -- node [above,midway] {\(j\)} (d1);
+    \draw [->] (p) -- (k1);
+    \draw [->] (p) -- node [right,midway] {$\not\iso$} (o);
+    \draw [->] (o) -- (r1);
+    \draw [->] (o) -- node [right,midway] {$o$} (l2);
+    \draw [dotted,->] (o) to [bend left] node [right,midway] {$p'$} (k1);
+    \end{tikzpicture}
+    \]
+    if the injective morphism $P\emb O$ is an iso then we can construct an morphism $j:L_2\to D_1$ that makes the diagram commute. We will have then a contradiction from which we can infer that indeed $P\emb O$ is not an iso. The construction of the causal pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2',p_2}{\Rightarrow} P_2$ follows straightforward from it.
+
+    Suppose that $P\emb O$ is an iso. Let us show how we can recover from that a morphism $j:L_2\to D_1$.
+    Let us denote $p:P\emb O$ the isomorphism between $P$ and $O$. Furthemore, we denote $p':O\to K_1$ the composition of $p$ and $K_1\to D_1$.
+    Let $o(O) =L_2'\subseteq L_2$ be the image of $o:O\to L_2$. For any $x$ (node or edge) in $L_2$, define $j(x) = k_1(p'(o^{-1}(x)))$. Consider now $x$ an edge or node in $L_2$ such that $x\notin L_2'$. We have that $m_2(x)\in G$ and moreover $m_2(x)\notin\text{image}(n_1)(R_1)$. The latter follows from $R_1 \remb O\lemb L_2$ being the pullback of $R_1\lemb G\remb L_2$. However $D_1\lemb G\remb R_1$ is the pushout of $D_1\remb K_1\lemb R_1$, hence $m_2(x)\in\text{image}(g_1)(D_1)$. $g_1$ is an injective morphism and therefore $g_1^{-1}(m_2)(x)$ is well defined. Then $j(x) = g_1^{-1}(m_2)(x)$. To summarise, $j$ is defined as follows
+    \begin{align*}
+      j(x) =& k_1(p'(o^{-1}(x))) &\text{for }x\in\text{image}(o)\subseteq L_2\\
+      & g_1^{-1}(m_2(x))&\text{for }x\in L_2\setminus\text{image}(o).
+    \end{align*}
+and it is an injective morphism by construction. To show it commutes for the case when $x\in\text{image}(o)\subseteq L_2$ we use the fact that the graphs $O$ and $P$ are obtained by pullbacks.
 \end{proof}
 
 \begin{definition}[Inhibiting pair]
@@ -226,11 +262,7 @@ that is $n_1 = h_1\circ m_1$ and $n_2 = h\circ m_2$.
   \]
 that is $n_1 = h\circ m_1$ and $n_2 = h\circ m_2$.
 \end{lemma}
-\begin{proof}
-  \begin{mdframed}[backgroundcolor=blue!20]
-    to do
-  \end{mdframed}
-\end{proof}
+The proof is similar to the one of \autoref{lem:completeness_causal_pair}.
 
 \begin{remark}
   \autoref{lem:completeness_inhib_pair} is a weaker version of the completness result on critical pairs \cite{AlgebraicGR}.

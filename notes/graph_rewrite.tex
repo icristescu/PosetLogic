@@ -96,8 +96,9 @@ Other graph rewriting techniques exists that allows production with dangling poi
 
 \subsection{Transition systems}
 
-\begin{definition}[Transition systems~\cite{NielsenRT92}]
+\begin{definition}[Transition systems]
   \label{def:ts_nielsen}
+%\cite{NielsenRT92}
   A transition system is a structure $TS = (Q,E,T)$ where $Q$ is a set of states, $E$ is a set of events and $T\subseteq Q\times E\times Q$ is a set of labelled transitions. Let $q_{\text{init}}\in Q$ be a special state, called the \emph{initial} state. Moreover a transition system satisfies the following axioms:
   \begin{itemize}
   \item no redundant events: $\forall e\in E$, $\exists (s,e,s')\in T$;
@@ -131,28 +132,96 @@ Other graph rewriting techniques exists that allows production with dangling poi
   Moreover $TS$ satisfy the axioms of~\autoref{def:ts_nielsen}.
 \end{definition}
 
-
 \begin{definition}[Independence relation~\cite{AlgebraicGR}]
-  We equip a graph transition system $(Q,R,E,T)$ with an irreflexive, symmetric relation on events $I\subseteq E\times E$, called independence, such that whenever $e_1~I~e_2$ the following axioms hold:
+  \label{def:indep}
+  $~$
   \begin{description}
   \item[sequential independence]
-    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$ such that  %where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$;
+    Let $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ be two transitions.
+    $(p_1,M,m_1) \Diamond_{\text{seq}} (p_2,M_1,m_2)$ iff there exists the morphism $i:R_1\to D_2$ such that $f_2\circ i= m_2$ and there exists the morphism $j:L_2\to D_1$ such that $g_1\circ j= m_1$:
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+    \node (r1) at (1.5,0) {\(R_1\)};
+    \node (m1) at (2,1.5) {\(M_1\)};
+    \node (l2) at (2.5,0) {\(L_2\)};
+    \node (d1) at (0,1.5) {\(D_1\)};
+    \node (k1) at (0,0) {\(K_1\)};
+    \node (d2) at (4,1.5) {\(D_2\)};
+    \node (k2) at (4,0) {\(K_2\)};
+    \draw [->] (k1) -- (r1);
+    \draw [->] (k2) -- (l2);
+    \draw [->] (k1) -- (d1);
+    \draw [->] (k2) -- (d2);
+    \draw [->] (d1) -- node [above,midway] {\(g_1\)} (m1);
+    \draw [->] (d2) -- node [above,midway] {\(f_2\)} (m1);
+    \draw [->] (l2) -- (m1);
+    \draw [->] (r1) -- (m1);
+    \draw [dotted,->] (r1) -- node [above,midway] {\(i\)} (d2);
+    \draw [dotted,->] (l2) -- node [above,midway] {\(j\)} (d1);
+    \end{tikzpicture}
+    \]
   \item[parallel independence]
-    for any two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$, there exists $M'\in Q$ and two transitions $M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $M_2\overset{m_1',p_1}{\Rightarrow} M'$. %where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M_2) = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$, $m_{e_2}(M_1) = m_2'$.
+    Let $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ be two transitions.
+    $(p_1,M,m_1) \Diamond_{\text{par}} (p_2,M,m_2)$ iff there exists the morphism $i:L_1\to D_2$ such that $f_2\circ i= m_2$ and there exists the morphism $j:L_2\to D_1$ such that $f_1\circ j= m_1$:
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+    \node (r1) at (1.5,0) {\(L_1\)};
+    \node (m1) at (2,1.5) {\(M_1\)};
+    \node (l2) at (2.5,0) {\(L_2\)};
+    \node (d1) at (0,1.5) {\(D_1\)};
+    \node (k1) at (0,0) {\(K_1\)};
+    \node (d2) at (4,1.5) {\(D_2\)};
+    \node (k2) at (4,0) {\(K_2\)};
+    \draw [->] (k1) -- (r1);
+    \draw [->] (k2) -- (l2);
+    \draw [->] (k1) -- (d1);
+    \draw [->] (k2) -- (d2);
+    \draw [->] (d1) -- node [above,midway] {\(f_1\)} (m1);
+    \draw [->] (d2) -- node [above,midway] {\(f_2\)} (m1);
+    \draw [->] (l2) -- (m1);
+    \draw [->] (r1) -- (m1);
+    \draw [dotted,->] (r1) -- node [above,midway] {\(i\)} (d2);
+    \draw [dotted,->] (l2) -- node [above,midway] {\(j\)} (d1);
+    \end{tikzpicture}
+    \]
   \end{description}
-  We call such a TS an \emph{asynchronous} transition system~\cite{Mukund93}.
+
+%We call such a TS an \emph{asynchronous} transition system~\cite{Mukund93}.
 \end{definition}
+
+\begin{lemma}[Local Church Rosser Theorem for GT systems\cite{AlgebraicGR}]
+  \label{church_rosser}
+  If two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are sequentially independent, there exists $M'\in Q$ and two transitions $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$. If two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ are parallel independent, then there exists $M'\in Q$ and two transitions $M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $M_2\overset{m_1',p_1}{\Rightarrow} M'$.
+\end{lemma}
+
+We equip a graph transition system $(Q,R,E,T)$ with an irreflexive, symmetric relation on events $\Diamond\subseteq E\times E$, called independence, such that $e_1\Diamond e_1$ iff $e_1\Diamond_{\text{seq}} e_1$ or $e_1\Diamond_{\text{par}} e_1$.
 
 \begin{definition}[Sequential dependence]
-\label{def:seq_dep}
-  Define $< \subseteq E\times E$ an irreflexive and antisymmetric relation on events such that whenever $e_1 < e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that don't commute, i.e. there is no graph $M'\in Q$ such that $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$. %where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$, $m_{e_1}(M') = m_1'$ and $\labl(e_2)=p_2$, $m_{e_2}(M_1) = m_2$, $m_{e_2}(M) = m_2'$.
+  \label{def:seq_dep}
+  Transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are sequential dependent if there exists no morphism  $j:L_2\to D_1$ such that $f_1\circ j= m_1$. We denote $(p_1,M,m_1) < (p_2,M_1,m_2)$.
 \end{definition}
 
-\begin{definition}[Inhibition]
-\label{def:inhibition}
-  Define $\dashv\subseteq E \times E$ a relation on events such that whenever $e_1\dashv e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ for which there is no graph $M'\in Q$ such that $M_1\overset{m_2',p_2}{\Rightarrow} M'$. %i.e. $m_{e_2}(M_1) = \emptyset$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$.
+\autoref{def:seq_dep} implies that if $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are sequential dependent then ther is no graph $M'\in Q$ such that $M\overset{m_2',p_2}{\Rightarrow} M'$ and $M'\overset{m_1',p_1}{\Rightarrow} M_2$ and such that $(p_1,M,m_1)\Diamond_{\text{par}}(p_2,M,m_2')$.
+
+\begin{definition}[Parallel dependence]
+  \label{def:inhibition}
+  A transition $M\overset{m_1,p_1}{\Rightarrow} M_1$ inhibits another transition $M\overset{m_2,p_2}{\Rightarrow} M_2$ if there is no morphisms $j:L_2\to D_1$ such that $f_1\circ j= m_1$. We denote $(p_1,M,m_1) \dashv (p_2,M_1,m_2)$.
+  The two transitions are parallel dependent if they are inhibiting each other.
+
+%  Define $\dashv\subseteq E \times E$ a relation on events such that whenever $e_1\dashv e_2$ there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ for which %i.e. $m_{e_2}(M_1) = \emptyset$, where $\labl(e_1)=p_1$, $m_{e_1}(M) = m_1$ and $\labl(e_2)=p_2$, $m_{e_2}(M) = m_2$.
 \end{definition}
 
-\begin{remark}
-  Inhibition is included in parallel dependence: $e_1$ and $e_2$ are parallel dependent iff $e_1\dashv e_2$ and $e_2\dashv e_1$.
-\end{remark}
+From~\autoref{def:inhibition} we have that if $(p_1,M,m_1) \dashv (p_2,M_1,m_2)$ then there is no graph $M'\in Q$ such that $M_1\overset{m_2',p_2}{\Rightarrow} M'$ and such that $(p_1,M,m_1)\Diamond_{\text{seq}}(p_2,M_1,m_2')$.
+
+\begin{lemma}
+  If two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are not sequentially independent, then either $(p_1,M,m_1) < (p_2,M_1,m_2)$ or $(p_2,M,m_2)\dashv(p_1,M,m_1)$ (or both).
+\end{lemma}
+\begin{proof}
+  If $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are not sequentially independent, from~\autoref{def:indep}, it follows that either (i) there is no morphism $j:L_2\to D_1$ such that $g_1\circ j= m_1$ and then $(p_1,M,m_1) < (p_2,M_1,m_2)$ or (ii)
+there is no morphism $i:R_1\to D_2$ such that $f_2\circ i= m_2$. Suppose for the latter case, that there is $j:L_2\to D_1$ such that $g_1\circ j= m_1$. It implies, from~\autoref{church_rosser} that there exists $M'\in Q$ and $M\overset{m_2',p_2}{\Rightarrow} M'$ and that $(p_1,M,m_1)$ is not parallel independent of $(p_2,M,m_2')$. From the definition of parallel independence the only possibility is that there is no morphism $i:L_1\to D_2$ such that $f_2\circ i= m_2$. \autoref{def:inhibition} implies then that $(p_2,M,m_2)\dashv(p_1,M,m_1)$.
+\end{proof}
+
+\begin{lemma}
+  If two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M\overset{m_2,p_2}{\Rightarrow} M_2$ are not parallel independent then either $(p_1,M,m_1)\dashv(p_2,M,m_2)$ or $(p_2,M,m_2)\dashv(p_1,M,m_1)$ (or both).
+\end{lemma}
+The proof is similar to the one above.

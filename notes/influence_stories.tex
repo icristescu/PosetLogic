@@ -23,6 +23,7 @@
 \end{remark}
 
 \begin{definition}[Abstraction on a trace]
+  \label{def:abstraction}
   Let $\Theta$ be a set of traces and let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace in $\Theta$. Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
   \begin{itemize}
   \item given a transition $M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
@@ -154,84 +155,63 @@ We combine $M_2$ and $M_3$ using $L_3$ (concurrent combinator is formally introd
 \end{tikzpicture}
 \]
 Lastly we have to propagate $M_4$ backwards to events $e_1$, $e_2$ and $e_4$.
-
-We apply the rewriting steps on $N$ and obtain the refined sequence $N_0\action N_1\action N\action N_3$ (that we will formally introduce in~\autoref{def:propagate}):
 \[
 \begin{tikzpicture} %[scale=0.8]
   \node (o1) at (0,-1) {\(O_1\)};
   \node (m1) at (0,1) {\(M_1\)};
   \node (r1) at (-1,0) {\(R_1\)};
-  \node (l1) at (-2,0) {\(L_1\)};
+  \node (l1) at (-2.5,0) {\(L_1\)};
   \node (l2) at (1,0) {\(L_2\)};
-  \node (r2) at (2,0) {\(R_2\)};
-  \node (o2) at (3,-1) {\(O_2\)};
-  \node (m2) at (3,1) {\(M_2\)};
-  \node (l3) at (4,0) {\(L_3\)};
-  \node (r3) at (5,0) {\(R_3\)};
-  \node (m2p) at (2,1) {\(M_2'\)};
-  \node (n) at (2.5,2) {\(N\)};
-  \node (n0) at (-2,2) {\(N_0\)};
-  \node (n1) at (0,2) {\(N_1\)};
-  \node (n3) at (5,2) {\(N_3\)};
+  \node (r2) at (2.5,0) {\(R_2\)};
+  \node (o2) at (3.5,-1) {\(O_2\)};
+  \node (l3) at (4.5,0) {\(L_3\)};
+  \node (r3) at (6,0) {\(R_3\)};
+  \node (n1) at (2.5,1) {\(N_1\)};
+  \node (m2) at (3.5,2) {\(M_2\)};
+  \node (n2) at (6,2) {\(N_2\)};
+  \node (m6) at (-2.5,3) {\(M_6\)};
+  \node (m5) at (0,3) {\(M_5\)};
+  \node (m4) at (3.5,3) {\(M_4\)};
+  \node (n4) at (6,3) {\(N_4\)};
   \draw [->] (o1) -- (r1);
   \draw [->] (o1) -- (l2);
   \draw [->] (r1) -- (m1);
   \draw [->] (l2) -- (m1);
   \draw [->] (o2) -- (r2);
   \draw [->] (o2) -- (l3);
-  \draw [->] (r2) -- (m2);
   \draw [->] (l3) -- (m2);
-  \draw [->] (m2) -- (n);
-  \draw [->] (m2p) -- (n);
-  \draw [->] (r2) -- (m2p);
-  \draw [->] (l1) -- (n0);
-  \draw [->] (m1) -- (n1);
-  \draw [->] (r3) -- (n3);
-  \draw [>=latex, ->] (l1) -- (r1);
-  \draw [>=latex, ->] (l2) -- (r2);
-  \draw [>=latex, ->] (l3) -- (r3);
-  \draw [>=latex, ->] (m1) -- (m2p);
-  \draw [>=latex, ->] (n0) -- (n1);
-  \draw [>=latex, ->] (n1) -- (n);
-  \draw [>=latex, ->] (n) -- (n3);
+  \draw [->] (n1) -- (m2);
+  \draw [->] (r2) -- (n1);
+  \draw [->] (r3) -- (n2);
+  \draw [vecArrow] (l1) -- (r1);
+  \draw [vecArrow] (l2) -- (r2);
+  \draw [vecArrow] (l3) -- (r3);
+  \draw [vecArrow] (m1) -- (n1);
+  \draw [vecArrow] (m2) -- (n2);
+  \draw [->] (n2) -- (n4);
+  \draw [->] (m2) -- (m4);
+  \draw [->] (m1) -- (m5);
+  \draw [->] (l1) -- (m6);
+  \draw [vecArrow] (m4) -- (n4);
+  \draw [vecArrow] (m4) -- (m5);
+  \draw [vecArrow] (m5) -- (m6);
 \end{tikzpicture}
 \]
-Finally we propagate the context $N'$ to obtain
+The refinement of our poset is then the set of transitions
 \[
 \begin{tikzpicture} %[scale=0.8]
-  \node (l4) at (1,0) {\(L_4\)};
-  \node (r4) at (2,0) {\(R_4\)};
-  \node (n4) at (1,1) {\(N_4'\)};
-  \node (m4) at (2,1) {\(N'\)};
-  \node (and) at (4,0.5) { and };
-  \draw [>=latex, ->] (r4) -- (l4);
-  \draw [>=latex, ->] (m4) -- (n4);
-  \draw [->] (r4) -- (m4);
-  \draw [->] (l4) -- (n4);
-\end{tikzpicture}
-\qquad
-\begin{tikzpicture} %[scale=0.8]
-  \node (n0) at (1,0) {\(N_0\)};
-  \node (n1) at (2,0) {\(N_1\)};
-  \node (n) at (3,0) {\(N\)};
-  \node (n3) at (4,0) {\(N_3\)};
-  \node (np0) at (1,1) {\(N_0'\)};
-  \node (np1) at (2,1) {\(N_1'\)};
-  \node (np) at (3,1) {\(N'\)};
-  \node (np3) at (4,1) {\(N_3'\)};
-  \draw [>=latex, ->] (n0) -- (n1);
-  \draw [>=latex, ->] (n1) -- (n);
-  \draw [>=latex, ->] (n) -- (n3);
-  \draw [>=latex, ->] (np0) -- (np1);
-  \draw [>=latex, ->] (np1) -- (np);
-  \draw [>=latex, ->] (np) -- (np3);
-  \draw [->] (n0) -- (np0);
-  \draw [->] (n1) -- (np1);
-  \draw [->] (n) -- (np);
-  \draw [->] (n3) -- (np3);
+  \node (m6) at (0,1) {\(M_6\)};
+  \node (m5) at (1.5,1) {\(M_5\)};
+  \node (m4) at (3,1) {\(M_4\)};
+  \node (n4) at (4.5,1) {\(N_4\)};
+  \node (m7) at (1.5,0) {\(M_7\)};
+  \draw [vecArrow] (m4) -- (n4);
+  \draw [vecArrow] (m5) -- (m4);
+  \draw [vecArrow] (m6) -- (m5);
+  \draw [vecArrow] (m7) -- (m4);
 \end{tikzpicture}
 \]
-The refinement of our poset is then the set of transitions $N_0'\Rightarrow N_1'\Rightarrow N'\Rightarrow N_3'$ and $N_4'\Rightarrow N'$.
+where $M_7$ is obtained by a rewriting of $M_4$ using rule $r_4$.
 \end{example}
 
 \begin{definition}[Refinement of a rule~\cite{information_carriers}]
@@ -242,7 +222,7 @@ The refinement of our poset is then the set of transitions $N_0'\Rightarrow N_1'
   Given a poset $s=(E,<,\labl)$ of graph rewriting events, the \emph{refinement} of $s$, is a bijection $\imath$ between events $e\in E$ and transitions $M\overset{m,p}{\Rightarrow} M'$ such that
   \begin{itemize}
   \item labels are preserved, i.e. $\labl(e)=p$;
-  \item  for all $e_1,e_2\in E$, if $e_1<e_2$ and $\imath(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$, $\imath(e_1) =M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ then $M_1'\iso M_2$.
+  \item for all $e_1,e_2\in E$, if $e_1<e_2$ and $\imath(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$, $\imath(e_1) =M_2\overset{m_2,p_2}{\Rightarrow} M_2'$ then $M_1'\iso M_2$.
   \end{itemize}
 \end{definition}
 
@@ -318,8 +298,9 @@ The wide pushout is equivalent to computing the pushout pairwise on $(L\to M_i)_
 \end{definition}
 
 \begin{definition}[Refinement propagation]
-  Let us define two functions the forward propagator $\fp$, and the backward propagator $\bp$, that map events in a poset $\{E,<,\labl\}$ to transitions.
-We proceed by induction on the cover relation $<$ and start with the minimal events for the definition of $\fp$ and by induction on the reverse relation $<^{-1}$ starting with the maximal events for $\bp$:
+  \label{def:ref_propagator}
+  Let us define two functions the forward propagator $\fp$, and the backward propagator $\bp$, that map events in a poset $\{E,\sqsubset,\labl\}$ to transitions.
+We proceed by induction on the cover relation $\sqsubset$ and start with the minimal events for the definition of $\fp$ and by induction on the reverse relation $\sqsubset^{-1}$ starting with the maximal events for $\bp$:
 \begin{align*}
   \text{forward propagator}\\
   &\fp(e) = \labl(e)&\text{ if }e\in\text{min}(s)\\
@@ -329,12 +310,57 @@ We proceed by induction on the cover relation $<$ and start with the minimal eve
   \text{backward propagator}\\
   &\bp(e) = \fp(e)&\text{ if }e\in\text{max}(s)\\
   &\bp(e) = M\Rightarrow N&\text{ where }\forall e_i, e\sqsubset_{O_i}e_i, \bp(e_i) = M_i\Rightarrow N_i\\
-  &&\otimes_{\labl(e)^{-1}}(M_1, M_2, \cdots M_n) = M \Rightarrow N
+  &&\otimes_{\fp(e)^{-1}}(M_1, M_2, \cdots M_n) = M \Rightarrow N
 \end{align*}
 \end{definition}
 
+\begin{definition}[Embeddings between transitions]
+  A transition $M'\overset{m',p}\Rightarrow N'$ embeds into a transition $M\overset{m,p}\Rightarrow N$ if there exists a morphism $h:M'\to M$ such that the diagram commutes:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (d) at (0,2.5) {\(D\)};
+    \node (m) at (-2,2.5) {\(M\)};
+    \node (n) at (2,2.5) {\(N\)};
+    \node (m1) at (-2,1) {\(M'\)};
+    \node (d1) at (0,1) {\(D'\)};
+    \node (n1) at (2,1) {\(N'\)};
+    \node (l) at (-2,-0.5) {\(L\)};
+    \node (k) at (0,-0.5) {\(K\)};
+    \node (r) at (2,-0.5) {\(R\)};
+    \draw [left hook->] (l) -- node [right,midway] {$m'$} (m1);
+    \draw [left hook->] (r) -- (n1);
+    \draw [left hook->] (k) -- (d1);
+    \draw [left hook->] (k) -- (l);
+    \draw [left hook->] (k) -- (r);
+    \draw [dotted, left hook->] (m1) -- (m);
+    \draw [dotted, left hook->] (d1) -- (d);
+    \draw [dotted, left hook->] (n1) -- (n);
+    \draw [left hook->] (d1) -- (m1);
+    \draw [left hook->] (d1) -- (n1);
+    \draw [left hook->] (d) -- (m);
+    \draw [left hook->] (d) -- (n);
+    \draw [left hook->] (l) to [bend left] node [left,midway] {$m$} (m);
+    \draw [left hook->] (k) to [bend right] (d);
+    \draw [left hook->] (r) to [bend right] (n);
+  \end{tikzpicture}
+  \]
+\end{definition}
+
 \begin{lemma}
-  $\{E, <,\labl, \bp\}$ is a refinement of $\{E, <,\labl\}$.
+  \label{lem:subposet}
+  Let $s'\subseteq s$ be a connected poset (i.e. directed either upwards or downwards). Then
+  \[\forall e\in s', \bp_{s'}(e)\text{ embeds into }\bp_s(e),\]
+  where $\bp_s(e)$ is the refinement of~\autoref{def:ref_propagator} applied to $s$.
+  A \textbf{corollary} is that if two transitions are sequential dependent in $\bp_{s'}$ then they are sequential dependent in $\bp_{s}$.
+\end{lemma}
+\begin{proof}
+  \begin{mdframed}[backgroundcolor=blue!20]
+    to do
+  \end{mdframed}
+\end{proof}
+
+\begin{lemma}
+  $\{E,\sqsubset,\labl,\bp\}$ is a refinement of $\{E,\sqsubset,\labl\}$.
 \end{lemma}
 \begin{proof}
   \begin{mdframed}[backgroundcolor=blue!20]
@@ -398,8 +424,9 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
 \subsection{From posets to traces}
 
 \begin{lemma}
-\label{lem:rewrite_concurrent}
-  Let $M_1\overset{e_1}{\Rightarrow} M_1'$ and $M_2\overset{e_2}{\Rightarrow} M_2'$ two indepedent productions.
+  \label{lem:rewrite_concurrent}
+  Let $(E,\subseteq,\labl, \bp) $ be the refinement of a decorated poset and let $e_1,e_2\in E$ be two incomparable events such that
+  $\bp(e_1) = M_1\overset{e_1}{\Rightarrow} M_1'$ and $\bp(e_2) = M_2\overset{e_2}{\Rightarrow} M_2'$.
   \begin{enumerate}
   \item if the two productions are co-initial, i.e. $M_1\iso M_2$ then there exists $M'$ such that the diagram commutes
   \[
@@ -442,23 +469,70 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
   \]
   \end{enumerate}
 \end{lemma}
+\begin{proof}
+  \begin{enumerate}
+  \item Let $\labl(e_1)=L_1\action R_1$ and $\labl(e_2)=L_2\action R_2$ be the labels of the two events.
+    Then there exists an event $e_3$ such that $e_3\subseteq_{O_1} e_1$ and $e_3\subseteq_{O_2} e_2$. We can assume without loss of generality, that $e_3$ is the only such event (in the cover relation with $e_1$ and $e_2$). Let us show that we can rewrite $M_1'$ using rule $\labl(e_2)$ and obtain $M'$ such that $M_1\overset{e_1}{\Rightarrow} M_1'$ and $M_1'\overset{e_2'}{\Rightarrow} M_2'$ are sequentially independent.
+
+     Let us consider only the poset restricted to events $\{e_1,e_2,e_3\}$. We have that, in the following diagram, there exists a morphism $L_2\to D'$ that commutes.
+     \[
+     \begin{tikzpicture} %[scale=0.8]
+       \node (k1) at (0,0) {\(K_1\)};
+       \node (l1) at (1.5,0) {\(L_1\)};
+       \node (r3) at (2.5,0) {\(R_3\)};
+       \node (l2) at (3.5,0) {\(L_2\)};
+       \node (m1) at (2,1) {\(M_1'\)};
+       \node (m2) at (3,1) {\(M_2'\)};
+       \node (d1) at (0.5,1) {\(D_1\)};
+       \node (d1p) at (1,2) {\(D_1'\)};
+       \node (m1p) at (2.5,2) {\(M'\)};
+       \node (d) at (1,3) {\(D\)};
+       \node (m) at (2.5,3) {\(M\)};
+       \draw [->] (k1) -- (l1);
+       \draw [->] (k1) -- (d1);
+       \draw [->] (d1) -- (d1p);
+       \draw [->] (d1) -- (m1);
+       \draw [->] (d1p) -- (d);
+       \draw [->] (d1p) -- (m1p);
+       \draw [->] (d) -- (m);
+       \draw [->] (l1) -- (m1);
+       \draw [->] (r3) -- (m1);
+       \draw [->] (r3) -- (m2);
+       \draw [->] (l2) -- (m2);
+       \draw [->] (m2) -- (m1p);
+       \draw [->] (m1) -- (m1p);
+       \draw [->] (m1p) -- (m);
+       \draw [dotted,->] (l2) -- (d1p);
+     \end{tikzpicture}
+     \]
+
+     Using the corollar of~\autoref{lem:subposet} if there is no such morphism then events are sequential dependent in the original trace. From~\autoref{def:abstraction}, one has that $e_1 < e_2$, which contradicts the hypothesis.
+
+     If there exists a morphism $L_2\to D'$ that commutes then, using~\autoref{lem:subposet} there is a morphism from $L_2\to D$ that commutes.
+     Lastly we use~\autoref{church_rosser} which from such a morphism, infers that $M\overset{e_1}{\Rightarrow} M_1'$ and $M\overset{e_2}{\Rightarrow} M_2'$ are parallel independent.
+
+  \item As we are using DPO rewriting, this case is similar to the first.
+  \end{enumerate}
+\end{proof}
+
 
 \begin{definition}[Concretisation of a poset]
+  \label{def:concretisation}
   Given a set of posets $\mathcal{S}$ let us define the concretisation function $\gamma:\mathcal{S}\subseteq\Theta$ that sends a poset to a set of traces.
   \begin{itemize}
   \item For $s\in\mathcal{S}$, let $\overline{s}\in\mathit{decorate}(s)$ be a decorated poset.
     We define the refinement of a decorated poset $\mathit{refine}(\overline{s}) = \{E,\sqsubset,\labl,\bp\}$, where $\overline{s} = \{E,\sqsubset,\labl\}$.
-  \item
-    \begin{mdframed}[backgroundcolor=blue!20]
-      to do
-    \end{mdframed}
+  \item For every pair of concurrent events in $\mathit{refine}(\overline{s})$ close out the diagram using~\autoref{lem:rewrite_concurrent}. Denote $S$ a diagram that is closed with respect to the concurrent events. Then define $\gamma$, the concretisation function, as a set of traces, where each trace is a path in the diagram $S$:
+    \[
+    \gamma(s) = \{ t : t\text{ is a path in }S\text{ and }S\text{ is one the closed diagrams of }\mathit{refine}(\mathit{decorate}(s))\}.
+    \]
   \end{itemize}
-  The composition of the two functions $\gamma = \mathit{refine}(\mathit{decorate}(s))$ is the concretisation function.
 \end{definition}
 
-We can complete any diagram by applying~\autoref{lem:rewrite_concurrent}.
-\[
-\begin{tikzpicture} %[scale=0.8]
+\begin{example}
+  We complete the refined poset of the left by applying~\autoref{lem:rewrite_concurrent} to obtain the diagram on the right:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
   \node (n2) at (-1,1) {\(\circ\)};
   \node (m2) at (0,0) {\(\circ\)};
   \node (m1) at (0,1) {\(\circ\)};
@@ -484,49 +558,51 @@ We can complete any diagram by applying~\autoref{lem:rewrite_concurrent}.
   \draw [->] (nn1) -- node [left,below] {\(e_1'\)} (mm);
 \end{tikzpicture}
 \]
-\[
-\begin{tikzpicture} %[scale=0.8]
-  \node (m2) at (0,0) {\(\circ\)};
-  \node (m1) at (0,1) {\(\circ\)};
-  \node (n) at (1,1) {\(\circ\)};
-  \node (n1) at (2,1) {\(\circ\)};
-  \node (n2) at (2,0) {\(\circ\)};
-  \node (implies) at (3,1) {\(\leadsto\)};
-  \node (m) at (4,1) {\(\circ\)};
-  \node (mm2) at (5,0) {\(\circ\)};
-  \node (mm1) at (5,1) {\(\circ\)};
-  \node (nn) at (6,1) {\(\circ\)};
-  \node (nn1) at (7,1) {\(\circ\)};
-  \node (nn2) at (7,0) {\(\circ\)};
-  \node (p) at (8,1) {\(\circ\)};
-  \draw [->] (n) -- node [left,above] {\(e_3\)} (n1);
-  \draw [->] (n) -- node [left,below] {\(e_4\)} (n2);
-  \draw [->] (m1) -- node [left,above] {\(e_1\)} (n);
-  \draw [->] (m2) -- node [left,below] {\(e_2\)} (n);
-  \draw [->] (nn) -- node [left,above] {\(e_3\)} (nn1);
-  \draw [->] (nn) -- node [left,below] {\(e_4\)} (nn2);
-  \draw [->] (mm1) -- node [left,above] {\(e_1\)} (nn);
-  \draw [->] (mm2) -- node [left,below] {\(e_2\)} (nn);
-  \draw [->] (m) -- node [left,above] {\(e_2'\)} (mm1);
-  \draw [->] (m) -- node [left,below] {\(e_1'\)} (mm2);
-  \draw [->] (nn1) -- node [left,above] {\(e_3'\)} (p);
-  \draw [->] (nn2) -- node [left,below] {\(e_4'\)} (p);
-\end{tikzpicture}
-\]
-\[
-\begin{tikzpicture} %[scale=0.8]
-  \node (m) at (-1,1) {\(\circ\)};
-  \node (m2) at (0,0) {\(\circ\)};
-  \node (m1) at (0,1) {\(\circ\)};
-  \node (n) at (1,1) {\(\circ\)};
-  \node (implies) at (2,1) {\(\leadsto\)};
-  \node (implies2) at (7,1) {\(~\)};
-  \draw [->] (m) -- node [left,above] {\(e_1\)} (m1);
-  \draw [->] (m) -- node [left,below] {\(e_2\)} (m2);
-  \draw [->] (m1) -- node [left,above] {\(e_3\)} (n);
-  \draw [->] (m2) -- node [left,below] {\(e_4\)} (n);
-\end{tikzpicture}
-\]
+\end{example}
+
+%% \[
+%% \begin{tikzpicture} %[scale=0.8]
+%%   \node (m2) at (0,0) {\(\circ\)};
+%%   \node (m1) at (0,1) {\(\circ\)};
+%%   \node (n) at (1,1) {\(\circ\)};
+%%   \node (n1) at (2,1) {\(\circ\)};
+%%   \node (n2) at (2,0) {\(\circ\)};
+%%   \node (implies) at (3,1) {\(\leadsto\)};
+%%   \node (m) at (4,1) {\(\circ\)};
+%%   \node (mm2) at (5,0) {\(\circ\)};
+%%   \node (mm1) at (5,1) {\(\circ\)};
+%%   \node (nn) at (6,1) {\(\circ\)};
+%%   \node (nn1) at (7,1) {\(\circ\)};
+%%   \node (nn2) at (7,0) {\(\circ\)};
+%%   \node (p) at (8,1) {\(\circ\)};
+%%   \draw [->] (n) -- node [left,above] {\(e_3\)} (n1);
+%%   \draw [->] (n) -- node [left,below] {\(e_4\)} (n2);
+%%   \draw [->] (m1) -- node [left,above] {\(e_1\)} (n);
+%%   \draw [->] (m2) -- node [left,below] {\(e_2\)} (n);
+%%   \draw [->] (nn) -- node [left,above] {\(e_3\)} (nn1);
+%%   \draw [->] (nn) -- node [left,below] {\(e_4\)} (nn2);
+%%   \draw [->] (mm1) -- node [left,above] {\(e_1\)} (nn);
+%%   \draw [->] (mm2) -- node [left,below] {\(e_2\)} (nn);
+%%   \draw [->] (m) -- node [left,above] {\(e_2'\)} (mm1);
+%%   \draw [->] (m) -- node [left,below] {\(e_1'\)} (mm2);
+%%   \draw [->] (nn1) -- node [left,above] {\(e_3'\)} (p);
+%%   \draw [->] (nn2) -- node [left,below] {\(e_4'\)} (p);
+%% \end{tikzpicture}
+%% \]
+%% \[
+%% \begin{tikzpicture} %[scale=0.8]
+%%   \node (m) at (-1,1) {\(\circ\)};
+%%   \node (m2) at (0,0) {\(\circ\)};
+%%   \node (m1) at (0,1) {\(\circ\)};
+%%   \node (n) at (1,1) {\(\circ\)};
+%%   \node (implies) at (2,1) {\(\leadsto\)};
+%%   \node (implies2) at (7,1) {\(~\)};
+%%   \draw [->] (m) -- node [left,above] {\(e_1\)} (m1);
+%%   \draw [->] (m) -- node [left,below] {\(e_2\)} (m2);
+%%   \draw [->] (m1) -- node [left,above] {\(e_3\)} (n);
+%%   \draw [->] (m2) -- node [left,below] {\(e_4\)} (n);
+%% \end{tikzpicture}
+%% \]
 
 \begin{lemma}
   $\theta\subseteq \gamma(\alpha(\theta))$.
@@ -535,5 +611,12 @@ We can complete any diagram by applying~\autoref{lem:rewrite_concurrent}.
     \begin{mdframed}[backgroundcolor=blue!20]
     to do
   \end{mdframed}
-
 \end{proof}
+
+\begin{remark}[Adding inhibition]
+  We can change definition~\autoref{def:abstraction} in order to construct posets with the additional relation of inhibition between events:
+  \[
+  e_i \dashv e_j \iff t_i \dashv t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j
+  \]
+  Inhibition doesn't change the decoration and refinement of a poset but can make the concretisation function "more precise". In~\autoref{def:concretisation} we have to additionally remove any path in $\gamma(\alpha(\theta))$ that has two events $e_1$ followed by $e_2$ such that $e_1\dashv e_2$.
+\end{remark}
