@@ -95,6 +95,7 @@ Other graph rewriting techniques exists that allows production with dangling poi
 \end{remark}
 
 \subsection{Transition systems}
+\label{sec:ts}
 
 \begin{definition}[Transition systems]
   \label{def:ts_nielsen}
@@ -102,11 +103,13 @@ Other graph rewriting techniques exists that allows production with dangling poi
   A transition system is a structure $TS = (Q,E,T)$ where $Q$ is a set of states, $E$ is a set of events and $T\subseteq Q\times E\times Q$ is a set of labelled transitions. Let $q_{\text{init}}\in Q$ be a special state, called the \emph{initial} state. Moreover a transition system satisfies the following axioms:
   \begin{itemize}
   \item no redundant events: $\forall e\in E$, $\exists (s,e,s')\in T$;
-  \item all states are reachable: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$;
+  \item all states are reachable: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$.
 %  \item no circles:$\forall (s,e,s')\in T$, $s\neq s'$;
 %  \item each pair of states connected by a single transition: $\forall (s,e_1,s_1), (s,e_2,s_2)\in T$, $s_1=s_2\implies e_1=e_2$.
   \end{itemize}
 \end{definition}
+
+We denote $t:(s,e,s')$ a transition. Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the destination state of $t_1$. A \emph{trace} $\theta$ is a sequence of composable transitions: $\theta=t_1;t_2;\cdots t_n$.
 
 \begin{definition}[TS on graphs]
   A transition system on graphs $TS = (Q,R,E,T)$ consists of

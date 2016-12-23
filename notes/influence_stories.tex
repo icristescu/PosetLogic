@@ -22,34 +22,43 @@
   Sequential dependence (~\autoref{def:seq_dep}) is not transitive. Therefore when considering posets in~\autoref{def:poset}, we need to distinguish between the \emph{immediate} order relation and its transitive closure.
 \end{remark}
 
-\begin{definition}[Abstraction on a trace]
+\begin{definition}[The abstraction on a trace]
   \label{def:abstraction}
-  Let $\Theta$ be a set of traces and let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace in $\Theta$. Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
   \begin{itemize}
-  \item given a transition $M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
+  \item[] $~$
+  \item A \emph{causal trace} $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ is a trace such that it is directed w.r.t. the transitive closure of sequential dependence:
     \[
-    \alpha(M\overset{m,p}{\Rightarrow} M') = e
+    M_i \Rightarrow M_{i+1} \tleq M_{n-1}\Rightarrow M_n, \forall i\leq n
     \]
-    such that $\labl(e) = p$.
-  \item define a poset from a trace $\alpha(\theta) = (E,<,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence between transitions is preserved:
-    \begin{align*}
-      \alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
-      e_i < e_j \iff t_i < t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j
-    \end{align*}
+
+    Let $\Theta$ be a set of causal traces.
+  \item Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
+    \begin{itemize}
+    \item given a transition $M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
+      \[
+      \alpha(M\overset{m,p}{\Rightarrow} M') = e
+      \]
+      such that $\labl(e) = p$.
+    \item define a poset from a trace $\alpha(\theta) = (E,\tleq,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence between transitions is preserved:
+      \begin{align*}
+        \alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
+        e_i < e_j \iff t_i < t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j
+      \end{align*}
+      and $\tleq$ is the reflexive and transitive closure of $<$.
+  \end{itemize}
+  \item
+    Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of traces of $TS$.
+    Define the set of posets $\mathcal{S}$ obtained by abstraction on $\Theta$ as follows
+    \[
+    \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)\text{ with }k\leq n
+    \]
+    where for each poset $s = (E,\tleq,\labl)$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = (E,\tleq,\labl)$.
   \end{itemize}
 \end{definition}
 
-\begin{definition}[Set of posets]
-  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of traces of $TS$.
-  Define the set of posets obtained by abstraction on $\Theta$ as follows
-  \[
-  \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)\text{ with }k\leq n
-  \]
-  where for each poset $s = (E,\tleq,\labl)$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = (E,<,\labl)$ and where $\tleq$ is the reflexive and transitive closure of $<$.
-%  A \emph{story} of TS, $s$ $=$ $(E_s,<_s)$, is a subset of events $E_s\subseteq E$ equipped with a binary relation on events $<_s$ which is the restrictions of $<$ to the set $E_s$.
-\end{definition}
-
-Henceforth the set of posets $\mathcal{S}$ stands for the set defined above.
+\begin{property}
+  If $\Theta$ is a set of causal traces, then all posets in $\alpha(\Theta)=\mathcal{S}$ are directed.
+\end{property}
 
 %Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$. We equip the set of stories $\mathcal{S}$ with the binary relation $\dashv_{\mathcal{S}}$, which is the restriction of $\dashv$ to the set of events $\cup_{s\in\mathcal{S}} E_s$.
 

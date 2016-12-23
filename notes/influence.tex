@@ -1,4 +1,5 @@
 \subsection{Influence}
+\label{sec:infl}
 
 Let us now define the notions of influence between rules, that allows us to overapproximate the relations of causality and inhibition between events.
 
@@ -68,7 +69,7 @@ Let us now define the notions of influence between rules, that allows us to over
 \end{property}
 
 \begin{definition}[Positive influence]
-  \label{def:low_res}
+  \label{def:pos_infl}
   Let $L_1{\remb} D_1 {\lemb} R_1$ and $L_2{\remb} D_2 {\lemb} R_2$ be two rules.
 
   Let the cospan $R_1\lemb M\remb L_2$ be in the multisum of $R_1$ and $L_2$, from which we get the span $R_1\leftarrow O\rightarrow L_2$ as pullback.
@@ -130,7 +131,7 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
 
 \begin{lemma}
 \label{lem:completeness_causal_pair}
-  For each pair of sequential dependent transitions $G_1\overset{n_1,p_1}{\Rightarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists a causal pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ and a mono $h:M\emb G$ such that the following diagram commutes:
+  For each pair of sequential dependent transitions $G_1\overset{n_1,p_1}{\Rightarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists a causal pair $M_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} M_2$ and a mono $h:M\emb G$ such that the following diagram commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (g) at (1,2.5) {\(G\)};
@@ -159,6 +160,8 @@ Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the
   \end{tikzpicture}
   \]
 that is $n_1 = h_1\circ m_1$ and $n_2 = h\circ m_2$.
+
+Moreover, for a causal pair $M_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} M_2$ and a mono $h:M\emb G$ such that the diagram above commutes, we have that the transitions $G_1\overset{n_1,p_1}{\Rightarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$ are sequential dependent.
 \end{lemma}
 \begin{proof}
   First note that for any injective morphism in the diagram we can define a bijection between the domain and the image of the morphism in the codomain. For example, in the diagram above we have $m_2:L_2\to M$ an injective morphism; for any $x\in \text{image}(m_2)(L_2)$ the morphism $m_2^{-1}(x)$ is well defined.
@@ -193,13 +196,15 @@ that is $n_1 = h_1\circ m_1$ and $n_2 = h\circ m_2$.
     if the injective morphism $P\emb O$ is an iso then we can construct an morphism $j:L_2\to D_1$ that makes the diagram commute. We will have then a contradiction from which we can infer that indeed $P\emb O$ is not an iso. The construction of the causal pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2',p_2}{\Rightarrow} P_2$ follows straightforward from it.
 
     Suppose that $P\emb O$ is an iso. Let us show how we can recover from that a morphism $j:L_2\to D_1$.
-    Let us denote $p:P\emb O$ the isomorphism between $P$ and $O$. Furthemore, we denote $p':O\to K_1$ the composition of $p$ and $K_1\to D_1$.
-    Let $o(O) =L_2'\subseteq L_2$ be the image of $o:O\to L_2$. For any $x$ (node or edge) in $L_2$, define $j(x) = k_1(p'(o^{-1}(x)))$. Consider now $x$ an edge or node in $L_2$ such that $x\notin L_2'$. We have that $m_2(x)\in G$ and moreover $m_2(x)\notin\text{image}(n_1)(R_1)$. The latter follows from $R_1 \remb O\lemb L_2$ being the pullback of $R_1\lemb G\remb L_2$. However $D_1\lemb G\remb R_1$ is the pushout of $D_1\remb K_1\lemb R_1$, hence $m_2(x)\in\text{image}(g_1)(D_1)$. $g_1$ is an injective morphism and therefore $g_1^{-1}(m_2)(x)$ is well defined. Then $j(x) = g_1^{-1}(m_2)(x)$. To summarise, $j$ is defined as follows
+    Let us denote $p:P\emb O$ the isomorphism between $P$ and $O$. Furthemore, we denote $p':O\to K_1$ the composition of $p$ and $P\to K_1$.
+    Let $o(O) =L_2'\subseteq L_2$ be the image of $o:O\to L_2$. For any $x$ (node or edge) in $L_2'$, define $j(x) = k_1(p'(o^{-1}(x)))$. Consider now $x$ an edge or node in $L_2$ such that $x\notin L_2'$. We have that $m_2(x)\in G$ and moreover $m_2(x)\notin\text{image}(n_1)(R_1)$. The latter follows from $R_1 \remb O\lemb L_2$ being the pullback of $R_1\lemb G\remb L_2$. However $D_1\lemb G\remb R_1$ is the pushout of $D_1\remb K_1\lemb R_1$, hence $m_2(x)\in\text{image}(g_1)(D_1)$. $g_1$ is an injective morphism and therefore $g_1^{-1}(m_2)(x)$ is well defined. Then $j(x) = g_1^{-1}(m_2)(x)$. To summarise, $j$ is defined as follows
     \begin{align*}
       j(x) =& k_1(p'(o^{-1}(x))) &\text{for }x\in\text{image}(o)\subseteq L_2\\
       & g_1^{-1}(m_2(x))&\text{for }x\in L_2\setminus\text{image}(o).
     \end{align*}
 and it is an injective morphism by construction. To show it commutes for the case when $x\in\text{image}(o)\subseteq L_2$ we use the fact that the graphs $O$ and $P$ are obtained by pullbacks.
+
+In order to show the second part of the lemma, we will show that if there exists $j:L_2\to D_1$ then there exists a morphism $O\to P$ that makes the diagram commute. For any $x$ (node or edge) in $O$ we have that there exists $x_2\in\nodes_{L_2}$ such that $o(x_2)=x$ and similarly for $x_2\in\nodes_{L_2}$. As $O$ is the pullback, we have $m_2(x)\in G$ and moreover, $m_2(x_2)=g_1(j(x_2))$. Similarly, $n_1(x_1)=g_1(j(x_2))$. From the fact that the span $D_1\remb G\lemb R_1$ we have that there exists $x_k\in \nodes_{K_1}$ such that $k_1(x_k) = g_1(j(x_2))$ and $r_1(x_k)=x_1$. Then, as $P\to K_1$ is injective, we have that there exists $x_P\in\nodes_P$ such that $p(x)=x_p$ makes the diagram commute.
 \end{proof}
 
 \begin{definition}[Inhibiting pair]
@@ -232,7 +237,7 @@ and it is an injective morphism by construction. To show it commutes for the cas
 
 \begin{lemma}
 \label{lem:completeness_inhib_pair}
-  For each pair of transitions $G_1\overset{n_1,p_1}{\Leftarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$, where $G\overset{n_1,p_1}{\Rightarrow}G_1$ inhibits $G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists an inhibiting pair $P_1\overset{m_1,p_1}{\Leftarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ and a mono $h:M\emb G$ such that the following diagram commutes:
+  For each pair of transitions $G_1\overset{n_1,p_1}{\Leftarrow}G\overset{n_2,p_2}{\Rightarrow} G_2$, where $G\overset{n_1,p_1}{\Rightarrow}G_1$ inhibits $G\overset{n_2,p_2}{\Rightarrow} G_2$ there exists an inhibiting pair $M_1\overset{m_1,p_1}{\Leftarrow} M\overset{m_2,p_2}{\Rightarrow} M_2$ and a mono $h:M\emb G$ such that the following diagram commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (g) at (1,2.5) {\(G\)};
@@ -261,6 +266,8 @@ and it is an injective morphism by construction. To show it commutes for the cas
   \end{tikzpicture}
   \]
 that is $n_1 = h\circ m_1$ and $n_2 = h\circ m_2$.
+
+Moreover, for any inhibiting pair $M_1\overset{m_1,p_1}{\Leftarrow} M\overset{m_2,p_2}{\Rightarrow} M_2$ and a mono $h:M\emb G$ such that the diagram above commutes, we have that the transition $G\overset{n_1,p_1}{\Rightarrow}G_1$ inhibits transition $G\overset{n_2,p_2}{\Rightarrow} G_2$.
 \end{lemma}
 The proof is similar to the one of \autoref{lem:completeness_causal_pair}.
 
