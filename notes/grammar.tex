@@ -5,10 +5,10 @@
 
 \begin{definition}[Poset]
   \label{def:poset}
-  A poset $s=\{E,\tleq\}$ is a finite set of events $E$ and a partial order on events $\tleq\subseteq E\times E$. The \emph{cover} relation on events $\leq\subseteq E\times E$ is the transitive reflexive reduction of $\tleq$.
+  A poset $s=\{E,\leq\}$ is a finite set of events $E$ and a partial order on events $\leq\subseteq E\times E$. The \emph{cover} relation on events $\cover\subseteq E\times E$ is the transitive reduction of $\leq$.
   We use the predicates $\text{min}(s)$ and $\text{max}(s)$ to retrieve the minimal and maximal events, respectively.
 
-  A labelled poset $s=\{E,\tleq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
+  A labeled poset $s=\{E,\leq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
 \end{definition}
 
 \begin{definition}[Morphisms on posets]
@@ -27,7 +27,7 @@
 \end{mdframed}
 
 \begin{definition}[Directed poset]
-  A directed poset $s=\{E,\tleq\}$ is a poset in which every pair of events has an upper bound.
+  A directed poset $s=\{E,\leq\}$ is a poset in which every pair of events has an upper bound.
 \end{definition}
 
 %% \begin{definition}
