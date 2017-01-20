@@ -552,8 +552,52 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
 
   So far, we have a trace $M_2\Rightarrow N_2\cdots M_k\Rightarrow N_2\cdots M_n\Rightarrow N_n$ corresponding to the chain $e_2\prec e'\cdots e_k\prec e''\prec\cdots e_n$ and a transition $P_1\Rightarrow M_k$. The last step consists in "swaping" the transition $P_1\Rightarrow M_k$ at the beginning of the trace, to obtain a trace $M_1\Rightarrow M_2\Rightarrow N_2\cdots M_n\Rightarrow N_n$.
 
-  From~\autoref{eq:e3}, for all events $e_i$ between $e_2$ and $e_k$ we have that $e_1\not\sqsubset e_i$.
-  Therefore we have the transitions $M_{k-1}\Rightarrow M_k\Rightarrow P_1$ that are sequential independent.
+  We proceed by induction on the trace $M_2\Rightarrow N_2\cdots M_k\Rightarrow N_2\cdots M_n\Rightarrow N_n$.
+  Let us consider one step of swapping: let $M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $P_j\overset{e_1}{\Rightarrow}M_{j+1}$ where $2\leq j\leq k-1$. We consider the following cases:
+
+  \begin{itemize}
+  \item {\bf both events have a common successor $\mathbf{e_j\sqsubset e_{j+1}}$ and $\mathbf{e_1\sqsubset e_{j+1}}$.} Note that from~\autoref{eq:e3} this case is only possible if $j+1=k$.
+
+  \item {\bf events have different successors $\mathbf{e_j\sqsubset e_i}$ with $\mathbf{i\neq k}$.}
+    We can rewrite the transitions $M_j\overset{e_j}{\Rightarrow} M_{j+1}\overset{e_1^{-1}}{\Rightarrow} P_j$, as productions are reversible. We distinguish again between two cases. In the diagram below:
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+    \node (r1) at (1.5,0) {\(R_j\)};
+    \node (m1) at (2,1.5) {\(M_{j+1}\)};
+    \node (l2) at (2.5,0) {\(L_1\)};
+    \node (d1) at (0,1.5) {\(D_j\)};
+    \node (k1) at (0,0) {\(K_j\)};
+    \node (d2) at (4,1.5) {\(D_j'\)};
+    \node (k2) at (4,0) {\(K_1\)};
+    \node (o) at (2,-1) {\(O\)};
+    \node (p) at (1,-2) {\(P\)};
+    \draw [->] (k1) -- (r1);
+    \draw [->] (k2) -- (l2);
+    \draw [->] (k1) -- node [left,midway] {\(k_j\)} (d1);
+    \draw [->] (k2) -- (d2);
+    \draw [->] (d1) -- node [above,midway] {\(g_j\)} (m1);
+    \draw [->] (d2) -- (m1);
+    \draw [->] (l2) -- node [right,midway] {\(m_1'\)} (m1);
+    \draw [->] (r1) -- (m1);
+    \draw [dotted,->] (l2) -- node [above,midway] {\(j\)} (d1);
+    \draw [->] (p) -- (k1);
+    \draw [->] (p) -- (o);
+    \draw [->] (o) -- (r1);
+    \draw [->] (o) -- node [right,midway] {$o$} (l2);
+    \end{tikzpicture}
+    \]
+    first suppose that there is a morphism $j:R_1\to D_j$ such that the diagram commutes. Then we can rewrite $M_j$ using the production of $e_1^{-1}$ and obtain the transition $M_j\overset{e_1^{-1}}{\Rightarrow}P_{j+1}$. We reverse it again and obtain $P_{j+1}\overset{e_1}{\Rightarrow} M_j$. Then the induction continues with the transitions $M_{j-1}\overset{e_{j-1}}{\Rightarrow} M_{j}$ and $P_{j+1}\overset{e_1}{\Rightarrow} M_j$.
+
+    The second case is when there is no such morphism. We will show that this case is not possible. To do this we have to reason by induction
+
+    If there is no morphism $j$ then there exists $O$ the pullback of $R_j\lemb M_{j+1}\remb L_1$ and $P$ the pullback of $K_j\lemb R_j\remb O$ such that the morphism $P\to O$ is not an iso.
+
+    We also have the transition $M_{j+1}\overset{e_{j+1}}{\Rightarrow} M_{j+2}$. If
+
+
+
+
+  \end{itemize}
 
 
   The construction of~\autoref{lemm:linear_to_trace} is minimal w.r.t. the choice of decoration and linear extension, in the sense that each graph in the construction is the result of a pushout.
