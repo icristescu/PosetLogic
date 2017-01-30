@@ -2,12 +2,28 @@
 
 \subsection{From transition systems to posets}
 
+\begin{definition}[Causal trace]
+  Let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace.
+  Two transitions $t_1$ and $t_2$ of $\theta$ are sequential dependent in $\theta$, if $t_1<_{\theta} t_2$ can be derived by the following rules:
+  \begin{align*}
+    \frac{t_1 < t_2}{t_1 <_{\theta} t_2}\quad
+    \frac{t_1\congr t_1'<t_2'\congr t_2}{t_1 <_{\theta} t_2}
+  \end{align*}
+  A transition $t_1$ inhibits a transition $t_2$ of $\theta$, if $t_1\dashv_{\theta} t_2$ can be derived by the following rules:
+  \begin{align*}
+    \frac{t_1 \dashv t_2}{t_1 \dashv_{\theta} t_2}\quad
+    \frac{t_1\congr t_1'\dashv t_2'\congr t_2}{t_1 \dashv_{\theta} t_2}
+  \end{align*}
+
+  Define $\leq$ the transitive and reflexive closure of sequential dependence. We say that $\theta$ is a \emph{causal trace} if it is directed.
+\end{definition}
+
 \begin{lemma}
   \label{lemma:pos_infl}
-  Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $e,e'$ be two events in $E$. Then the following hold
+  Let $\theta$ a causal trace and let $t_1:M_1\overset{e_1}{\Rightarrow}N_1$ and $t_2:M_2\overset{e_2}{\Rightarrow}N_2$ be two transitions in $\theta$. Then the following hold
   \begin{enumerate}
-  \item $e<e'\implies \labl(e)\xrightarrow{+}\labl(e')$;
-  \item $e\dashv e' \implies\labl(e)\xrightarrow{-}\labl(e')$.
+  \item $t_1 <_{\theta} t_2\implies \labl(e_1)\xrightarrow{+}\labl(e_2)$;
+  \item $t_1\dashv_{\theta} t_2 \implies\labl(e_1)\xrightarrow{-}\labl(e_2)$.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -22,48 +38,80 @@
 %%   Sequential dependence (~\autoref{def:seq_dep}) is not transitive. Therefore when considering posets in~\autoref{def:poset}, we need to distinguish between the \emph{immediate} order relation (the cover relation in~\autoref{def:poset}) and its transitive closure. %We denote the first $\cover$ and the latter with $\tleq$.
 %% \end{remark}
 
+\begin{definition}[Augmented poset]
+  Let $s=(E, \cover,\dashv,\labl)$ be a set of events equipped with two binary relations on events $\cover$ and $\dashv$ and a labelling function $\labl:E\to R$. We can retrive a poset from $s$, denoted $(E,\leq)$, where $\leq$ is the transitive and reflexive closure of $\cover$.
+
+We call $s$ an \emph{augmented poset}.
+\end{definition}
+
+
 \begin{definition}[The abstraction on a trace]
   \label{def:abstraction}
-  \begin{itemize}
-  \item[] $~$
-  \item Let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace. Define $\leq$ the transitive and reflexive closure of sequential dependence. We say that $\theta$ is a \emph{causal trace} if it is directed.
-    %% w.r.t. the transitive closure of sequential dependence:
-    %%     \[
-    %%     M_i \Rightarrow M_{i+1} \tleq M_{n-1}\Rightarrow M_n, \forall i\leq n
-    %%     \]
-    Let us denote with $\Theta$ the set of causal traces.
-  \item Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
+  Let us denote with $\Theta$ the set of causal traces.
+  %\begin{itemize}
+  %\item[] $~$
+  %\item Let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace. Define $\leq$ the transitive and reflexive closure of sequential dependence. We say that $\theta$ is a \emph{causal trace} if it is directed.
+  %\item
+  Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
     \begin{itemize}
-    \item given a transition $M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
-      \[
-      \alpha(M\overset{m,p}{\Rightarrow} M') = e
-      \]
-      such that $\labl(e) = p$.
-    \item define a poset from a trace $\alpha(\theta) = (E,\leq,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the (the transitive and reflexive closure of) sequential dependence between transitions is preserved:
+    \item given a transition $t:M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
+      $\alpha(t) = e_t$ such that $\labl(e) = p$.
+    \item define an augmented poset from a trace $\alpha(\theta) = (E,\cover,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
       \begin{align*}
-        \alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
-        e_i \leq e_j \iff t_i \leq t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
+        %\alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
+        e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
+        e_i \dashv e_j \iff t_i \dashv_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
       \end{align*}
     \end{itemize}
-  \item
-    Let $TS = (Q,R,E,T,I,<,\dashv)$ be a transition system and let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of traces of $TS$.
-    Define the set of posets $\mathcal{S}$ obtained by abstraction on $\Theta$ as follows
+  %\item
+    Let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of causal traces.
+    Define the set of augmented posets $\mathcal{S}$ obtained by abstraction on $\Theta$ as follows
     \[
     \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)\text{ with }k\leq n
     \]
-    where for each poset $s = (E,\leq,\labl)$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = (E,\leq,\labl)$.
-  \end{itemize}
+    where for each augmented poset $s$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = s$.
+  %\end{itemize}
 \end{definition}
 
 \begin{property}
   If $\Theta$ is a set of causal traces, then all posets in $\alpha(\Theta)=\mathcal{S}$ are directed.
 \end{property}
 
-%Instead of working on the transition system, we interpret ou logic over a set of stories, $\mathcal{S}$ with the constraint that $\mathcal{S}$ is closed under set inclusion: $s\in \mathcal{S} \implies \forall s'\subset_{\labl} s, s'\in\mathcal{S}$. We equip the set of stories $\mathcal{S}$ with the binary relation $\dashv_{\mathcal{S}}$, which is the restriction of $\dashv$ to the set of events $\cup_{s\in\mathcal{S}} E_s$.
+If we work only on posets, the abstraction is "too forgetful".
+The following examples give an intuition of why the abstraction function has to preserve both $\cover$ and $\dashv$ relations. We make this intuition formal in~\autoref{th:correction}.
 
-%We are not interested in the extraction mechanism, as long as the identity of events and the relationships between them (causality and inihibition) are preserved.
+\begin{example}
+  Let us consider the following rules:
+  \begin{align*}
+    r_1:A \Rightarrow A, B\qquad r_2:A \Rightarrow C \qquad r_3: B,C \Rightarrow C
+  \end{align*}
+  and the trace
+  \begin{align*}
+    A \overset{\id_A,r_1}{\Rightarrow} A, B \overset{\id_A,r_2}{\Rightarrow} B,C \overset{id_{B,C},r_3}{\Rightarrow}C.
+  \end{align*}
+  Let us denote $t_1$, $t_2$ and $t_3$ the three transitions. We have that $t_1<t_3$, $t_2<t_3$ and $t_2\dashv t_1$. If we "forget" that $t_2\dashv t_1$ we retrieve a trace where $t_1$ and $t_2$ are sequential independent:
+  \begin{align*}
+    A_1,A_2 \overset{\id_{A_1},r_1}{\Rightarrow} A_1,A_2,B \overset{\id_{A_2},r_2}{\Rightarrow} A_1,B,C \overset{id_{B,C},r_3}{\Rightarrow} A_1,C.
+  \end{align*}
+  From such an abstraction it is not possible to recover the original trace.
+\end{example}
 
-%In the following subsection we define the \emph{concretisation} function.
+\begin{example}
+  Let us consider the following rules:
+  \begin{align*}
+    r_1:\varepsilon \Rightarrow A, B\qquad r_2:A \Rightarrow C \qquad r_3: B,C \Rightarrow C
+  \end{align*}
+  and the trace
+  \begin{align*}
+    \varepsilon \overset{\emptyset,r_1}{\Rightarrow} A, B \overset{\id_A,r_2}{\Rightarrow} B,C \overset{id_{B,C},r_3}{\Rightarrow}C.
+  \end{align*}
+  Let us denote $t_1$, $t_2$ and $t_3$ the three transitions. We have that $t_1<t_3$, $t_2<t_3$ and $t_1< t_2$. If we "forget" that $t_1< t_3$ (as both $t_1<t_2$ and $t_2<t_3$ hold), we retrieve the following trace:
+  \begin{align*}
+    B_1 \overset{\emptyset,r_1}{\Rightarrow} B_1,A,B_2 \overset{\id_{A},r_2}{\Rightarrow} B_1,A,B_2,C \overset{id_{B_1,C},r_3}{\Rightarrow} B_2,A_1,C.
+  \end{align*}
+\end{example}
+
+
 
 \subsection{Refinement of graph rewriting rules}
 
@@ -84,6 +132,17 @@ In a poset of $\mathcal{S}$, we have that for any event, its immediate causes ha
     We denote $\decor(s)$ the set of all decorated posets of $s$.
   \end{enumerate}
 \end{definition}
+
+We ask the following constraints on decoration.
+\begin{definition}[Constraints on decoration]
+\label{def:constr_dec}
+  Let $(E,\sqsubset,\labl)$ be a decorated poset. Forall events $e_1,e_2,e_3\in E$, the following constraints hold:
+  \begin{itemize}
+  \item if $e_1\redl{+}_{O_1} e_3$ and $e_2\redl{+}_{O_2} e_3$, let $O$ be the pullback of the span $O_1\lemb L_3\remb O_2$. Then $O\iso\varepsilon$.
+  \item if $e_3\redl{+}_{O_1} e_1$ and $e_3\redl{+}_{O_2} e_2$, let $O$ be the pullback of the span $O_1\lemb R_3\remb O_2$. Then $O\iso\varepsilon$.
+  \end{itemize}
+\end{definition}
+Intuitively, the first condition says that two events cannot be responsible for "production" of the same resource. Similarly, the second condition says that two events cannot "consume" the same resource.
 
 Let us first give an example of a refinement of a poset and then introduce all notions we need formally.
 \begin{example}
@@ -504,6 +563,174 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
 \end{definition}
 
 \begin{lemma}
+  Let $\theta:M_2\Rightarrow M_3\cdots M_n\Rightarrow M_{n+1}$ be a trace and let $t_1:M_1\Rightarrow M_n$ be a transition. Let $\alpha(\theta,t_1) = (E,\sqsubset,\labl)$ be its abstraction such that the following hold:
+  \begin{enumerate}
+  \item $\forall i, 2\leq i\leq n$, $e_1\sqsubset_{O_1} e_i\iff e_i = e_n$;
+  \item $(E,\sqsubset,\labl)$ is a valid decoration, according to~\autoref{def:constr_dec};
+  \end{enumerate}
+Then we can rewrite $\theta$ into $\theta':M_1'\Rightarrow M_2\Rightarrow M_3\cdots M_n\Rightarrow M_{n+1}$ for which $\alpha(\theta)\iso\alpha(\theta')$ and the conditions above hold.
+\end{lemma}
+\begin{proof}
+  We proceed by induction on the trace $M_2\Rightarrow M_3\cdots M_j\Rightarrow M_{j+1}\cdots M_n\Rightarrow M_{n+1}$.
+
+  First we introduce some notations we will need during the proof. Let us denote $\prec$ the ordering between transitions in $\theta$.
+  For an event $e_j$ we say that an event $e_i$ is a $\sqsubset$-$\prec$-successor, if it is a succesor for the $\sqsubset$ relation and the latest one in the $\prec$ ordering (that is for transitions $t_i$ and $t_j$ such that $\alpha(t_i)=e_i$, $\alpha(t_j)=e_j$ we have that $t_i\prec t_j$).
+  For a transition $t_i:M_i{\Rightarrow} M_{i+1}$, if $\alpha(t_i)=e_i$, then we write $M_i\overset{e_i}{\Rightarrow} M_{i+1}$.
+
+  Let us consider one step of swapping: let $t_j:M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $t_1^j:P_j\overset{e_1}{\Rightarrow}M_{j+1}$ where $2\leq j\leq n-1$. %and $\alpha(t_j)=e_j$, $\alpha(t_1^j) = e_1$.
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (m2) at (0,1) {\(M_2\)};
+    \node (dots) at (2,1) {\(\cdots\)};
+    \node (mj) at (4,1) {\(M_j\)};
+    \node (mj1) at (6,1) {\(M_{j+1}\)};
+    \node (dots2) at (8,1) {\(\cdots\)};
+    \node (mk) at (10,1) {\(M_n\)};
+    \node (pk) at (0,0) {\(P_n\)};
+    \node (pkj1) at (2,0) {\(P_{n-j-1}\)};
+    \node (pkj) at (4,0) {\(P_{n-j}\)};
+    \node (p1) at (8,0) {\(P_{1}=M_1\)};
+    \draw [vecArrow] (m2) -- (dots);
+    \draw [vecArrow] (dots) -- (mj);
+    \draw [vecArrow] (mj) -- (mj1);
+    \draw [vecArrow] (mj1) -- (dots2);
+    \draw [vecArrow] (dots2) -- (mk);
+    \draw [vecArrow] (pk) -- (dots);
+    \draw [vecArrow] (pkj1) -- (mj);
+    \draw [vecArrow] (pkj) -- (mj1);
+    \draw [vecArrow] (p1) -- (mk);
+  \end{tikzpicture}
+  \]
+  We can rewrite the transitions $M_j\overset{e_j}{\Rightarrow} M_{j+1}\overset{e_1^{-1}}{\Rightarrow} P_{n-j}$, as productions are reversible. We distinguish between two cases. In the diagram below:
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+    \node (r1) at (1.5,0) {\(R_j\)};
+    \node (m1) at (2,1.5) {\(M_{j+1}\)};
+    \node (l2) at (2.5,0) {\(L_1\)};
+    \node (d1) at (0,1.5) {\(D_j\)};
+    \node (k1) at (0,0) {\(K_j\)};
+    \node (d2) at (4,1.5) {\(D_j'\)};
+    \node (k2) at (4,0) {\(K_1\)};
+    \node (o) at (2,-1) {\(O\)};
+    \node (p) at (1,-2) {\(P\)};
+    \draw [->] (k1) -- (r1);
+    \draw [->] (k2) -- (l2);
+    \draw [->] (k1) -- node [left,midway] {\(k_j\)} (d1);
+    \draw [->] (k2) -- (d2);
+    \draw [->] (d1) -- node [above,midway] {\(g_j\)} (m1);
+    \draw [->] (d2) -- (m1);
+    \draw [->] (l2) -- node [right,midway] {\(m_1\)} (m1);
+    \draw [->] (r1) -- node [left,midway] {\(m_j\)} (m1);
+    \draw [dotted,->] (l2) -- (d1);
+    \draw [->] (p) -- (k1);
+    \draw [->] (p) -- (o);
+    \draw [->] (o) -- node [left,midway] {$o_j$} (r1);
+    \draw [->] (o) -- node [right,midway] {$o_1$} (l2);
+    \end{tikzpicture}
+    \]
+    first suppose that there is a morphism $R_1\to D_j$ such that the diagram commutes. Then we can rewrite $M_j$ using the production of $e_1^{-1}$ and obtain the transition $M_j\overset{e_1^{-1}}{\Rightarrow}P_{j+1}$. We reverse it again and obtain $P_{j+1}\overset{e_1}{\Rightarrow} M_j$. Then the induction continues with the transitions $M_{j-1}\overset{e_{j-1}}{\Rightarrow} M_{j}$ and $P_{j+1}\overset{e_1}{\Rightarrow} M_j$.
+
+    The second case is when there is no such morphism.
+    We consider the following cases:
+
+    \begin{itemize}
+    \item {\bf both events have a common $\sqsubset$-$\prec$-successor}. Note that from the first condition in the hypothesis, this case is only possible if $e_j\sqsubset e_n$. As $e_n$ is the $\sqsubset$-$\prec$-successor of $e_j$ we have that for all events $e_i$ such that $\alpha(t_i)=e_i$ and $j<i<k$, $e_j$ and $e_i$ are sequential independent.
+      \begin{mdframed}[backgroundcolor=blue!20]
+        not if we consider inhibition!
+      \end{mdframed}
+      Therefore can rewrite the trace $M_j{\Rightarrow} M_{j+1}\cdots M_n\Rightarrow M_{n+1}$ such that $M_j'\overset{e_j}{\Rightarrow}M_n\overset{e_n}{\Rightarrow}M_{n+1}$.
+      The diagram above becomes then
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+    \node (r1) at (1.5,0) {\(R_j\)};
+    \node (m1) at (2,1.5) {\(M_{n}\)};
+    \node (l2) at (2.5,0) {\(L_1\)};
+    \node (d1) at (0,1.5) {\(D_j\)};
+    \node (k1) at (0,0) {\(K_j\)};
+    \node (d2) at (4,1.5) {\(D_n\)};
+    \node (k2) at (4,0) {\(K_1\)};
+    \node (o) at (2,-1) {\(O\)};
+    \node (p) at (1,-2) {\(P\)};
+    \draw [->] (k1) -- (r1);
+    \draw [->] (k2) -- (l2);
+    \draw [->] (k1) -- node [left,midway] {\(k_j\)} (d1);
+    \draw [->] (k2) -- (d2);
+    \draw [->] (d1) -- node [above,midway] {\(g_j\)} (m1);
+    \draw [->] (d2) -- (m1);
+    \draw [->] (l2) -- node [right,midway] {\(m_1\)} (m1);
+    \draw [->] (r1) -- node [left,midway] {\(m_j\)} (m1);
+    \draw [->] (p) -- (k1);
+    \draw [->] (p) -- (o);
+    \draw [->] (o) -- node [left,midway] {$o_j$} (r1);
+    \draw [->] (o) -- node [right,midway] {$o_1$} (l2);
+    \end{tikzpicture}
+    \]
+
+    We have that for the transitions $M_j'\overset{e_j}{\Rightarrow}M_n\overset{e_n}{\Rightarrow}M_{n+1}$ that the underlying positive influence is $e_j\redl{+}_{O_j} e_n$ and similarly for $e_1\redl{+}_{O_1}e_n$. We obtain the following diagram
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+    \node (mn) at (0,2.5) {\(M_{n}\)};
+    \node (ln) at (0,0) {\(L_{n}\)};
+    \node (o) at (0,-2) {\(O\)};
+    \node (oj) at (-1,-1) {\(O_j\)};
+    \node (o1) at (1,-1) {\(O_1\)};
+    \node (rj) at (-2,0) {\(R_j\)};
+    \node (r1) at (2,0) {\(R_1\)};
+    \node (d1) at (-1,1) {\(\cdot\)};
+    \node (d2) at (1,1) {\(\cdot\)};
+    \draw [->] (o) -- (o1);
+    \draw [->] (o) -- (oj);
+    \draw [->] (oj) -- (rj);
+    \draw [->] (oj) -- (ln);
+    \draw [->] (o1) -- (r1);
+    \draw [->] (o1) -- (ln);
+    \draw [->] (rj) -- (d1);
+    \draw [->] (ln) -- (d1);
+    \draw [->] (r1) -- (d2);
+    \draw [->] (ln) -- (d2);
+    \draw [dotted,->] (d1) -- (mn);
+    \draw [dotted,->] (d2) -- (mn);
+    \draw [->] (o) to [bend right] (r1);
+    \draw [->] (o) to [bend left] (rj);
+    \draw [->] (r1) to [bend right] (mn);
+    \draw [->] (rj) to [bend left] (mn);
+    \end{tikzpicture}
+    \]
+    where $O\emb O_j$ and $O\emb O_1$. This contradicts the constraints of~\autoref{def:constr_dec}.
+
+
+    \item {\bf events have different $\sqsubset$-$\prec$-successors}. Let $e_i$ be the succesor of $e_j$, $e_j\sqsubset e_i$ with $i\neq k$.
+      We will show that this case is not possible. %To do this we have to reason by induction on the trace
+
+      If there is no morphism $j$ then there exists $O$ the pullback of $R_j\lemb M_{j+1}\remb L_1$ and $P$ the pullback of $K_j\lemb R_j\remb O$ such that the morphism $P\to O$ is not an iso.
+
+    Let us suppose that
+    \begin{align}
+      \label{eq:ekei}
+      e_k\prec e_i.
+    \end{align}
+    The other case is similar. We will show that $e_j\sqsubset e_k$, which would contradict the hypothesis.
+
+    %In order to show that $e_j\sqsubset e_k$ we have to "move back" the transitions $M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $P_{j}\overset{e_1}{\Rightarrow} M_{j+1}$ to obtain $M_j'\overset{e_j}{\Rightarrow} M_k$ and
+
+    Let us denote $O_j\subseteq M_{j+1}$ the image of $o_1(m_1(O))$ and $o_j(m_j(O))$.
+    We have the transition $M_{j+1}\overset{e_{j+1}}{\Rightarrow} M_{j+2}$ and either $O_j\subseteq M_{j+2}$ or not (here we suppose, for simplifying the notations, that the morphisms $g_{j+1}$ and $f_{j+1}$ are the identity morphisms restricted to their domain of application). In the latter case, we deduce that $e_j\redl{+}_{O_j} e_{j+1}$ which leads to a contradiction on the variant of the construction $\bp$. Therefore $O_j\subseteq M_{j+2}$ and by induction on the trace $M_{j+1}\Rightarrow \cdots \Rightarrow M_k$ we have that $O_j\subseteq M_k$. Therefore
+    \begin{align}
+      \label{eq:e1ek}
+      O_j\subseteq M_k\text{ and }e_1\sqsubset_{O_1} e_k\text{ implies that }O\emb O_1.
+    \end{align}
+
+    We have the trace $M_j\overset{e_j}{\Rightarrow} M_{j+1}\cdots M_k$ and from~\autoref{eq:ekei}, $e_j$ is not a cause for any event between $e_{j+1}$ and $e_k$, including. From the invariant of the construction $\bp$, we can "move" event $e_j$ just before the transition $M_k\overset{e_k}{\Rightarrow} M_{k+1}$ and obtain the transition $M_{j}'\overset{e_j}{\Rightarrow} M_k$.
+
+
+
+
+
+  \end{itemize}
+
+\end{proof}
+
+\begin{lemma}
   \label{lemm:linear_to_trace}
   Let $s=(E,\leq,\labl)$ be a directed poset, with $s^{\star}\in\decor(s)$ one of its decorations and with $\underline{s^{\star}}\in\linear(s^{\star})$ a linear extension of $s^{\star}$. Moreover, let $(E,\leq,\labl,\fp)$ the refinement of $s^{\star}$.
 
@@ -552,57 +779,33 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
 
   So far, we have a trace $M_2\Rightarrow N_2\cdots M_k\Rightarrow N_2\cdots M_n\Rightarrow N_n$ corresponding to the chain $e_2\prec e'\cdots e_k\prec e''\prec\cdots e_n$ and a transition $P_1\Rightarrow M_k$. The last step consists in "swaping" the transition $P_1\Rightarrow M_k$ at the beginning of the trace, to obtain a trace $M_1\Rightarrow M_2\Rightarrow N_2\cdots M_n\Rightarrow N_n$.
 
-  We proceed by induction on the trace $M_2\Rightarrow N_2\cdots M_k\Rightarrow N_2\cdots M_n\Rightarrow N_n$.
-  Let us consider one step of swapping: let $M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $P_j\overset{e_1}{\Rightarrow}M_{j+1}$ where $2\leq j\leq k-1$. We consider the following cases:
-
-  \begin{itemize}
-  \item {\bf both events have a common successor $\mathbf{e_j\sqsubset e_{j+1}}$ and $\mathbf{e_1\sqsubset e_{j+1}}$.} Note that from~\autoref{eq:e3} this case is only possible if $j+1=k$.
-
-  \item {\bf events have different successors $\mathbf{e_j\sqsubset e_i}$ with $\mathbf{i\neq k}$.}
-    We can rewrite the transitions $M_j\overset{e_j}{\Rightarrow} M_{j+1}\overset{e_1^{-1}}{\Rightarrow} P_j$, as productions are reversible. We distinguish again between two cases. In the diagram below:
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-    \node (r1) at (1.5,0) {\(R_j\)};
-    \node (m1) at (2,1.5) {\(M_{j+1}\)};
-    \node (l2) at (2.5,0) {\(L_1\)};
-    \node (d1) at (0,1.5) {\(D_j\)};
-    \node (k1) at (0,0) {\(K_j\)};
-    \node (d2) at (4,1.5) {\(D_j'\)};
-    \node (k2) at (4,0) {\(K_1\)};
-    \node (o) at (2,-1) {\(O\)};
-    \node (p) at (1,-2) {\(P\)};
-    \draw [->] (k1) -- (r1);
-    \draw [->] (k2) -- (l2);
-    \draw [->] (k1) -- node [left,midway] {\(k_j\)} (d1);
-    \draw [->] (k2) -- (d2);
-    \draw [->] (d1) -- node [above,midway] {\(g_j\)} (m1);
-    \draw [->] (d2) -- (m1);
-    \draw [->] (l2) -- node [right,midway] {\(m_1'\)} (m1);
-    \draw [->] (r1) -- (m1);
-    \draw [dotted,->] (l2) -- node [above,midway] {\(j\)} (d1);
-    \draw [->] (p) -- (k1);
-    \draw [->] (p) -- (o);
-    \draw [->] (o) -- (r1);
-    \draw [->] (o) -- node [right,midway] {$o$} (l2);
-    \end{tikzpicture}
-    \]
-    first suppose that there is a morphism $j:R_1\to D_j$ such that the diagram commutes. Then we can rewrite $M_j$ using the production of $e_1^{-1}$ and obtain the transition $M_j\overset{e_1^{-1}}{\Rightarrow}P_{j+1}$. We reverse it again and obtain $P_{j+1}\overset{e_1}{\Rightarrow} M_j$. Then the induction continues with the transitions $M_{j-1}\overset{e_{j-1}}{\Rightarrow} M_{j}$ and $P_{j+1}\overset{e_1}{\Rightarrow} M_j$.
-
-    The second case is when there is no such morphism. We will show that this case is not possible. To do this we have to reason by induction
-
-    If there is no morphism $j$ then there exists $O$ the pullback of $R_j\lemb M_{j+1}\remb L_1$ and $P$ the pullback of $K_j\lemb R_j\remb O$ such that the morphism $P\to O$ is not an iso.
-
-    We also have the transition $M_{j+1}\overset{e_{j+1}}{\Rightarrow} M_{j+2}$. If
-
-
-
-
-  \end{itemize}
-
+  %% We proceed by induction on the trace $M_2\Rightarrow N_2\cdots M_k\Rightarrow N_2\cdots M_n\Rightarrow N_n$.
+  %% Let us consider one step of swapping: let $M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $P_j\overset{e_1}{\Rightarrow}M_{j+1}$ where $2\leq j\leq k-1$.
+  %% \[
+  %% \begin{tikzpicture} %[scale=0.8]
+  %%   \node (m2) at (0,1) {\(M_2\)};
+  %%   \node (dots) at (2,1) {\(\cdots\)};
+  %%   \node (mj) at (4,1) {\(M_j\)};
+  %%   \node (mj1) at (6,1) {\(M_{j+1}\)};
+  %%   \node (dots2) at (8,1) {\(\cdots\)};
+  %%   \node (mk) at (10,1) {\(M_k\)};
+  %%   \node (pk) at (0,0) {\(P_k\)};
+  %%   \node (pkj1) at (2,0) {\(P_{k-j-1}\)};
+  %%   \node (pkj) at (4,0) {\(P_{k-j}\)};
+  %%   \node (p1) at (8,0) {\(P_{1}\)};
+  %%   \draw [vecArrow] (m2) -- (dots);
+  %%   \draw [vecArrow] (dots) -- (mj);
+  %%   \draw [vecArrow] (mj) -- (mj1);
+  %%   \draw [vecArrow] (mj1) -- (dots2);
+  %%   \draw [vecArrow] (dots2) -- (mk);
+  %%   \draw [vecArrow] (pk) -- (dots);
+  %%   \draw [vecArrow] (pkj1) -- (mj);
+  %%   \draw [vecArrow] (pkj) -- (mj1);
+  %%   \draw [vecArrow] (p1) -- (mk);
+  %% \end{tikzpicture}
+  %% \]
 
   The construction of~\autoref{lemm:linear_to_trace} is minimal w.r.t. the choice of decoration and linear extension, in the sense that each graph in the construction is the result of a pushout.
-
-
 
 \end{proof}
 
@@ -845,9 +1048,10 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
 %% \end{tikzpicture}
 %% \]
 
-\begin{lemma}
+\begin{theorem}
+\label{th:correction}
   $\theta\subseteq \gamma(\alpha(\theta))$.
-\end{lemma}
+\end{theorem}
 \begin{proof}
     \begin{mdframed}[backgroundcolor=blue!20]
     to do
