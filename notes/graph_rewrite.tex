@@ -115,7 +115,7 @@ Other graph rewriting techniques exists that allows production with dangling poi
   \end{itemize}
 \end{definition}
 
-We denote $t:(s,e,s')$ a transition. Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the destination state of $t_1$. A \emph{trace} $\theta$ is a sequence of composable transitions: $\theta=t_1;t_2;\cdots t_n$.
+We denote $t:(s,e,s')$ a transition. Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the destination state of $t_1$. A \emph{trace} $\theta$ is a sequence of composable transitions: $\theta=t_1;t_2;\cdots t_n$. Two traces $\theta:t_1;\cdots t_n$ and $\theta':t_1';\cdots t_n'$ can be composed if $t_n$ and $t_1'$ are composable: $\theta;\theta':t_1;\cdots t_n;t_1;\cdots t_n'$.
 
 \begin{definition}[TS on graphs]
   A transition system on graphs $TS = (Q,R,E,T)$ consists of
@@ -207,8 +207,10 @@ If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{
 
 Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ be two parallel independent transitions.  Let us denote $t_2/t_1:M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1/t_2:M_2\overset{m_1',p_1}{\Rightarrow} M'$ the two transitions we obtained by~\autoref{church_rosser}.
 
-\begin{definition}[Equivalence class on transitions]
+\begin{definition}[Equivalence class on transitions and traces]
 We define an equivalence class on transitions, denoted $\congr$ as the least equivalence relation which satisfies $t_1\congr t_1/t_2$ and $t_2\congr t_2/t_1$, for any two transitions $t_1$ and $t_2$ parallel independent.
+
+Define an equivalence up to permutations on traces, as the least equivalence relation satisfying $t_1;(t_2/t_1)\congr t_2;(t_1/t_2)$.
 \end{definition}
 
 Note that, from~\autoref{church_rosser}, for two sequential independent transitions $t_1$ and $t_2$ we have that $t_1\congr t_1'$ and $t_2\congr t_2'$, where $t_1'$ and $t_2'$ are obtained by commutation.
