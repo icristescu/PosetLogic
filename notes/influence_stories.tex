@@ -8,16 +8,22 @@
   Two transitions $t_1$ and $t_2$ of $\theta$ are sequential dependent in $\theta$, if $t_1<_{\theta} t_2$ can be derived by the following rules:
   \begin{align*}
     \frac{t_1 < t_2}{t_1 <_{\theta} t_2}\quad
-    \frac{t_1\congr t_1'<t_2'\congr t_2}{t_1 <_{\theta} t_2}
+    \frac{t_1\simeq t_1'<t_2'\simeq t_2}{t_1 <_{\theta} t_2}
   \end{align*}
   A transition $t_1$ inhibits a transition $t_2$ of $\theta$, if $t_1\dashv_{\theta} t_2$ can be derived by the following rules:
   \begin{align*}
     \frac{t_1 \dashv t_2}{t_1 \dashv_{\theta} t_2}\quad
-    \frac{t_1\congr t_1'\dashv t_2'\congr t_2}{t_1 \dashv_{\theta} t_2}
+    \frac{t_1\simeq t_1'\dashv t_2'\simeq t_2}{t_1 \dashv_{\theta} t_2}
   \end{align*}
 
-  Define $\leq$ the transitive and reflexive closure of sequential dependence. We say that $\theta$ is a \emph{causal trace} if it is directed.
+  Define $\leq$ the transitive and reflexive closure of sequential dependence. We say that $\theta$ is a \emph{causal trace} if it is directed w.r.t. $\leq$.
 \end{definition}
+
+\begin{lemma}
+  \label{lem:inhibiting_pair}
+  Let $t_1$ and $t_2$ be two transitions in a trace $\theta$ such that $t_1\dashv t_2$. Then $t_2\not\dashv t_1$.
+\end{lemma}
+
 
 %% \begin{remark}
 %%   For simplfying the proofs we make the following assumption on a causal trace: for any transition $M\overset{f}{\remb} D\overset{g}{\lemb} N$, the functions $f$ and $g$ are the identity on
@@ -25,27 +31,29 @@
 
 \begin{lemma}
   \label{lemma:pos_infl}
-  Let $\theta$ a causal trace and let $t_1:M_1\overset{e_1}{\Rightarrow}N_1$ and $t_2:M_2\overset{e_2}{\Rightarrow}N_2$ be two transitions in $\theta$. Then the following hold
+  Let $\theta$ a causal trace and let $t_1:M_1\overset{m_1,p_1}{\Rightarrow}N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow}N_2$ be two transitions in $\theta$. Then the following hold
   \begin{enumerate}
-  \item $t_1 <_{\theta} t_2\implies\text{ there exists a unique graph }O\text{ such that }\labl(t_1)\xrightarrow{+}_O\labl(t_2)$;
-  \item $t_1\dashv_{\theta} t_2\implies\text{ there exists a unique graph }O\text{ such that }\labl(t_1)\xrightarrow{-}_O\labl(t_2)$.
+  \item $t_1 <_{\theta} t_2\implies$ there exists a unique cospan $s$ such that $p_1\xrightarrow{+}_s p_2$ and the causal pair of $t_1 <_{\theta} t_2$ is induced by $s$;
+  \item $t_1\dashv_{\theta} t_2\implies$ there exists a unique cospan $s$ such that $p_1\xrightarrow{-}_s p_2$ and the inhibiting pair of $t_1\dashv_{\theta} t_2$ is induced by $s$.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
   \begin{enumerate}
-  \item From~\autoref{def:seq_dep} $e_1 < e_2$ implies there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that are sequential dependent. For any such pair of transitions, using~\autoref{lem:completeness_causal_pair} there exists a causal pair which in turns implies that $\labl(e)\xrightarrow{+}\labl(e')$.
+  \item From~\autoref{def:causal_trace} $t_1 <_{\theta} t_2$ implies there exists two transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ that are sequential dependent. For any such pair of transitions, using~\autoref{lem:completeness_causal_pair} there exists a causal pair induced by a cospan $s$, which in turns implies that $p_1\xrightarrow{+}_{s}p_2$.
 
-  \item From~\autoref{def:inhibition} $e_1 \dashv e_2$ implies there exists transition $M\overset{m_1,p_1}{\Rightarrow} M_1$ inhibiting transition $M\overset{m_2,p_2}{\Rightarrow} M_2$. For any such pair of transitions, using~\autoref{lem:completeness_inhib_pair} there exists an inhibiting pair which in turns implies that $\labl(e)\xrightarrow{-}\labl(e')$.
+  \item From~\autoref{def:causal_trace} $t_1 \dashv_{\theta} t_2$ implies there exists transitions $M\overset{m_1,p_1}{\Rightarrow} M_1$ inhibiting $M\overset{m_2,p_2}{\Rightarrow} M_2$. For any such pair of transitions, using~\autoref{lem:completeness_inhib_pair} there exists an inhibiting pair induced by a cospan $s$, which in turns implies that $p_1\xrightarrow{-}_s p_2$.
   \end{enumerate}
 \end{proof}
 
 \begin{lemma}
   \label{lem:constraint_mj}
-  Let $\theta$ a causal trace and let $t_1:M_1\overset{e_1}{\Rightarrow}N_1$, $t_2:M_2\overset{e_2}{\Rightarrow}N_2$ and $t_3:M_3\overset{e_3}{\Rightarrow}N_3$ be two transitions in $\theta$. Let $\labl(e_i) = L_i\remb K_i \lemb R_i$ be the three rules, for $i\in\{1,2,3\}$.
+  Let $\theta$ a causal trace and let $t_1:M_1\overset{m_1,p_1}{\Rightarrow}N_1$, $t_2:M_2\overset{m_2,p_2}{\Rightarrow}N_2$ and $t_3:M_3\overset{m_3,p_3}{\Rightarrow}N_3$ be three transitions in $\theta$. Let $p_i = L_i\remb K_i \lemb R_i$ be the three rules, for $i\in\{1,2,3\}$.
   \begin{enumerate}
   \item
     \label{lem:constraint_meet}
-    If $t_1<_{\theta} t_3$ and $t_2<_{\theta} t_3$, then let $O_1$, $O_2$ be two graphs such that $\labl(e_1)\xrightarrow{+}_{O_1}\labl(e_3)$ and $\labl(e_2)\xrightarrow{+}_{O_2}\labl(e_3)$. Let $O$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
+    If $t_1<_{\theta} t_3$ and $t_2<_{\theta} t_3$, then let $O_1$, $O_2$ be two graphs such that the causal pairs of $t_1<_{\theta} t_3$ and $t_2<_{\theta} t_3$ are induced by $O_1$ and $O_2$ respectively.
+%$p_1\xrightarrow{+}_{O_1}p_3$ and $p_2\xrightarrow{+}_{O_2}p_3$.
+Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. If $t_1\not\dashv t_2$ and $t_2\not\dashv t_1$ then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
     \[
     \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O\)};
@@ -68,9 +76,16 @@
       \draw [->] (o) to [bend right] (k2);
     \end{tikzpicture}
     \]
+    Moreover
+    \begin{align*}
+      t_1^{-1}\dashv t_2^{-1}\implies\text{ there exists the morphisms }O\emb K_1\text{ and }\\
+      t_2^{-1}\dashv t_1^{-1}\implies\text{ there exists the morphisms }O\emb K_2.
+    \end{align*}
   \item
     \label{lem:constraint_join}
-    If $t_3 <_{\theta} t_1$ and $t_3<_{\theta} t_2$, then let $O_1$, $O_2$ be two graphs such that $\labl(e_3)\xrightarrow{+}_{O_1}\labl(e_1)$ and $\labl(e_3)\xrightarrow{+}_{O_2}\labl(e_2)$. Let $O$ be the pullback of the span $O_1\lemb R_3 \remb O_2$. Then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
+    If $t_3 <_{\theta} t_1$ and $t_3<_{\theta} t_2$, then let $O_1$, $O_2$ be two graphs such that the causal pairs of $t_3 <_{\theta} t_1$ and $t_3<_{\theta} t_2$ are induced by $O_1$ and $O_2$ respectively.
+Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb R_3 \remb O_2$. If $t_1\not\dashv t_2$ and $t_2\not\dashv t_1$
+then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
     \[
     \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O\)};
@@ -93,17 +108,27 @@
       \draw [->] (o) to [bend right] (k2);
     \end{tikzpicture}
     \]
+    Moreover
+    \begin{align*}
+      t_1\dashv t_2\implies\text{ there exists the morphisms }O\emb K_1\text{ and }\\
+      t_2\dashv t_1\implies\text{ there exists the morphisms }O\emb K_2.
+    \end{align*}
   \end{enumerate}
 \end{lemma}
 \begin{proof}
   \begin{enumerate}
-  \item If $\theta$ is a causal trace then we can show that there exists $t_1'$ and $t_2'$ such that $t_1\congr t_1'$, $t_2\congr t_2'$ and such that the transitions $t_1';t_2';t_3$ are composable and such that $t_1'\Diamond_{\text{seq}} t_2'$.
+  \item
+    %% If $\theta$ is a causal trace then we can show that there exists $t_1'$ and $t_2'$ such that $t_1\congr t_1'$, $t_2\congr t_2'$ and such that the transitions $t_1';t_2';t_3$ are composable and such that $t_1'\Diamond_{\text{seq}} t_2'$.
+    %% %
+    %% Let $\theta'$ be the smallest subtrace of $\theta$ that contains all three transitions $t_1$, $t_2$ and $t_3$. Suppose that $t_1$ occurs before $t_2$, that is $\theta':t_1;\cdots t_2\cdots t_3$.
+    %% From $t_2<_{\theta} t_3$ we have that there exists $t_2'$ such that $t_2'< t_3$. It implies that there exists a trace $\theta_1\congr\theta'$ such that $t_2';t_3$ is at the end of $\theta'$.
+    %% Using a similar argument as above, there exist $t_1'$ such that $t_1'<_{\theta} t_3$ and we can rewrite $\theta$ to $\theta_1$ ending in $t_1';t_2';t_3$ and with $t_1'\Diamond_{\text{seq}} t_2'$.
+    %% %
+    %% Consider now the trace $t_1';t_2';t_3$ with $t_2':M_2\remb D_2 \lemb M_3$. We can rewrite $t_1';t_2';t_3$ as $t_2'';t_1'';t_3$, with $t_1'\congr t_1''$ and $t_2'\congr t_2''$. Then we also have the trace $t_2';t_1''^{-1}$ with the two transition sequential independent. Therefore we have that there exists a morphism $R_1\emb D_2$ that makes the diagram commute.
 
-    Let $\theta'$ be the smallest subtrace of $\theta$ that contains all three transitions $t_1$, $t_2$ and $t_3$. Suppose that $t_1$ occurs before $t_2$, that is $\theta':t_1;\cdots t_2\cdots t_3$.
-    From $t_2<_{\theta} t_3$ we have that there exists $t_2'$ such that $t_2'< t_3$. It implies that there exists a trace $\theta_1\congr\theta'$ such that $t_2';t_3$ is at the end of $\theta'$.
-    Using a similar argument as above, there exist $t_1'$ such that $t_1'<_{\theta} t_3$ and we can rewrite $\theta$ to $\theta_1$ ending in $t_1';t_2';t_3$ and with $t_1'\Diamond_{\text{seq}} t_2'$.
-
-    Consider now the trace $t_1';t_2';t_3$ with $t_2':M_2\remb D_2 \lemb M_3$. We can rewrite $t_1';t_2';t_3$ as $t_2'';t_1'';t_3$, with $t_1'\congr t_1''$ and $t_2'\congr t_2''$. Then we also have the trace $t_2';t_1''^{-1}$ with the two transition sequential independent. Therefore we have that there exists a morphism $R_1\emb D_2$ that makes the diagram commute:
+    From $t_1<_{\theta} t_3$ we have that there exists $t_1'\simeq t_1$ such that $t_1';t_3$. Let us denote
+$t_1':M_1\remb D_1 \lemb M_3$ the transition $t_1'$. Similarly, from $t_2<_{\theta} t_3$ there exists $t_2\simeq t_2$, $t_2';t_3$ and $t_2':M_2\remb D_2 \lemb M_3$.
+    We can show that there exists a morphism $R_1\to D_2$ such that the diagram below commutes iff there is also a morphism $O\to K_2$ that commutes.
     \[
     \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O\)};
@@ -136,22 +161,44 @@
       \draw [dotted,->] (r2) -- (d2);
     \end{tikzpicture}
     \]
-    From the morphism $R_1\emb D_2$ we can derive the morphism $O\emb K_2$. We show that the morphism $O\emb K_1$ exists, by using the trace $t_2'';t_1'';t_3$ and proceed as above.
+    We have then that if $t_2\not\dashv t_1$ then the morphism $O\to K_2$ above exists and moreover if there is no morphism $O\to K_2$ that commutes then $t_2\dashv t_1$. We reason similarly for $t_1\dashv t_2$.
+
+    From~\autoref{lem:inhibiting_pair}, if $t_2\dashv t_1$ then $t_1\not\dashv t_2$ and hence there exists $O\to K_1$ that commutes.
     \item The proof is similar to the one above.
   \end{enumerate}
 \end{proof}
 
 Inutuitively,~\autoref{lem:constraint_mj} says that if two events cannot \emph{produce} the same resource (\autoref{lem:constraint_meet}) and the same resource cannot be \emph{consumed} twice (\autoref{lem:constraint_join}). Let us give some examples.
 \begin{example}
-  For the following transitions:
+  For the following rules:
   \[
-  t_1: \varepsilon \Rightarrow A,B \qquad t_2: \varepsilon \Rightarrow A,C \qquad t_3: A,B,C \Rightarrow D
+  r_1:\varepsilon \Rightarrow A,B \qquad r_2: \varepsilon \Rightarrow A,C \qquad r_3: A,B,C \Rightarrow D
   \]
-  we cannot have that both $t_1<t_3$ and $t_2<t_3$, that is both transitions cannot produce the same $A$. However, for transitions
-  \[
-  t_1: A \Rightarrow A,B \qquad t_2: A \Rightarrow A,C \qquad t_3: A,B,C \Rightarrow D
-  \]
-  we can indeed have that both $t_1<t_3$ and $t_2<t_3$.
+  there is a trace where $t_1<t_3$ and $t_2<t_3$, however both cannot produce $A$:
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+      \node (o) at (0,-1) {\(A\)};
+      \node (r3) at (0,1) {\(A,B,C\)};
+      \node (o1) at (-1,0) {\(A,B\)};
+      \node (o2) at (1,0) {\(A,C\)};
+      \node (r1) at (-2,1) {\(A,B\)};
+      \node (r2) at (2,1) {\(A,C\)};
+      \node (k1) at (-3,0) {\(\varepsilon\)};
+      \node (k2) at (3,0) {\(\varepsilon\)};
+      \draw [->] (o) -- (o1);
+      \draw [->] (o) -- (o2);
+      \draw [->] (o1) -- (r3);
+      \draw [->] (o2) -- (r3);
+      \draw [->] (o1) -- (r1);
+      \draw [->] (o2) -- (r2);
+      \draw [->] (k1) -- (r1);
+      \draw [->] (k2) -- (r2);
+    \end{tikzpicture}
+    \]
+  %% \[
+  %% t_1: A \Rightarrow A,B \qquad t_2: A \Rightarrow A,C \qquad t_3: A,B,C \Rightarrow D
+  %% \]
+  %% we can indeed have that both $t_1<t_3$ and $t_2<t_3$.
 \end{example}
 \begin{example}
   Consider the transitions
@@ -164,30 +211,39 @@ Inutuitively,~\autoref{lem:constraint_mj} says that if two events cannot \emph{p
   t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow A,B \qquad t_2: A\Rightarrow A,C
   \]
   then indeed both $t_1<t_3$ and $t_2<t_3$ hold.
-
-  Note that though the following trace $\theta$, produced by transitions $t_3;t_1;t_2$, is valid
+\end{example}
+  %% Note that though the following trace $\theta$, produced by transitions $t_3;t_1;t_2$, is valid
+  %% \[
+  %% \theta:\varepsilon \Rightarrow A \Rightarrow A, B\Rightarrow B\qquad t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow A,B\qquad t_2: A\Rightarrow \varepsilon
+  %% \]
+  %% we cannot deduce $t_3<t_2'$, for $t_2'\congr t_2$, as in the trace $\theta$ above, transitions cannot commute.
+\begin{example}
+  For a trace $t_1;t_2;t_3$ with the transitions
   \[
-  \theta:\varepsilon \Rightarrow A \Rightarrow A, B\Rightarrow B\qquad t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow A,B\qquad t_2: A\Rightarrow \varepsilon
+  t_1: A \Rightarrow A,B\qquad t_2: A,B\Rightarrow B,C \qquad t_3: B,C\Rightarrow D
   \]
-  we cannot deduce $t_3<t_2'$, for $t_2'\congr t_2$, as in the trace $\theta$ above, transitions cannot commute.
+  one cannot deduce $t_1<t_3$, as transitions $t_1$ and $t_2$ do not commute.
 \end{example}
 
-\begin{lemma}
-  \label{lem:inhibiting_pair}
-  Let $\theta$ a causal trace and let $t_1:M_1\overset{e_1}{\Rightarrow}N_1$ and $t_2:M_2\overset{e_2}{\Rightarrow}N_2$ be two transitions in $\theta$. Then $t_1\dashv t_2\implies t_2\not\dashv t_1$.
-\end{lemma}
 
 %% \begin{remark}
 %%   Sequential dependence (~\autoref{def:seq_dep}) is not transitive. Therefore when considering posets in~\autoref{def:poset}, we need to distinguish between the \emph{immediate} order relation (the cover relation in~\autoref{def:poset}) and its transitive closure. %We denote the first $\cover$ and the latter with $\tleq$.
 %% \end{remark}
+
+\begin{lemma}
+  \label{lem:constraint_inhibit}
+  Let $\theta$ a causal trace and let $t_1:M_1\overset{m_1,p_1}{\Rightarrow}N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow}N_2$ be two transitions in $\theta$.
+  If $t_1 \leq t_2$ then $t_2\not\dashv t_1$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+  One cannot commute $t_1$ and $t_2$ such that $t_1':M\overset{m_1,p_1}{\Rightarrow}N_1$ and $t_2':M\overset{m_2,p_2}{\Rightarrow}N_2$, for some $t_1'\simeq t_1$, $t_2'\simeq t_2$. Therefore one cannot deduce that the pair are not parallel independent.
+\end{proof}
 
 \begin{definition}[Augmented poset]
   Let $s=(E,\cover,\dashv,\labl)$ be a set of events equipped with two binary relations on events $\cover$ and $\dashv$ and a labelling function $\labl:E\to R$. We can retrive a poset from $s$, denoted $(E,\leq)$, where $\leq$ is the transitive and reflexive closure of $\cover$.
   %Let $s=(E, \leq,\dashv,\labl)$ be a set of events equipped with a partial order $\leq$, a binary relation on events $\dashv$ and a labelling function $\labl:E\to R$.
   We call $s$ an \emph{augmented poset}.
 \end{definition}
-
-In a causal trace, we have that for any transition, its immediate causes have a positive influence on it and that (\autoref{lemma:pos_infl}).
 
 \begin{definition}[Decorated poset]
   \begin{enumerate}
@@ -213,20 +269,16 @@ Note that the notation $e\redl{+}_O e'$ is an overload of the notation $\labl(e)
 \begin{definition}[The abstraction on a trace]
   \label{def:abstraction}
   Let us denote with $\Theta$ the set of causal traces.
-  %\begin{itemize}
-  %\item[] $~$
-  %\item Let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace. Define $\leq$ the transitive and reflexive closure of sequential dependence. We say that $\theta$ is a \emph{causal trace} if it is directed.
-  %\item
   Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
     \begin{itemize}
     \item given a transition $t:M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
       $\alpha(t) = e_t$ such that $\labl(e) = p$.
-    \item define an augmented poset from a trace $\alpha(\theta) = (E,\cover,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
-      \begin{align*}
-        %\alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
-        e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
-        e_i \dashv e_j \iff t_i \dashv_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
-      \end{align*}
+    %% \item define an augmented poset from a trace $\alpha(\theta) = (E,\cover,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
+    %%   \begin{align*}
+    %%     %\alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
+    %%     e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
+    %%     e_i \dashv e_j \iff t_i \dashv_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
+    %%   \end{align*}
     \item define a decorated poset from a trace $\alpha(\theta) = (E,\redl{+},\redl{-},\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
       \begin{align*}
         %\alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
@@ -246,19 +298,19 @@ Note that the notation $e\redl{+}_O e'$ is an overload of the notation $\labl(e)
   %\end{itemize}
 \end{definition}
 
-\begin{property}
-  \label{prop:constraints_poset}
-  If $\Theta$ is a set of causal traces, then for all posets $s = (E,\redl{+},\redl{-},\labl)$ in $\alpha(\Theta)=\mathcal{S}$ the following hold:
-  \begin{enumerate}
-  \item
-    \label{it1}
+\begin{definition}[Valid decorated poset]
+  \label{def:constraints_poset}
+  A decorated poset $s = (E,\redl{+},\redl{-},\labl)$ is \emph{valid} if the following hold:
+  \begin{description}
+  \item[directed]
     $s$ is directed w.r.t. the transitive and reflexive closure of $\redl{+}$;
-  \item
-    \label{it2}
-    $\forall e_1,e_2\in s$, $e_1\redl{-}_O e_2\implies \neg(e_2 \redl{-}_{O'} e_1)$, for some $O$, $O'$;
-  \item
-    \label{it3}
-    $\forall e_1,e_2,e_3\in s$, if $e_1\redl{+}_{O_1} e_3$ and $e_2\redl{+}_{O_2} e_3$, then for $O$ be the pullback of the span $O_1\lemb L_3 \remb O_2$ there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
+  \item[events are not pairwise inhibiting]
+    $\forall e_1,e_2\in s$, $e_1\redl{-}_s e_2\implies \neg(e_2 \redl{-}_{s'} e_1)$, for some $s$, $s'$;
+  \item[events cannot inhibit their causes]
+    $\forall e_1,e_2\in s$, $e_1\leq e_2\implies \neg(e_2 \redl{-}_{s} e_1)$, for some $s$;
+  \item[constraints on decorating meets]
+    $\forall e_1,e_2,e_3\in s$ such that $e_1\redl{+}_{s_1} e_3$ and $e_2\redl{+}_{O_2} e_3$, let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$.
+If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1$ then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
     \[
     \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O\)};
@@ -281,23 +333,51 @@ Note that the notation $e\redl{+}_O e'$ is an overload of the notation $\labl(e)
       \draw [->] (o) to [bend right] (k2);
     \end{tikzpicture}
     \]
-  \end{enumerate}
-\end{property}
+  \item[constraints on decorating joins]
+    $\forall e_1,e_2,e_3\in s$ such that $e_3\redl{+}_{s_1} e_1$ and $e_3\redl{+}_{O_2} e_2$, let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$.
+    If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1$ then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
+       \[
+    \begin{tikzpicture} %[scale=0.8]
+      \node (o) at (0,-1) {\(O\)};
+      \node (r3) at (0,1) {\(R_3\)};
+      \node (o1) at (-1,0) {\(O_1\)};
+      \node (o2) at (1,0) {\(O_2\)};
+      \node (r1) at (-2,1) {\(L_1\)};
+      \node (r2) at (2,1) {\(L_2\)};
+      \node (k1) at (-3,0) {\(K_1\)};
+      \node (k2) at (3,0) {\(K_2\)};
+      \draw [->] (o) -- (o1);
+      \draw [->] (o) -- (o2);
+      \draw [->] (o1) -- (r3);
+      \draw [->] (o2) -- (r3);
+      \draw [->] (o1) -- (r1);
+      \draw [->] (o2) -- (r2);
+      \draw [->] (k1) -- (r1);
+      \draw [->] (k2) -- (r2);
+      \draw [->] (o) to [bend left] (k1);
+      \draw [->] (o) to [bend right] (k2);
+    \end{tikzpicture}
+    \]
+  \end{description}
+  where $\labl(e_i)=r_i:L_i\remb K_i\lemb R_i$.
+\end{definition}
+
+\begin{lemma}
+  \label{prop:constraints_poset}
+  For any causal trace $\theta$, $\alpha(\theta)$ is a valid decorated poset.
+\end{lemma}
 \begin{proof}
-  We have that~\autoref{it1} follows from~\autoref{def:causal_trace} and \autoref{it2} follows from~\autoref{lem:inhibiting_pair}. The last two items are reformulations of \autoref{lem:constraint_mj} in terms of decorated posets.
+  It is straigthforward from~\autoref{def:causal_trace},~\autoref{lem:inhibiting_pair},~\autoref{lem:constraint_inhibit} and \autoref{lem:constraint_mj}.
 \end{proof}
 
-If we work only on posets, the abstraction is "too forgetful".
+If we work only on augmented posets, the abstraction is "too forgetful".
 The following examples give an intuition of why the abstraction function has to preserve the inhibition relation and the decorations on causality and inhibition.
 We make this intuition formal in~\autoref{th:correction}.
 
 \begin{example}
-  Let us consider the following rules:
+  Let us consider the following rules and trace:
   \begin{align*}
-    r_1:A \Rightarrow A, B\qquad r_2:A \Rightarrow C \qquad r_3: B,C \Rightarrow C
-  \end{align*}
-  and the trace
-  \begin{align*}
+    r_1:A \Rightarrow A, B\qquad r_2:A \Rightarrow C \qquad r_3: B,C \Rightarrow C\qquad
     A \overset{\id_A,r_1}{\Rightarrow} A, B \overset{\id_A,r_2}{\Rightarrow} B,C \overset{id_{B,C},r_3}{\Rightarrow}C.
   \end{align*}
   Let us denote $t_1$, $t_2$ and $t_3$ the three transitions. We have that $t_1<t_3$, $t_2<t_3$ and $t_2\dashv t_1$. If we "forget" that $t_2\dashv t_1$ we retrieve a trace where $t_1$ and $t_2$ are sequential independent:
@@ -334,109 +414,66 @@ We make this intuition formal in~\autoref{th:correction}.
   \end{align*}
 \end{example}
 
-\subsection{Refinement of graph rewriting rules}
+\subsection{Refinement of decorated posets}
 
-\begin{definition}[Refinement of two rewriting rules using positive influence]
-  \label{def:ref_pos_infl}
-  Let $r_1:L_1\remb K_1 \lemb R_1$ and $r_2:L_2\remb K_2 \lemb R_2$ be two rules and let $O$ be a graph such that $r_1\redl{+}_O r_2$. Define the refinement of $r_1$ and $r_2$ using $O$, $r_1\oplus_O r_2 = M_1\remb K\lemb M_2$ obtained as follows:
-  \begin{itemize}
-  \item $R_1\lemb M\remb L_2$ is the pushout of the cospan $R_1\remb O \lemb L_2$;
-  \item $M_1\Rightarrow M$ is obtained by a dpo rewriting of $M$ using $r_1^{-1}$;
-  \item $M\Rightarrow M_2$ is obtained by a dpo rewriting of $M$ using $r_2$;
-  \item $D_1\remb K\lemb D_2$ is the pullback of the span $D_1\lemb M \remb D_2$.
-  \end{itemize}
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-  \node (o) at (0,-1) {\(O\)};
-  \node (m) at (0,1) {\(M\)};
-  \node (d2) at (1,1) {\(D_2\)};
-  \node (m2) at (2,1) {\(M_2\)};
-  \node (d1) at (-1,1) {\(D_1\)};
-  \node (m1) at (-2,1) {\(M_1\)};
-  \node (r1) at (-1,0) {\(R_1\)};
-  \node (k1) at (-2,0) {\(K_1\)};
-  \node (l1) at (-3,0) {\(L_1\)};
-  \node (l2) at (1,0) {\(L_2\)};
-  \node (k2) at (2,0) {\(K_2\)};
-  \node (r2) at (3,0) {\(R_2\)};
-  \node (k) at (0,2) {\(K\)};
-  \draw [->] (o) -- (r1);
-  \draw [->] (o) -- (l2);
-  \draw [->] (r1) -- (m);
-  \draw [->] (k1) -- (r1);
-  \draw [->] (k1) -- (l1);
-  \draw [->] (k1) -- (d1);
-  \draw [->] (l1) -- (m1);
-  \draw [->] (l2) -- (m);
-  \draw [->] (k2) -- (r2);
-  \draw [->] (k2) -- (l2);
-  \draw [->] (k2) -- (d2);
-  \draw [->] (r2) -- (m2);
-  \draw [->] (d1) -- (m);
-  \draw [->] (d1) -- (m1);
-  \draw [->] (d2) -- (m);
-  \draw [->] (d2) -- (m2);
-  \draw [->] (k) -- (d1);
-  \draw [->] (k) -- (d2);
-\end{tikzpicture}
-\]
-\end{definition}
-
-\autoref{def:ref_pos_infl} resembles the definition of $E$-concurrent productions~\cite{AlgebraicGR}. However, $E$-concurrent productions combines two sequential dependent transitions into a single one, whereas~\autoref{def:ref_pos_infl} combines rules.
-
-\begin{definition}[Refinement of two rewriting rules using positive and negative influence]
-  \label{def:ref_pos_neg_infl}
-  Let $r_1:L_1\remb K_1 \lemb R_1$ and $r_2:L_2\remb K_2 \lemb R_2$ be two rules and let $O_1$ and $O_2$ be two graphs such that $r_1\redl{+}_{O_1} r_2$, $r_2\redl{-}_{O_2} r_2$ but not $r_1\redl{-}_{O_2} r_2$. Define $r_1\otimes_{O_1,O_2} r_2 = r_1 \oplus_{O_3} r_2$, obtained as follows:
-  \begin{itemize}
-  \item if $l_1:K_1\emb L_1$ then $l_1^{-1}:\text{image}(l_1)\emb K_1$;
-  \item the morphism $o_2:O_2\emb K_1$ is obtained by the composition of $f:O_2\emb L_1$ and $l_1^{-1}$. Moreover $f(O_2)\subseteq\text{image}(l_1)$ as otherwise, $r_1\redl{-}_{O_2} r_2$, which contradicts the hypothesis;
-  \item $o_1(O_1)$ and $r_1(o_2(O_2))$ are disjoint in $R_1$ as from $r_1\redl{+}_{O_1} r_2$, $O_1\not\emb K_1$;
-  \item we define $O_3=o_1(O_1)\cup r_1(o_2(O_2))$ and the morphism $O_3\emb R_1$ as the union of the morphisms $o_1$ and $o_2\circ r_1$. Similarly, the morphism $O_3\emb L_2$ is defined as the union of the morphisms $O_1\emb L_2$ and $O_2\emb L_2$.
-  \end{itemize}
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-  \node (o) at (-1,-1) {\(O_1\)};
-  \node (o2) at (-2,-1.3) {\(O_2\)};
-  \node (r1) at (-1,0) {\(R_1\)};
-  \node (k1) at (-3,0) {\(K_1\)};
-  \node (l1) at (-4,0) {\(L_1\)};
-  \node (l2) at (1,0) {\(L_2\)};
-  \node (k2) at (2,0) {\(K_2\)};
-  \node (r2) at (3,0) {\(R_2\)};
-  \draw [->] (o) -- node [right,midway] {\(o_1\)} (r1);
-  \draw [->] (o) -- (l2);
-  \draw [->] (k1) -- node [above,midway] {\(r_1\)} (r1);
-  \draw [->] (k1) -- (l1);
-  \draw [->] (k2) -- (r2);
-  \draw [->] (k2) -- (l2);
-  \draw [->] (o2) to [bend left] (l1);
-  \draw [->] (o2) to [bend right] (l2);
-  \draw [->] (o2) -- node [left,midway] {\(o_2\)} (k1);
-  \end{tikzpicture}
-  \]
-  We write $e_1\otimes e_2 = \labl(e_1)\otimes_{O_1,O_2} \labl(e_2)$ to simplify notations.
-\end{definition}
-
-\begin{lemma}
-  Let $s^{\star} = (E, \redl{+}, \redl{-}, \labl)$ be a decorated poset and let $e_1,e_2$ be two events in $E$ such that $e_1\redl{+}_{O_1} e_2$ and $e_2\redl{-}_{O_2} e_1$.
-  \begin{itemize}
-  \item If there exists $e_3\in E$ and a graph $O$ such that $e_1\redl{+}_O e_3$ then there exists a graph $O'$ such that $\labl(e_1)\otimes_{O_1,O_2} \labl(e_2)\redl{+}_{O'} e_3$ and such that the diagram commutes:
+\begin{lemma}[Update of a decoration after a refinement]
+  \label{lem:update_dec}
+  Let $(E,\redl{+},\redl{-},\labl)$ be a valid decorated poset and let $e_1$ and $e_2$ be two events such that $e_1\redl{+}_{s_1} e_2$ and $e_2\redl{-}_{s_2} e_1$, for two cospans $s_1$ and $s_2$ possibly empty.
+  \begin{enumerate}
+  \item If there exists $e_3$ and $s:R_i\remb O \lemb L_3$ such that $e_i\redl{+}_s e_3$ with $i\in\{1,2\}$ then there exists $s':M_2\lemb O'\remb L_3$ such that $\big( M_1\remb K\lemb M_2\big)\redl{+}_{s'} r_3$ and such that the diagram commutes:
     \[
     \begin{tikzpicture} %[scale=0.8]
+      \node (ri) at (-1,1) {\(R_i\)};
+      \node (m2) at (3,1) {\(M_2\)};
       \node (l3) at (2,1) {\(L_3\)};
       \node (o) at (0,0) {\(O\)};
       \node (o1) at (2,0) {\(O'\)};
       \draw [->] (o) -- (o1);
       \draw [->] (o) -- (l3);
       \draw [->] (o1) -- (l3);
+      \draw [->] (o) -- (ri);
+      \draw [->] (o1) -- (m2);
     \end{tikzpicture}
     \]
-%  \item
-  \end{itemize}
+    where $\big(\labl(e_1)\otimes_{(s_1\times s_2)} \labl(e_2)\big) = M_1\remb K\lemb M_2$.
+  %% \item If there exists $e_3$ and $s:L_i\remb O \lemb L_3$ such that $e_i\redl{-}_s e_3$ with $i\in\{1,2\}$ then there exists $s':M_1\lemb O'\remb L_3$ such that $\big( M_1\remb K\lemb M_2\big)\redl{-}_{s'} r_3$ and such that the diagram commutes:
+  %%   \[
+  %%   \begin{tikzpicture} %[scale=0.8]
+  %%     \node (ri) at (-1,1) {\(L_i\)};
+  %%     \node (m2) at (3,1) {\(M_1\)};
+  %%     \node (l3) at (2,1) {\(L_3\)};
+  %%     \node (o) at (0,0) {\(O\)};
+  %%     \node (o1) at (2,0) {\(O'\)};
+  %%     \draw [->] (o) -- (o1);
+  %%     \draw [->] (o) -- (l3);
+  %%     \draw [->] (o1) -- (l3);
+  %%     \draw [->] (o) -- (ri);
+  %%     \draw [->] (o1) -- (m2);
+  %%   \end{tikzpicture}
+  %%   \]
+  %%   where $\big(\labl(e_1)\otimes_{(s_1\times s_2)} \labl(e_2)\big) = M_1\remb K\lemb M_2$.
+  \item If there exists $e_3$ and $s:R_i\remb O \lemb L_3$ such that $e_3\redl{+}_s e_i$ with $i\in\{1,2\}$ then there exists $s':M_2\lemb O'\remb L_3$ such that $r_3\redl{+}_{s'}\big( M_1\remb K\lemb M_2\big)$ and such that the diagram commutes:
+    \[
+    \begin{tikzpicture} %[scale=0.8]
+      \node (ri) at (-1,1) {\(R_3\)};
+      \node (m2) at (3,1) {\(M_1\)};
+      \node (l3) at (2,1) {\(L_i\)};
+      \node (o) at (0,0) {\(O\)};
+      \node (o1) at (2,0) {\(O'\)};
+      \draw [->] (o) -- (o1);
+      \draw [->] (o) -- (l3);
+      \draw [->] (o1) -- (l3);
+      \draw [->] (o) -- (ri);
+      \draw [->] (o1) -- (m2);
+    \end{tikzpicture}
+    \]
+    where $\big(\labl(e_1)\otimes_{(s_1\times s_2)} \labl(e_2)\big) = M_1\remb K\lemb M_2$.
+  \end{enumerate}
 \end{lemma}
 \begin{proof}
   \begin{enumerate}
-  \item We have the following diagram from~\autoref{def:ref_pos_neg_infl}, where $O_3$ is a graph such that $O_1\emb O_3$ and $O_2\emb O_3$.
+  \item Let us first show the property above for $r_1$.
+    We have the following diagram from~\autoref{def:ref_pos_neg_infl}, where $O_3$ is a graph such that $O_1\emb O_3$ and $O_2\emb O_3$.
     \[
     \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O_3\)};
@@ -483,48 +520,100 @@ We make this intuition formal in~\autoref{th:correction}.
     We have that $n_1(o(O))\subseteq M$. We distinguish two cases:
     \begin{itemize}
     \item if $n_1(o(O)) \cap m_2(L_2)=\emptyset$ then $f_2^{-1}$ is defined on $n_1(o(O))$. Hence there exists a morphism $o_2:O\emb M_2$ such that $o_2 = g_2 \circ (f_2^{-1}) \circ n_1 \circ o$. Moreover, as $O$ does not embed into $K_1$ (from $e_1\redl{+}_O e_3$), then we can show by contradiction that there is no morphism $O\emb D_1$ nor $O\emb K$ such that the diagram commutes. Therefore we have that there exists $O'$ such that $\labl(e_1)\otimes_{O_1,O_2} \labl(e_2)\redl{+}_{O'} e_3$ and $O\subseteq O'$.
-    \item if $n_1(o(O)) \cap m_2(L_2)\neq\emptyset$, then again we distinguish two subcases. A first one is that $f_2^{-1}$ is defined on $n_1(o(O)) \cap m_2(L_2)$, in which case the proof follows as above. Otherwise, we have that there exists $O''\subseteq O$ such that $e_1\redl{+}_{O''} e_2$ and $e_1\redl{+}_{O''} e_3$ which contradicts the contraints on decoration from~\autoref{prop:constraints_poset} \autoref{it3}.
+    \item if $n_1(o(O)) \cap m_2(L_2)\neq\emptyset$, then again we distinguish two subcases. A first one is that $f_2^{-1}$ is defined on $n_1(o(O)) \cap m_2(L_2)$, in which case the proof follows as above. Otherwise, we have that there exists $O''\subseteq O$ such that $e_1\redl{+}_{O''} e_2$ and $e_1\redl{+}_{O''} e_3$ which contradicts the contraints on decoration of meets from~\autoref{prop:constraints_poset}.
     \end{itemize}
-    \item Similar to the case above, except that we use~\autoref{prop:constraints_poset} \autoref{it4} for the last case.
-  \end{enumerate}
 
+    The property holds for $r_2$ in a similar manner, except that we use the contraints on decoration of joins from~\autoref{prop:constraints_poset} for the last case.
+
+  \item
+    \begin{mdframed}[backgroundcolor=blue!20]
+      to do
+    \end{mdframed}
+  \end{enumerate}
 \end{proof}
 
-\begin{definition}[Update of a decoration after a refinement]
-  Let $e_1,e_2,e_3$ be three events of a decorated poset $(E,\redl{+},\redl{-},\labl)$, with $\labl(e_i)=r_i$ and such that $e_1\redl{+}_O e_3$. Define \emph{the update of a decoration after a refinement} as follows:
-  \begin{align*}
-    (r_1\redl{+}_O r_3)_{r_1\otimes r_2} = \{ r\redl{+}_{O'} r_3: \text{ for }O'\text{ that makes the diagram below commute.} \}
-  \end{align*}
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-      \node (l3) at (2,1) {\(L_3\)};
-      \node (o) at (0,0) {\(O\)};
-      \node (o1) at (2,0) {\(O'\)};
-      \draw [->] (o) -- (o1);
-      \draw [->] (o) -- (l3);
-      \draw [->] (o1) -- (l3);
-    \end{tikzpicture}
-    \]
-\end{definition}
+  Let $e_1$ and $e_2$ be two events of a decorated poset and $s_1,s_2$ be two cospans such that $(\labl(e_1)\otimes_{s_1\otimes s_2} \labl(e_2)) = r_{12}$ is well defined. Moreover, let $e_3$ be an event and $s$ a cospan such that $e_1\redl{+}_s e_3$. We use the notation $\big(e_1\redl{+}_O e_3\big)_{e_1\otimes e_2}$ denotes the set of all decorations $r_{12}\redl{+}_{s'} \labl(e_3)$, where $s'$ is obtained as in~\autoref{lem:update_dec}. We use similar notations for the negative influence and the influences of $e_2$ on $e_3$.
 
 \begin{lemma}[The update is associative]
-   Let $e_1,e_2,e_3$ be three events of a decorated poset $(E,\redl{+},\redl{-},\labl)$, with $\labl(e_i)=r_i$ and such that $e_1\redl{+}_{O_2} e_2\redl{+}_$. Then
+  \label{lem:assoc}
+   Let $e_1,e_2,e_3$ be three events in a decorated poset and $s_1,s_2$ be two cospans such that $e_1\redl{+}_{s_1} e_2\redl{+}_{s_2} e_3$.
+   Moreover, let $e_1\oplus_{s_1} e_2 = r_{12}$ and $e_2\oplus_{s_2} e_3 = r_{23}$ be the two refinements.
+   Then, for any cospan $s$ such that
+   $r_{12}\redl{+}_{s} \labl(e_3)\in\big(e_2\redl{+}_{s_2} e_3\big)_{e_1\otimes e_2}$ there exists a graph $s'$ such that
+   $\labl(e_{1})\redl{+}_{s'} r_{23}\in\big(e_1\redl{+}_{s_1} e_2\big)_{e_2\otimes e_3}$ and such that
    \begin{align*}
-   (r_1\otimes r_2)\otimes(r_2\redl{+}_O r_3)_{r_1\otimes r_2} \iso r_1 \otimes (r_1\redl{+}_O r_3)_{r_1\otimes r_2}
+     (r_1\oplus_{s_1} r_2)\oplus_{s} r_3 \iso r_1\oplus_{s'} (r_2\oplus_{s_3} r_3).
    \end{align*}
 \end{lemma}
+\begin{mdframed}[backgroundcolor=blue!20]
+  \begin{proof}
+    to do
+  \end{proof}
+\end{mdframed}
 
+\begin{mdframed}[backgroundcolor=blue!20]
+Adapt \autoref{lem:update_dec} and \autoref{lem:assoc} to inhibition.
+\end{mdframed}
 
+\begin{definition}
+  Let $e_1,e_2\in E$ be two events of a decorate poset $s$ such that $e_1\redl{+}_{s_1}e_2$, $e_2\redl{-}_{s_2}e_2$ for some $s_1$, $s_2$ possibly empty. Then $\labl(e_1)\otimes_{(s_1\otimes s_2)} r_2=r_{12}$ is well defined.
+
+  Define $s_{(e_1\otimes e_2)} = (E\setminus\{e_1,e_2\}\uplus\{e_{12}\},\overset{+}{\leadsto},\overset{-}{\leadsto},\labl')$ such that
+    \begin{align*}
+    &\labl'(e)=\labl(e), \forall e,e'\in E\setminus\{e_1,e_2\}\\
+    &e\overset{+}{\leadsto}_s e' \iff e\redl{+}_s e', \forall e,e'\in E\setminus\{e_1,e_2\}\\
+    &e\overset{-}{\leadsto}_s e' \iff e\redl{-}_s e', \forall e,e'\in E\setminus\{e_1,e_2\}\\
+    &\labl'(e_{12}) = r_{12}\\
+    &e_{12}\overset{+}{\leadsto}_s e \iff r_{12}\redl{+}_s \labl(e)\in \big(e_i \redl{+}_{s'} e\big)_{e_1\otimes e_2}\\
+   % \text{ and }e_i\redl{+}_{O'} e\\
+    &e_{12}\overset{-}{\leadsto}_s e \iff r_{12}\redl{-}_s \labl(e)\in \big(e_i \redl{-}_{s'} e\big)_{e_1\otimes e_2}\\
+    %\text{ and }e_i\redl{-}_{O'} e\\
+  \end{align*}
+\end{definition}
+%% \begin{lemma}
+%%   Let $\underline s = (E,\seq,\redl{+},\redl{-},\labl)$ be a linear extension of a decorated poset $s$. For any two events $e_1,e_2$ such that $\big(s \big)_{e_1\otimes e_2}$ is well defined, $\big(\underline s \big)_{e_1\otimes e_2}$ is a linear extension of $\big(s \big)_{e_1\otimes e_2}$.
+%% \end{lemma}
+
+\begin{lemma}
+  If $s$ is a valid decorated poset then for any two events $e_1,e_2$ in $s$, $s_{(e_1\otimes e_2)}$ is also a valid decorate poset.
+\end{lemma}
 
 \begin{definition}[Linear extensions of posets]
   A linear extension, denoted $\underline{s}$, of a poset $s=(E,\tleq)$ is any total order that extends the partial order $\tleq$. We denote $\linear(s)$ the set of all possible linear extensions of $s$.
-  \[
-  (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, e_1\leq e_2\implies e_1\seq e_2.
-  \]
+  %% \[
+  %% (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, e_1\leq e_2\implies e_1\seq e_2.
+  %% \]
+  A linear extension of a augmented poset $s=(E,\cover,\dashv)$ is any total order such that
+  \begin{align*}
+    (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, &e_1\leq e_2\implies e_1\seq e_2\\
+    & e_1\dashv e_2\implies e_2\seq e_1.
+  \end{align*}
+\end{definition}
+
+\begin{definition}[Refinement of a poset]
+  \label{def:ref_poset}
+  Let $\underline s=(E,\seq\redl{+},\redl{-},\labl)$ be a linear extension of a decorated poset $s$.
+  Define $\mathtt{Ref}(\underline s)$ as follows
+  \begin{align*}
+    \mathtt{Ref}(\underline s) =&
+    \mathtt{Ref}(\underline s')\text{ if }\exists e_1,e_2\in E, e_1\neq e_2, e_1\prec e_2, e_1\redl{+}e_2
+    \text{ and }\underline s'=\big(\underline s\big)_{e_1\otimes e_2}
+    \\
+    &\underline s\text{ otherwise.}\\
+  \end{align*}
 \end{definition}
 
 
+\subsection{From posets to traces}
+%\input{old_concret}
 
+\begin{definition}
+  Let $\underline s=(E,\seq\redl{+},\redl{-},\labl)$ be a linear extension of a decorated poset $s$. A \emph{concretisation} function  $\mathtt{Concret}:E\leftrightarrow \{t_1,\cdots t_n\}$ is a bijection between events in $E$ and a set of transitions such that
+  \begin{align*}
+    e_1\redl{+}_s e_2 \iff& \mathtt{Concret}(e_1) = t_1, \mathtt{Concret}(e_1) = t_2, \text{ such that }t_1<_{t_1;t_2}t_2\\
+    &\text{ and the causal pair of }t_1<_{t_1;t_2}t_2\text{ is induced by }s.
+  \end{align*}
+\end{definition}
 %\input{old_ref}
 
 \subsection{Interpreting inhibition on posets}
@@ -532,17 +621,17 @@ We make this intuition formal in~\autoref{th:correction}.
 In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a set of events $\cup_{s\in\mathcal{S}} E_s$.
 
 \begin{definition}[Refinement of an event in a poset]
-  Let $e$ be an event in a poset $s=\{E,<,\labl\}$.
-  Define $\mathcal{R}(e\in s) = M\Rightarrow N$ where $\{E,<,\labl,\imath\}$ is a refinement of $s$ and $\imath(e) = M\Rightarrow N$.
+  Let $e$ be an event in a decorated poset $s=(E,\redl{+},\redl{-},\labl)$.
+  Define $\mathtt{Concret}(e\in s) = \mathtt{Concret}(e)$ for $\mathtt{Concret}:\underline{s}\to\{t_1,\cdots t_n\}$ a concretisation function.
   %We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
 \end{definition}
 
 \begin{definition}[Refinement based on negative influence]
 \label{def:ref_neg_infl}
-  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ let the following be their refinements $\mathcal{R}(e_1\in s_1) = M_1\Rightarrow N_1$ and $\mathcal{R}(e_2\in s_2) = M_2\Rightarrow N_2$. Define $\mathcal{R}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
+  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ such that  $\mathtt{Concret}(e_1\in s_1) = M_1\Rightarrow N_1$ and $\mathtt{Concret}(e_2\in s_2) = M_2\Rightarrow N_2$, define $\mathtt{Concret}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
-    \node (o) at (0,0) {\(O\)};
+    \node (o) at (0,-0.5) {\(O\)};
     \node (n) at (0,2) {\(M\)};
     \node (l1) at (-1,0) {\(L_1\)};
     \node (l2) at (1,0) {\(L_2\)};
@@ -550,518 +639,11 @@ In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a s
     \node (n2) at (1,1) {\(M_2\)};
     \draw [->] (l1) -- (n1);
     \draw [->] (l2) -- (n2);
-    \draw [->] (o) -- (n1);
-    \draw [->] (o) -- (n2);
+    \draw [->] (o) -- (l1);
+    \draw [->] (o) -- (l2);
     \draw [->] (n1) -- (n);
     \draw [->] (n2) -- (n);
   \end{tikzpicture}
   \]
-  where $\labl(e_1)\redl{-}_O\labl(e_2)$, for some graph $O$.
+  where $\labl(e_1)\redl{-}_s\labl(e_2)$, for some cospan $s:L_1\remb O\lemb L_2$.
 \end{definition}
-
-\subsection{From posets to traces}
-
-
-\begin{lemma}
-  Let $\theta:M_2\Rightarrow M_3\cdots M_n\Rightarrow M_{n+1}$ be a trace and let $t_1:M_1\Rightarrow M_n$ be a transition. Let $\alpha(\theta,t_1) = (E,\sqsubset,\labl)$ be its abstraction such that the following hold:
-  \begin{enumerate}
-  \item $\forall i, 2\leq i\leq n$, $e_1\sqsubset_{O_1} e_i\iff e_i = e_n$;
-  \item $(E,\sqsubset,\labl)$ is a valid decoration, according to~\autoref{def:constr_dec};
-  \end{enumerate}
-Then we can rewrite $\theta$ into $\theta':M_1'\Rightarrow M_2\Rightarrow M_3\cdots M_n\Rightarrow M_{n+1}$ for which $\alpha(\theta)\iso\alpha(\theta')$ and the conditions above hold.
-\end{lemma}
-\begin{proof}
-  We proceed by induction on the trace $M_2\Rightarrow M_3\cdots M_j\Rightarrow M_{j+1}\cdots M_n\Rightarrow M_{n+1}$.
-
-  First we introduce some notations we will need during the proof. Let us denote $\prec$ the ordering between transitions in $\theta$.
-  For an event $e_j$ we say that an event $e_i$ is a $\sqsubset$-$\prec$-successor, if it is a succesor for the $\sqsubset$ relation and the latest one in the $\prec$ ordering (that is for transitions $t_i$ and $t_j$ such that $\alpha(t_i)=e_i$, $\alpha(t_j)=e_j$ we have that $t_i\prec t_j$).
-  For a transition $t_i:M_i{\Rightarrow} M_{i+1}$, if $\alpha(t_i)=e_i$, then we write $M_i\overset{e_i}{\Rightarrow} M_{i+1}$.
-
-  Let us consider one step of swapping: let $t_j:M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $t_1^j:P_j\overset{e_1}{\Rightarrow}M_{j+1}$ where $2\leq j\leq n-1$. %and $\alpha(t_j)=e_j$, $\alpha(t_1^j) = e_1$.
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (m2) at (0,1) {\(M_2\)};
-    \node (dots) at (2,1) {\(\cdots\)};
-    \node (mj) at (4,1) {\(M_j\)};
-    \node (mj1) at (6,1) {\(M_{j+1}\)};
-    \node (dots2) at (8,1) {\(\cdots\)};
-    \node (mk) at (10,1) {\(M_n\)};
-    \node (pk) at (0,0) {\(P_n\)};
-    \node (pkj1) at (2,0) {\(P_{n-j-1}\)};
-    \node (pkj) at (4,0) {\(P_{n-j}\)};
-    \node (p1) at (8,0) {\(P_{1}=M_1\)};
-    \draw [vecArrow] (m2) -- (dots);
-    \draw [vecArrow] (dots) -- (mj);
-    \draw [vecArrow] (mj) -- (mj1);
-    \draw [vecArrow] (mj1) -- (dots2);
-    \draw [vecArrow] (dots2) -- (mk);
-    \draw [vecArrow] (pk) -- (dots);
-    \draw [vecArrow] (pkj1) -- (mj);
-    \draw [vecArrow] (pkj) -- (mj1);
-    \draw [vecArrow] (p1) -- (mk);
-  \end{tikzpicture}
-  \]
-  We can rewrite the transitions $M_j\overset{e_j}{\Rightarrow} M_{j+1}\overset{e_1^{-1}}{\Rightarrow} P_{n-j}$, as productions are reversible. We distinguish between two cases. In the diagram below:
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-    \node (r1) at (1.5,0) {\(R_j\)};
-    \node (m1) at (2,1.5) {\(M_{j+1}\)};
-    \node (l2) at (2.5,0) {\(L_1\)};
-    \node (d1) at (0,1.5) {\(D_j\)};
-    \node (k1) at (0,0) {\(K_j\)};
-    \node (d2) at (4,1.5) {\(D_j'\)};
-    \node (k2) at (4,0) {\(K_1\)};
-    \node (o) at (2,-1) {\(O\)};
-    \node (p) at (1,-2) {\(P\)};
-    \draw [->] (k1) -- (r1);
-    \draw [->] (k2) -- (l2);
-    \draw [->] (k1) -- node [left,midway] {\(k_j\)} (d1);
-    \draw [->] (k2) -- (d2);
-    \draw [->] (d1) -- node [above,midway] {\(g_j\)} (m1);
-    \draw [->] (d2) -- (m1);
-    \draw [->] (l2) -- node [right,midway] {\(m_1\)} (m1);
-    \draw [->] (r1) -- node [left,midway] {\(m_j\)} (m1);
-    \draw [dotted,->] (l2) -- (d1);
-    \draw [->] (p) -- (k1);
-    \draw [->] (p) -- (o);
-    \draw [->] (o) -- node [left,midway] {$o_j$} (r1);
-    \draw [->] (o) -- node [right,midway] {$o_1$} (l2);
-    \end{tikzpicture}
-    \]
-    first suppose that there is a morphism $R_1\to D_j$ such that the diagram commutes. Then we can rewrite $M_j$ using the production of $e_1^{-1}$ and obtain the transition $M_j\overset{e_1^{-1}}{\Rightarrow}P_{j+1}$. We reverse it again and obtain $P_{j+1}\overset{e_1}{\Rightarrow} M_j$. Then the induction continues with the transitions $M_{j-1}\overset{e_{j-1}}{\Rightarrow} M_{j}$ and $P_{j+1}\overset{e_1}{\Rightarrow} M_j$.
-
-    The second case is when there is no such morphism.
-    We consider the following cases:
-
-    \begin{itemize}
-    \item {\bf both events have a common $\sqsubset$-$\prec$-successor}. Note that from the first condition in the hypothesis, this case is only possible if $e_j\sqsubset e_n$. As $e_n$ is the $\sqsubset$-$\prec$-successor of $e_j$ we have that for all events $e_i$ such that $\alpha(t_i)=e_i$ and $j<i<k$, $e_j$ and $e_i$ are sequential independent.
-      \begin{mdframed}[backgroundcolor=blue!20]
-        not if we consider inhibition!
-      \end{mdframed}
-      Therefore can rewrite the trace $M_j{\Rightarrow} M_{j+1}\cdots M_n\Rightarrow M_{n+1}$ such that $M_j'\overset{e_j}{\Rightarrow}M_n\overset{e_n}{\Rightarrow}M_{n+1}$.
-      The diagram above becomes then
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-    \node (r1) at (1.5,0) {\(R_j\)};
-    \node (m1) at (2,1.5) {\(M_{n}\)};
-    \node (l2) at (2.5,0) {\(L_1\)};
-    \node (d1) at (0,1.5) {\(D_j\)};
-    \node (k1) at (0,0) {\(K_j\)};
-    \node (d2) at (4,1.5) {\(D_n\)};
-    \node (k2) at (4,0) {\(K_1\)};
-    \node (o) at (2,-1) {\(O\)};
-    \node (p) at (1,-2) {\(P\)};
-    \draw [->] (k1) -- (r1);
-    \draw [->] (k2) -- (l2);
-    \draw [->] (k1) -- node [left,midway] {\(k_j\)} (d1);
-    \draw [->] (k2) -- (d2);
-    \draw [->] (d1) -- node [above,midway] {\(g_j\)} (m1);
-    \draw [->] (d2) -- (m1);
-    \draw [->] (l2) -- node [right,midway] {\(m_1\)} (m1);
-    \draw [->] (r1) -- node [left,midway] {\(m_j\)} (m1);
-    \draw [->] (p) -- (k1);
-    \draw [->] (p) -- (o);
-    \draw [->] (o) -- node [left,midway] {$o_j$} (r1);
-    \draw [->] (o) -- node [right,midway] {$o_1$} (l2);
-    \end{tikzpicture}
-    \]
-
-    We have that for the transitions $M_j'\overset{e_j}{\Rightarrow}M_n\overset{e_n}{\Rightarrow}M_{n+1}$ that the underlying positive influence is $e_j\redl{+}_{O_j} e_n$ and similarly for $e_1\redl{+}_{O_1}e_n$. We obtain the following diagram
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-    \node (mn) at (0,2.5) {\(M_{n}\)};
-    \node (ln) at (0,0) {\(L_{n}\)};
-    \node (o) at (0,-2) {\(O\)};
-    \node (oj) at (-1,-1) {\(O_j\)};
-    \node (o1) at (1,-1) {\(O_1\)};
-    \node (rj) at (-2,0) {\(R_j\)};
-    \node (r1) at (2,0) {\(R_1\)};
-    \node (d1) at (-1,1) {\(\cdot\)};
-    \node (d2) at (1,1) {\(\cdot\)};
-    \draw [->] (o) -- (o1);
-    \draw [->] (o) -- (oj);
-    \draw [->] (oj) -- (rj);
-    \draw [->] (oj) -- (ln);
-    \draw [->] (o1) -- (r1);
-    \draw [->] (o1) -- (ln);
-    \draw [->] (rj) -- (d1);
-    \draw [->] (ln) -- (d1);
-    \draw [->] (r1) -- (d2);
-    \draw [->] (ln) -- (d2);
-    \draw [dotted,->] (d1) -- (mn);
-    \draw [dotted,->] (d2) -- (mn);
-    \draw [->] (o) to [bend right] (r1);
-    \draw [->] (o) to [bend left] (rj);
-    \draw [->] (r1) to [bend right] (mn);
-    \draw [->] (rj) to [bend left] (mn);
-    \end{tikzpicture}
-    \]
-    where $O\emb O_j$ and $O\emb O_1$. This contradicts the constraints of~\autoref{def:constr_dec}.
-
-
-    \item {\bf events have different $\sqsubset$-$\prec$-successors}. Let $e_i$ be the succesor of $e_j$, $e_j\sqsubset e_i$ with $i\neq k$.
-      We will show that this case is not possible. %To do this we have to reason by induction on the trace
-
-      If there is no morphism $j$ then there exists $O$ the pullback of $R_j\lemb M_{j+1}\remb L_1$ and $P$ the pullback of $K_j\lemb R_j\remb O$ such that the morphism $P\to O$ is not an iso.
-
-    Let us suppose that
-    \begin{align}
-      \label{eq:ekei}
-      e_k\prec e_i.
-    \end{align}
-    The other case is similar. We will show that $e_j\sqsubset e_k$, which would contradict the hypothesis.
-
-    %In order to show that $e_j\sqsubset e_k$ we have to "move back" the transitions $M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $P_{j}\overset{e_1}{\Rightarrow} M_{j+1}$ to obtain $M_j'\overset{e_j}{\Rightarrow} M_k$ and
-
-    Let us denote $O_j\subseteq M_{j+1}$ the image of $o_1(m_1(O))$ and $o_j(m_j(O))$.
-    We have the transition $M_{j+1}\overset{e_{j+1}}{\Rightarrow} M_{j+2}$ and either $O_j\subseteq M_{j+2}$ or not (here we suppose, for simplifying the notations, that the morphisms $g_{j+1}$ and $f_{j+1}$ are the identity morphisms restricted to their domain of application). In the latter case, we deduce that $e_j\redl{+}_{O_j} e_{j+1}$ which leads to a contradiction on the variant of the construction $\bp$. Therefore $O_j\subseteq M_{j+2}$ and by induction on the trace $M_{j+1}\Rightarrow \cdots \Rightarrow M_k$ we have that $O_j\subseteq M_k$. Therefore
-    \begin{align}
-      \label{eq:e1ek}
-      O_j\subseteq M_k\text{ and }e_1\sqsubset_{O_1} e_k\text{ implies that }O\emb O_1.
-    \end{align}
-
-    We have the trace $M_j\overset{e_j}{\Rightarrow} M_{j+1}\cdots M_k$ and from~\autoref{eq:ekei}, $e_j$ is not a cause for any event between $e_{j+1}$ and $e_k$, including. From the invariant of the construction $\bp$, we can "move" event $e_j$ just before the transition $M_k\overset{e_k}{\Rightarrow} M_{k+1}$ and obtain the transition $M_{j}'\overset{e_j}{\Rightarrow} M_k$.
-
-
-
-
-
-  \end{itemize}
-
-\end{proof}
-
-\begin{lemma}
-  \label{lemm:linear_to_trace}
-  Let $s=(E,\leq,\labl)$ be a directed poset, with $s^{\star}\in\decor(s)$ one of its decorations and with $\underline{s^{\star}}\in\linear(s^{\star})$ a linear extension of $s^{\star}$. Moreover, let $(E,\leq,\labl,\fp)$ the refinement of $s^{\star}$.
-
-  There is a function, denoted $\bp$, that converts $\underline{s^{\star}}$ into a trace such that
-  \[
-  \forall \theta\in \Theta, \exists \theta'\in\bp(\linear(\decor(\alpha(\Theta))))\text{ s.t. } \theta'\text{ embeds in }\theta.
-  \]
-\end{lemma}
-\begin{proof}
-
-  Let us first define the function $\bp$, called the \emph{backward propagator}, by induction on the reverse order in $\underline{s^{\star}}$.
-  If $e_1\in\text{max}(\underline{s^{\star}})$, then $\bp(e_1) = \fp(e_1)$.
-  Otherwise, for $e_1\in\underline{s^{\star}}$, we have that $e_1\prec e_2\prec\cdots e_n$ and $e_2,.., e_n$ are the events for which $\bp$ is defined so far.
-
-  Let $e_2,e_k\in\underline{s^{\star}}$ be two events such that
-  \begin{align}
-    &e_1\prec e_2\text{ and there is no }e_2'\text{ with } e_1\prec e_2'\prec e_2\\
-    \label{eq:e3}
-    &e_1\sqsubset_O e_k\text{ and there is no }e_k'\neq e_k\text{ with } e_1\preceq e_k'\preceq e_k, 2\leq k\leq n.
-  \end{align}
-  As both events precede $e_1$ in $\underline{s^{\star}}$, we have that
-  \begin{align}
-    \bp(e_2) = M_2\Rightarrow N_2 \text{ and } \bp(e_k) = M_k\Rightarrow N_k.
-  \end{align}
-  Also, from the properties of refinement (\autoref{def:ref_poset}), we have that there exists a morphism $h$ such that
-  \begin{align}
-    \label{eq:matching}
-    \fp(e_k)=M_k'\Rightarrow N_k', \fp(e_1)=M_1'\Rightarrow N_1'\text{ and }h:(M_k'\emb M_k)\circ(N_1'\emb M_k').
-  \end{align}
-  Next, we apply a DPO rewriting step to $M_k$ using the production $(M_1'\Rightarrow N_1')^{-1}$ and the matching $h$:
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (p1) at (0,1) {\(P_1\)};
-    \node (m3) at (2,1) {\(M_k\)};
-    \node (m1) at (0,0) {\(M_1\)};
-    \node (n1) at (2,0) {\(N_1\)};
-    \draw [->] (m1) -- (p1);
-    \draw [->] (n1) -- (m3);
-    \draw [vecArrow] (m3) -- (p1);
-    \draw [vecArrow] (n1) -- (m1);
-  \end{tikzpicture}
-  \]
-  \begin{mdframed}[backgroundcolor=blue!20]
-    We have to show in the construction above that matching $h$ defined in~\autoref{eq:matching} allows the dpo rewriting step of $M_k$, that is that the gluing conditions hold.
-  \end{mdframed}
-
-  So far, we have a trace $M_2\Rightarrow N_2\cdots M_k\Rightarrow N_2\cdots M_n\Rightarrow N_n$ corresponding to the chain $e_2\prec e'\cdots e_k\prec e''\prec\cdots e_n$ and a transition $P_1\Rightarrow M_k$. The last step consists in "swaping" the transition $P_1\Rightarrow M_k$ at the beginning of the trace, to obtain a trace $M_1\Rightarrow M_2\Rightarrow N_2\cdots M_n\Rightarrow N_n$.
-
-  %% We proceed by induction on the trace $M_2\Rightarrow N_2\cdots M_k\Rightarrow N_2\cdots M_n\Rightarrow N_n$.
-  %% Let us consider one step of swapping: let $M_j\overset{e_j}{\Rightarrow} M_{j+1}$ and $P_j\overset{e_1}{\Rightarrow}M_{j+1}$ where $2\leq j\leq k-1$.
-  %% \[
-  %% \begin{tikzpicture} %[scale=0.8]
-  %%   \node (m2) at (0,1) {\(M_2\)};
-  %%   \node (dots) at (2,1) {\(\cdots\)};
-  %%   \node (mj) at (4,1) {\(M_j\)};
-  %%   \node (mj1) at (6,1) {\(M_{j+1}\)};
-  %%   \node (dots2) at (8,1) {\(\cdots\)};
-  %%   \node (mk) at (10,1) {\(M_k\)};
-  %%   \node (pk) at (0,0) {\(P_k\)};
-  %%   \node (pkj1) at (2,0) {\(P_{k-j-1}\)};
-  %%   \node (pkj) at (4,0) {\(P_{k-j}\)};
-  %%   \node (p1) at (8,0) {\(P_{1}\)};
-  %%   \draw [vecArrow] (m2) -- (dots);
-  %%   \draw [vecArrow] (dots) -- (mj);
-  %%   \draw [vecArrow] (mj) -- (mj1);
-  %%   \draw [vecArrow] (mj1) -- (dots2);
-  %%   \draw [vecArrow] (dots2) -- (mk);
-  %%   \draw [vecArrow] (pk) -- (dots);
-  %%   \draw [vecArrow] (pkj1) -- (mj);
-  %%   \draw [vecArrow] (pkj) -- (mj1);
-  %%   \draw [vecArrow] (p1) -- (mk);
-  %% \end{tikzpicture}
-  %% \]
-
-  The construction of~\autoref{lemm:linear_to_trace} is minimal w.r.t. the choice of decoration and linear extension, in the sense that each graph in the construction is the result of a pushout.
-
-\end{proof}
-
-
-
-
-\newpage
-
-\begin{lemma}[Refinement of a poset for trace reconstruction]
-  \label{lem:rewrite_concurrent}
-  Let $s=(E,\tleq,\labl)$ be a poset and
-  %let $(E,\sqsubset,\labl)\in \decor(s)$ be a decoration of $s$ and
-  let $(E,\sqsubset,\labl,\fp)$ be a refinement of $s$.
-
-  Let $e_1,e_2\in E$ be two incomparable events such that
-  $\fp(e_1) = M_1\overset{m_1,p_1}{\Rightarrow} M_1'$ and $\fp(e_2) = M_2\overset{m_2,p_2}{\Rightarrow} M_2'$.
-
-  We have the following additional contraint on the refinement of $s$:
-  \begin{enumerate}
-  \item if the two productions are co-initial, i.e. $M_1\iso M_2$ then there exists $M'$ such that the diagram commutes
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (m2) at (0,0) {\(M_2\)};
-    \node (m1) at (0,1) {\(M_1\)};
-    \node (m) at (-2,1) {\(M\)};
-    \node (implies) at (2,1) {\(\implies\)};
-    \node (mm2) at (4.5,0) {\(M_2\)};
-    \node (mm1) at (4.5,1) {\(M_1\)};
-    \node (n) at (6,1) {\(M'\)};
-    \node (mm) at (3,1) {\(M\)};
-    \draw [->] (m) -- node [left,above] {\(e_1\)} (m1);
-    \draw [->] (m) -- node [left,below] {\(e_2\)} (m2);
-    \draw [->] (mm) -- node [left,above] {\(e_1\)} (mm1);
-    \draw [->] (mm) -- node [left,below] {\(e_2\)} (mm2);
-    \draw [->] (mm1) -- node [left,above] {\(e_2'\)} (n);
-    \draw [->] (mm2) -- node [left,below] {\(e_1'\)} (n);
-  \end{tikzpicture}
-  \]
-  Moreover, for any graph $M''$ such that $M''\emb M_1$ then $M''\emb M'$.
-  \item if the two productions are co-final, i.e. $M_1'\iso M_2'$ then there exists $M'$ such that the diagram commutes
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (m2) at (-2,0) {\(M_2\)};
-    \node (m1) at (-2,1) {\(M_1\)};
-    \node (m) at (0,1) {\(M\)};
-    \node (implies) at (2,1) {\(\implies\)};
-    \node (mm2) at (4.5,0) {\(M_2\)};
-    \node (mm1) at (4.5,1) {\(M_1\)};
-    \node (n) at (3,1) {\(M'\)};
-    \node (mm) at (6,1) {\(M\)};
-    \draw [->] (m1) -- node [left,above] {\(e_1\)} (m);
-    \draw [->] (m2) -- node [left,below] {\(e_2\)} (m);
-    \draw [->] (mm1) -- node [left,above] {\(e_1\)} (mm);
-    \draw [->] (mm2) -- node [left,below] {\(e_2\)} (mm);
-    \draw [->] (n) -- node [left,above] {\(e_2'\)} (mm1);
-    \draw [->] (n) -- node [left,below] {\(e_1'\)} (mm2);
-  \end{tikzpicture}
-  \]
-  Moreover, for any graph $M''$ such that $M''\emb M_1$ then $M''\emb M'$.
-  \end{enumerate}
-\end{lemma}
-
-%% \begin{lemma}
-%%   \label{lem:rewrite_concurrent}
-%%   Let $(E,\subseteq,\labl, \bp) $ be the refinement of a decorated poset and let $e_1,e_2\in E$ be two incomparable events such that
-%%   $\bp(e_1) = M_1\overset{e_1}{\Rightarrow} M_1'$ and $\bp(e_2) = M_2\overset{e_2}{\Rightarrow} M_2'$.
-%%   \begin{enumerate}
-%%   \item if the two productions are co-initial, i.e. $M_1\iso M_2$ then there exists $M'$ such that the diagram commutes
-%%   \[
-%%   \begin{tikzpicture} %[scale=0.8]
-%%     \node (m2) at (0,0) {\(\circ\)};
-%%     \node (m1) at (0,1) {\(\circ\)};
-%%     \node (m) at (-2,1) {\(M\)};
-%%     \node (implies) at (2,1) {\(\implies\)};
-%%     \node (mm2) at (4.5,0) {\(\circ\)};
-%%     \node (mm1) at (4.5,1) {\(\circ\)};
-%%     \node (n) at (6,1) {\(M'\)};
-%%     \node (mm) at (3,1) {\(M\)};
-%%     \draw [->] (m) -- node [left,above] {\(e_1\)} (m1);
-%%     \draw [->] (m) -- node [left,below] {\(e_2\)} (m2);
-%%     \draw [->] (mm) -- node [left,above] {\(e_1\)} (mm1);
-%%     \draw [->] (mm) -- node [left,below] {\(e_2\)} (mm2);
-%%     \draw [->] (mm1) -- node [left,above] {\(e_2'\)} (n);
-%%     \draw [->] (mm2) -- node [left,below] {\(e_1'\)} (n);
-%%   \end{tikzpicture}
-%%   \]
-%%   \item if the two productions are co-final, i.e. $M_1'\iso M_2'$ then there exists $M'$ such that the diagram commutes
-%%   \[
-%%   \begin{tikzpicture} %[scale=0.8]
-%%     \node (m2) at (-2,0) {\(\circ\)};
-%%     \node (m1) at (-2,1) {\(\circ\)};
-%%     \node (m) at (0,1) {\(M\)};
-%%     \node (implies) at (2,1) {\(\implies\)};
-%%     \node (mm2) at (4.5,0) {\(\circ\)};
-%%     \node (mm1) at (4.5,1) {\(\circ\)};
-%%     \node (n) at (3,1) {\(M'\)};
-%%     \node (mm) at (6,1) {\(M\)};
-%%     \draw [->] (m1) -- node [left,above] {\(e_1\)} (m);
-%%     \draw [->] (m2) -- node [left,below] {\(e_2\)} (m);
-%%     \draw [->] (mm1) -- node [left,above] {\(e_1\)} (mm);
-%%     \draw [->] (mm2) -- node [left,below] {\(e_2\)} (mm);
-%%     \draw [->] (n) -- node [left,above] {\(e_2'\)} (mm1);
-%%     \draw [->] (n) -- node [left,below] {\(e_1'\)} (mm2);
-%%   \end{tikzpicture}
-%%   \]
-%%   \end{enumerate}
-%% \end{lemma}
-\begin{proof}
-  \begin{enumerate}
-  \item Let $\labl(e_1)=L_1\action R_1$ and $\labl(e_2)=L_2\action R_2$ be the labels of the two events.
-    Then there exists an event $e_3$ such that $e_3\subseteq_{O_1} e_1$ and $e_3\subseteq_{O_2} e_2$. We can assume without loss of generality, that $e_3$ is the only such event (in the cover relation with $e_1$ and $e_2$). Let us show that we can rewrite $M_1'$ using rule $\labl(e_2)$ and obtain $M'$ such that $M_1\overset{e_1}{\Rightarrow} M_1'$ and $M_1'\overset{e_2'}{\Rightarrow} M_2'$ are sequentially independent.
-
-     Let us consider only the poset restricted to events $\{e_1,e_2,e_3\}$. We have that, in the following diagram, there exists a morphism $L_2\to D'$ that commutes.
-     \[
-     \begin{tikzpicture} %[scale=0.8]
-       \node (k1) at (0,0) {\(K_1\)};
-       \node (l1) at (1.5,0) {\(L_1\)};
-       \node (r3) at (2.5,0) {\(R_3\)};
-       \node (l2) at (3.5,0) {\(L_2\)};
-       \node (m1) at (2,1) {\(M_1'\)};
-       \node (m2) at (3,1) {\(M_2'\)};
-       \node (d1) at (0.5,1) {\(D_1\)};
-       \node (d1p) at (1,2) {\(D_1'\)};
-       \node (m1p) at (2.5,2) {\(M'\)};
-       \node (d) at (1,3) {\(D\)};
-       \node (m) at (2.5,3) {\(M\)};
-       \draw [->] (k1) -- (l1);
-       \draw [->] (k1) -- (d1);
-       \draw [->] (d1) -- (d1p);
-       \draw [->] (d1) -- (m1);
-       \draw [->] (d1p) -- (d);
-       \draw [->] (d1p) -- (m1p);
-       \draw [->] (d) -- (m);
-       \draw [->] (l1) -- (m1);
-       \draw [->] (r3) -- (m1);
-       \draw [->] (r3) -- (m2);
-       \draw [->] (l2) -- (m2);
-       \draw [->] (m2) -- (m1p);
-       \draw [->] (m1) -- (m1p);
-       \draw [->] (m1p) -- (m);
-       \draw [dotted,->] (l2) -- (d1p);
-     \end{tikzpicture}
-     \]
-
-     Using the corollar of~\autoref{lem:subposet} if there is no such morphism then events are sequential dependent in the original trace. From~\autoref{def:abstraction}, one has that $e_1 < e_2$, which contradicts the hypothesis.
-
-     If there exists a morphism $L_2\to D'$ that commutes then, using~\autoref{lem:subposet} there is a morphism from $L_2\to D$ that commutes.
-     Lastly we use~\autoref{church_rosser} which from such a morphism, infers that $M\overset{e_1}{\Rightarrow} M_1'$ and $M\overset{e_2}{\Rightarrow} M_2'$ are parallel independent.
-
-  \item As we are using DPO rewriting, this case is similar to the first.
-  \end{enumerate}
-\end{proof}
-
-
-\begin{definition}[Concretisation of a poset]
-  \label{def:concretisation}
-  Given a set of posets $\mathcal{S}$ let us define the concretisation function $\gamma:\mathcal{S}\subseteq\Theta$ that sends a poset to a set of traces.
-  \begin{itemize}
-  \item For $s\in\mathcal{S}$, let $\overline{s}\in\decor(s)$ be a decorated poset.
-    We define the refinement of a decorated poset $\mathit{refine}(\overline{s}) = \{E,\sqsubset,\labl,\bp\}$, where $\overline{s} = \{E,\sqsubset,\labl\}$.
-  \item For every pair of concurrent events in $\mathit{refine}(\overline{s})$ close out the diagram using~\autoref{lem:rewrite_concurrent}. Denote $S$ a diagram that is closed with respect to the concurrent events. Then define $\gamma$, the concretisation function, as a set of traces, where each trace is a path in the diagram $S$:
-    \[
-    \gamma(s) = \{ t : t\text{ is a path in }S\text{ and }S\text{ is one the closed diagrams of }\mathit{refine}(\decor(s))\}.
-    \]
-  \end{itemize}
-\end{definition}
-
-\begin{example}
-  We complete the refined poset of the left by applying~\autoref{lem:rewrite_concurrent} to obtain the diagram on the right:
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-  \node (n2) at (-1,1) {\(\circ\)};
-  \node (m2) at (0,0) {\(\circ\)};
-  \node (m1) at (0,1) {\(\circ\)};
-  \node (n) at (1,1) {\(\circ\)};
-  \node (implies) at (2,1) {\(\leadsto\)};
-  \node (mm2) at (5.6,0) {\(\circ\)};
-  \node (mm1) at (5.6,1) {\(\circ\)};
-  \node (nn) at (6.9,1) {\(\circ\)};
-  \node (mm) at (4.3,0) {\(\circ\)};
-  \node (nn1) at (3,0) {\(\circ\)};
-  \node (nn2) at (4.3,1) {\(\circ\)};
-  \node (text) at (0.8,0.4) {\(e_3\)};
-  \node (text1) at (5.3,0.5) {\(e_3'\)};
-  \draw [->] (n2) -- node [left,above] {\(e_1\)} (m1);
-  \draw [->] (m1) -- node [left,above] {\(e_2\)} (n);
-  \draw [->] (m2) -- (n);
-  \draw [->] (nn2) -- node [left,above] {\(e_1\)} (mm1);
-  \draw [->] (mm1) -- node [left,above] {\(e_2\)} (nn);
-  \draw [->] (mm2) -- node [left,below] {\(e_3\)} (nn);
-  \draw [->] (mm) -- node [left,below] {\(e_2'\)} (mm2);
-  \draw [->] (mm) -- (mm1);
-  \draw [->] (nn1) -- node [above] {\(e_3''\)} (nn2);
-  \draw [->] (nn1) -- node [left,below] {\(e_1'\)} (mm);
-\end{tikzpicture}
-\]
-\end{example}
-
-%% \[
-%% \begin{tikzpicture} %[scale=0.8]
-%%   \node (m2) at (0,0) {\(\circ\)};
-%%   \node (m1) at (0,1) {\(\circ\)};
-%%   \node (n) at (1,1) {\(\circ\)};
-%%   \node (n1) at (2,1) {\(\circ\)};
-%%   \node (n2) at (2,0) {\(\circ\)};
-%%   \node (implies) at (3,1) {\(\leadsto\)};
-%%   \node (m) at (4,1) {\(\circ\)};
-%%   \node (mm2) at (5,0) {\(\circ\)};
-%%   \node (mm1) at (5,1) {\(\circ\)};
-%%   \node (nn) at (6,1) {\(\circ\)};
-%%   \node (nn1) at (7,1) {\(\circ\)};
-%%   \node (nn2) at (7,0) {\(\circ\)};
-%%   \node (p) at (8,1) {\(\circ\)};
-%%   \draw [->] (n) -- node [left,above] {\(e_3\)} (n1);
-%%   \draw [->] (n) -- node [left,below] {\(e_4\)} (n2);
-%%   \draw [->] (m1) -- node [left,above] {\(e_1\)} (n);
-%%   \draw [->] (m2) -- node [left,below] {\(e_2\)} (n);
-%%   \draw [->] (nn) -- node [left,above] {\(e_3\)} (nn1);
-%%   \draw [->] (nn) -- node [left,below] {\(e_4\)} (nn2);
-%%   \draw [->] (mm1) -- node [left,above] {\(e_1\)} (nn);
-%%   \draw [->] (mm2) -- node [left,below] {\(e_2\)} (nn);
-%%   \draw [->] (m) -- node [left,above] {\(e_2'\)} (mm1);
-%%   \draw [->] (m) -- node [left,below] {\(e_1'\)} (mm2);
-%%   \draw [->] (nn1) -- node [left,above] {\(e_3'\)} (p);
-%%   \draw [->] (nn2) -- node [left,below] {\(e_4'\)} (p);
-%% \end{tikzpicture}
-%% \]
-%% \[
-%% \begin{tikzpicture} %[scale=0.8]
-%%   \node (m) at (-1,1) {\(\circ\)};
-%%   \node (m2) at (0,0) {\(\circ\)};
-%%   \node (m1) at (0,1) {\(\circ\)};
-%%   \node (n) at (1,1) {\(\circ\)};
-%%   \node (implies) at (2,1) {\(\leadsto\)};
-%%   \node (implies2) at (7,1) {\(~\)};
-%%   \draw [->] (m) -- node [left,above] {\(e_1\)} (m1);
-%%   \draw [->] (m) -- node [left,below] {\(e_2\)} (m2);
-%%   \draw [->] (m1) -- node [left,above] {\(e_3\)} (n);
-%%   \draw [->] (m2) -- node [left,below] {\(e_4\)} (n);
-%% \end{tikzpicture}
-%% \]
-
-\begin{theorem}
-\label{th:correction}
-  $\theta\subseteq \gamma(\alpha(\theta))$.
-\end{theorem}
-\begin{proof}
-    \begin{mdframed}[backgroundcolor=blue!20]
-    to do
-  \end{mdframed}
-\end{proof}
-
-\begin{remark}[Adding inhibition]
-  We can change definition~\autoref{def:abstraction} in order to construct posets with the additional relation of inhibition between events:
-  \[
-  e_i \dashv e_j \iff t_i \dashv t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j
-  \]
-  Inhibition doesn't change the decoration and refinement of a poset but can make the concretisation function "more precise". In~\autoref{def:concretisation} we have to additionally remove any path in $\gamma(\alpha(\theta))$ that has two events $e_1$ followed by $e_2$ such that $e_1\dashv e_2$.
-\end{remark}

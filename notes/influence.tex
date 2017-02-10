@@ -74,7 +74,7 @@ Let us now define the notions of influence between rules, that allows us to over
 
   Let the cospan $R_1\lemb M\remb L_2$ be in the multisum of $R_1$ and $L_2$, from which we get the span $R_1\leftarrow O\rightarrow L_2$ as pullback.
 
-  There is a \emph{positive influence} between the two rules induced by $O$ and denoted $r_1\redl{+}_o r_2$ if the pullback of the cospan $D_1\lemb R_1\remb O$, denoted $P$, and $O$ is not an iso. In other words, $O$ is not contained in $P$.
+  There is a \emph{positive influence} between the two rules induced by the cospan $s:R_1\remb O\lemb L_2$ and denoted $r_1\redl{+}_s r_2$ if the pullback of the cospan $D_1\lemb R_1\remb O$, denoted $P$, and $O$ is not an iso. In other words, $O$ is not contained in $P$.
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (p) at (0,-1) {\(P\)};
@@ -95,16 +95,16 @@ Let us now define the notions of influence between rules, that allows us to over
   \end{tikzpicture}
   \]
 
-  Define $r_1\redl{+} r_2$ if there exists $O$ such that $r_1\redl{+}_o r_2$.
+  Define $r_1\redl{+} r_2$ if there exists $s$ such that $r_1\redl{+}_s r_2$.
 \end{definition}
 
-Similarly, define the negative influence $r_1\redl{-}_O r_2$ if there exists the span $L_1{\remb} O {\lemb} L_2$ and there is no iso between the pullback of the cospan $D_1\lemb L_1\remb O$ and $O$.
+Similarly, define the negative influence $r_1\redl{-}_s r_2$ if there exists the span $s:L_1{\remb} O {\lemb} L_2$ and there is no iso between the pullback of the cospan $D_1\lemb L_1\remb O$ and $O$.
 
 \begin{definition}[Causal pair]
   \label{def:causal_pair}
   Let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two rules.
 
-  A pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is a \emph{causal pair} if the cospan $R_1{\remb}M{\lemb}L_2$ is in the multisum of $R_1$ and $L_2$ and $p_1\redl{+}_O p_2$, where $O$ is the pullback of the cospan $R_1{\remb}M{\lemb}L_2$:
+  A pair $P_1\overset{m_1,p_1}{\Rightarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is a \emph{causal pair} if the cospan $R_1{\remb}M{\lemb}L_2$ is in the multisum of $R_1$ and $L_2$ and $p_1\redl{+}_s p_2$, where $s$ is the pullback of the cospan $R_1{\remb}M{\lemb}L_2$:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -210,7 +210,7 @@ In order to show the second part of the lemma, we will show that if there exists
 \begin{definition}[Inhibiting pair]
   Let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two rules.
 
-  A pair $P_1\overset{m_1,p_1}{\Leftarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is an \emph{inhibiting pair} if the cospan $L_1{\remb}M{\lemb}L_2$ is in the multisum of $L_1$ and $L_2$ and $p_1\redl{-}_O p_2$, where $O$ is the pullback of the cospan $L_1{\remb}M{\lemb}L_2$:
+  A pair $P_1\overset{m_1,p_1}{\Leftarrow} M\overset{m_2,p_2}{\Rightarrow} P_2$ is an \emph{inhibiting pair} if the cospan $L_1{\remb}M{\lemb}L_2$ is in the multisum of $L_1$ and $L_2$ and $p_1\redl{-}_s p_2$, where $s$ is the pullback of the cospan $L_1{\remb}M{\lemb}L_2$:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
