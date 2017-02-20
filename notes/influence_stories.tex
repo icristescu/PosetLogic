@@ -414,7 +414,65 @@ We make this intuition formal in~\autoref{th:correction}.
   \end{align*}
 \end{example}
 
-\subsection{Refinement of decorated posets}
+\subsection{Interpreting inhibition on posets}
+
+%In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a set of events $\cup_{s\in\mathcal{S}} E_s$.
+
+\begin{definition}[Linear extensions of posets]
+  A linear extension, denoted $\underline{s}$, of a poset $s=(E,\tleq)$ is any total order that extends the partial order $\tleq$. We denote $\linear(s)$ the set of all possible linear extensions of $s$.
+  %% \[
+  %% (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, e_1\leq e_2\implies e_1\seq e_2.
+  %% \]
+  A linear extension of a augmented poset $s=(E,\cover,\dashv)$ is any total order such that
+  \begin{align*}
+    (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, &e_1\leq e_2\implies e_1\seq e_2\\
+    & e_1\dashv e_2\implies e_2\seq e_1.
+  \end{align*}
+\end{definition}
+
+\begin{definition}
+  Let $\underline s=(E,\seq\redl{+},\redl{-},\labl)$ be a linear extension of a decorated poset $s$. A \emph{concretisation} function  $\mathtt{Concret}:E\leftrightarrow \{t_1,\cdots t_n\}$ is a bijection between events in $E$ and a set of transitions such that
+  \begin{align*}
+    e_1\redl{+}_s e_2 \iff& \mathtt{Concret}(e_1) = t_1, \mathtt{Concret}(e_1) = t_2, \text{ such that }t_1<_{t_1;t_2}t_2\\
+    &\text{ and the causal pair of }t_1<_{t_1;t_2}t_2\text{ is induced by }s.
+  \end{align*}
+\end{definition}
+
+
+\begin{definition}[Refinement of an event in a poset]
+  Let $e$ be an event in a decorated poset $s=(E,\redl{+},\redl{-},\labl)$.
+  Define $\mathtt{Concret}(e\in s) = \mathtt{Concret}(e)$ for $\mathtt{Concret}:\underline{s}\to\{t_1,\cdots t_n\}$ a concretisation function.
+  %We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
+\end{definition}
+
+\begin{definition}[Refinement based on negative influence]
+\label{def:ref_neg_infl}
+  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ such that  $\mathtt{Concret}(e_1\in s_1) = M_1\Rightarrow N_1$ and $\mathtt{Concret}(e_2\in s_2) = M_2\Rightarrow N_2$, define $\mathtt{Concret}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (0,-0.5) {\(O\)};
+    \node (n) at (0,2) {\(M\)};
+    \node (l1) at (-1,0) {\(L_1\)};
+    \node (l2) at (1,0) {\(L_2\)};
+    \node (n1) at (-1,1) {\(M_1\)};
+    \node (n2) at (1,1) {\(M_2\)};
+    \draw [->] (l1) -- (n1);
+    \draw [->] (l2) -- (n2);
+    \draw [->] (o) -- (l1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (n1) -- (n);
+    \draw [->] (n2) -- (n);
+  \end{tikzpicture}
+  \]
+  where $\labl(e_1)\redl{-}_s\labl(e_2)$, for some cospan $s:L_1\remb O\lemb L_2$.
+\end{definition}
+
+\subsection{From posets to traces}
+%\input{old_concret}
+
+%\input{old_ref}
+
+%\subsection{Refinement of decorated posets}
 
 \begin{lemma}[Update of a decoration after a refinement]
   \label{lem:update_dec}
@@ -578,17 +636,6 @@ Adapt \autoref{lem:update_dec} and \autoref{lem:assoc} to inhibition.
   If $s$ is a valid decorated poset then for any two events $e_1,e_2$ in $s$, $s_{(e_1\otimes e_2)}$ is also a valid decorate poset.
 \end{lemma}
 
-\begin{definition}[Linear extensions of posets]
-  A linear extension, denoted $\underline{s}$, of a poset $s=(E,\tleq)$ is any total order that extends the partial order $\tleq$. We denote $\linear(s)$ the set of all possible linear extensions of $s$.
-  %% \[
-  %% (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, e_1\leq e_2\implies e_1\seq e_2.
-  %% \]
-  A linear extension of a augmented poset $s=(E,\cover,\dashv)$ is any total order such that
-  \begin{align*}
-    (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, &e_1\leq e_2\implies e_1\seq e_2\\
-    & e_1\dashv e_2\implies e_2\seq e_1.
-  \end{align*}
-\end{definition}
 
 \begin{definition}[Refinement of a poset]
   \label{def:ref_poset}
@@ -601,49 +648,4 @@ Adapt \autoref{lem:update_dec} and \autoref{lem:assoc} to inhibition.
     \\
     &\underline s\text{ otherwise.}\\
   \end{align*}
-\end{definition}
-
-
-\subsection{From posets to traces}
-%\input{old_concret}
-
-\begin{definition}
-  Let $\underline s=(E,\seq\redl{+},\redl{-},\labl)$ be a linear extension of a decorated poset $s$. A \emph{concretisation} function  $\mathtt{Concret}:E\leftrightarrow \{t_1,\cdots t_n\}$ is a bijection between events in $E$ and a set of transitions such that
-  \begin{align*}
-    e_1\redl{+}_s e_2 \iff& \mathtt{Concret}(e_1) = t_1, \mathtt{Concret}(e_1) = t_2, \text{ such that }t_1<_{t_1;t_2}t_2\\
-    &\text{ and the causal pair of }t_1<_{t_1;t_2}t_2\text{ is induced by }s.
-  \end{align*}
-\end{definition}
-%\input{old_ref}
-
-\subsection{Interpreting inhibition on posets}
-
-In interpreting our logic, we work with a set of posets in $\mathcal{S}$ and a set of events $\cup_{s\in\mathcal{S}} E_s$.
-
-\begin{definition}[Refinement of an event in a poset]
-  Let $e$ be an event in a decorated poset $s=(E,\redl{+},\redl{-},\labl)$.
-  Define $\mathtt{Concret}(e\in s) = \mathtt{Concret}(e)$ for $\mathtt{Concret}:\underline{s}\to\{t_1,\cdots t_n\}$ a concretisation function.
-  %We call such a graph $M$ a \emph{context of application} of $e$ in $s$.
-\end{definition}
-
-\begin{definition}[Refinement based on negative influence]
-\label{def:ref_neg_infl}
-  For two posets $s_1,s_2$ and two events $e_1\in s_1$ and $e_2\in s_2$ such that  $\mathtt{Concret}(e_1\in s_1) = M_1\Rightarrow N_1$ and $\mathtt{Concret}(e_2\in s_2) = M_2\Rightarrow N_2$, define $\mathtt{Concret}(e_1\in s_1\redl{-} e_2\in s_2) = M$ for which the diagram below commutes:
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (o) at (0,-0.5) {\(O\)};
-    \node (n) at (0,2) {\(M\)};
-    \node (l1) at (-1,0) {\(L_1\)};
-    \node (l2) at (1,0) {\(L_2\)};
-    \node (n1) at (-1,1) {\(M_1\)};
-    \node (n2) at (1,1) {\(M_2\)};
-    \draw [->] (l1) -- (n1);
-    \draw [->] (l2) -- (n2);
-    \draw [->] (o) -- (l1);
-    \draw [->] (o) -- (l2);
-    \draw [->] (n1) -- (n);
-    \draw [->] (n2) -- (n);
-  \end{tikzpicture}
-  \]
-  where $\labl(e_1)\redl{-}_s\labl(e_2)$, for some cospan $s:L_1\remb O\lemb L_2$.
 \end{definition}
