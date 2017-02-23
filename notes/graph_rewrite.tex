@@ -11,7 +11,7 @@
   Denote $\varepsilon$ the empty graph.
 \end{definition}
 
-A mono is a morphism injective on nodes.
+A mono is a morphism injective on nodes. A subgraph $S = (V_S,E_S)$ of $G$, is graph such that $V_S\subseteq V$ and $E_S\subseteq E$.
 
 \begin{definition}[Pushout]
   The \emph{pushout} of the span $G_1\leftarrow O\rightarrow G_2$ is the cospan $G_1\rightarrow M\leftarrow G_2$ such that the following diagram commutes
@@ -78,11 +78,14 @@ A mono is a morphism injective on nodes.
   the two squares are pushouts.
 \end{definition}
 
-  We denote $L\action R$ the span $p:L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$. The inverse rule is defined as $p^{-1} = R\overset{r}{\leftarrow} K \overset{l}{\rightarrow} L$.
+  %We denote $L\action R$ the span $p:L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$.
+  The inverse rule is defined as $p^{-1} = R\overset{r}{\leftarrow} K \overset{l}{\rightarrow} L$.
   We write $M\overset{m,p}{\Rightarrow}N$ to denote the dpo rewrite of $M$ to $N$ of~\autoref{def:dpo}.
-  We sometimes also write $L\overset{\mathit{id}_L,p}{\Rightarrow}R$ (or $L{\Rightarrow}R$) for the production $p:L\action R$ and $\mathit{id}_L$ the identity morphism on $L$.
+  We sometimes also write $L\overset{\mathit{id}_L,p}{\Rightarrow}R$ (or $L{\Rightarrow}R$) for
+  %the production $p:L\action R$ and
+  $\mathit{id}_L$ the identity morphism on $L$.
 
-  For any graph $G$ let us denote $V_G$ and $E_G$ the corresponding set of nodes and edges, respectively.
+  %For any graph $G$ let us denote $V_G$ and $E_G$ the corresponding set of nodes and edges, respectively.
 
 \begin{property}[Gluing conditions]
   Let $p = L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$ be a production and let $L\overset{m}\lemb M$ be a matching in a graph $M$.
@@ -100,176 +103,11 @@ Henceforth we only consider productions that satisfy the gluing condition.
 Other graph rewriting techniques exists that allows production with dangling points. However, we are interested in reversible rules, and the DPO approach gives us the inverse of a rule in a straightforward way. We plan to extend the current work to rules with side effect in the future.
 \end{remark}
 
-\subsection{Transition systems}
-\label{sec:ts}
-
-%% \begin{definition}[Transition systems]
-%%   \label{def:ts_nielsen}
-%% %\cite{NielsenRT92}
-%%   A transition system is a structure $TS = (Q,E,T)$ where $Q$ is a set of states, $E$ is a set of events and $T\subseteq Q\times E\times Q$ is a set of labelled transitions. Let $q_{\text{init}}\in Q$ be a special state, called the \emph{initial} state. Moreover a transition system satisfies the following axioms:
-%%   \begin{itemize}
-%%   \item no redundant events: $\forall e\in E$, $\exists (s,e,s')\in T$;
-%%   \item all states are reachable: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$.
-%% %  \item no circles:$\forall (s,e,s')\in T$, $s\neq s'$;
-%% %  \item each pair of states connected by a single transition: $\forall (s,e_1,s_1), (s,e_2,s_2)\in T$, $s_1=s_2\implies e_1=e_2$.
-%%   \end{itemize}
-%% \end{definition}
-
-
-\begin{definition}[TS on graphs]
-  A transition system on graphs $TS = (Q,R,T)$ consists of
-  \begin{itemize}
-  \item a set of states $Q\subseteq \mathcal{G}$, where each state is a simple graph;
-  \item a set of rules or productions, $R$;
-%  \item a set of events $E$, where each event $e=(p:L\action R,G,m:L\emb G)$ is a triple consisting of a rule $p\in R$, a graph $G$ and a function $m$ that selects one matching $L\emb G$. For an event $e$, we define two functions $\labl(e) = p$ and $m(e) = L\emb G$.
-  \item a set of labelled transition $T\subseteq Q\times \text{hom}(\mathcal{G})\times R\times Q$, where each transition $M \overset{m,p}{\Rightarrow} N$ is a DPO rewriting step with the production $p\in R$, $p:L\lemb K\remb R$ and the matching $m:L\emb M$.
-    %% \[
-    %% \begin{tikzpicture} %[scale=0.8]
-    %%   \node (l) at (-1.5,0) {\(L\)};
-    %%   \node (r) at (0,0) {\(R\)};
-    %%   \node (m) at (-1.5,1.5) {\(M\)};
-    %%   \node (n) at (0,1.5) {\(N\)};
-    %%   \draw [->] (l) -- node [left,midway] {\(m(e)\)}  (m);
-    %%   \draw [>=latex, ->] (l) -- (r);
-    %%   \draw [>=latex, ->] (m) -- (n);
-    %%   \draw [->] (r) -- (n);
-    %% \end{tikzpicture}
-    %% \]
-    %We sometimes write $M\overset{m(e),\labl(e)}{\Rightarrow} N$.
-  \end{itemize}
-  %Moreover $TS$ satisfy the axioms of~\autoref{def:ts_nielsen}.
+\begin{definition}[Partial graph morphism]
+  A partial morphism $g:L \pmorph R$ is a total morphism from the subgraph $\text{dom}(g)$ of $L$ to $R$, that is $g:L \supseteq \text{dom}(g) \to R$.
 \end{definition}
 
-%We denote $t:(s,e,s')$ a transition.
-Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the destination state of $t_1$. A \emph{trace} $\theta$ is a sequence of composable transitions: $\theta=t_1;t_2;\cdots t_n$. Two traces $\theta:t_1;\cdots t_n$ and $\theta':t_1';\cdots t_n'$ can be composed if $t_n$ and $t_1'$ are composable: $\theta;\theta':t_1;\cdots t_n;t_1;\cdots t_n'$.
-
-\begin{definition}[Independence relation on transitions~\cite{AlgebraicGR}]
-  \label{def:indep}
-  $~$
-  \begin{description}
-  \item[sequential independence]
-    Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ be two transitions.
-    $t_1 \Diamond_{\text{seq}} t_2$ iff there exists the morphism $i:R_1\to D_2$ such that $i\circ f_2 = n_1$ and there exists the morphism $j:L_2\to D_1$ such that $j\circ g_1= m_2$:
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-    \node (r1) at (1.5,0) {\(R_1\)};
-    \node (m1) at (2,1.5) {\(M_1\)};
-    \node (l2) at (2.5,0) {\(L_2\)};
-    \node (d1) at (0,1.5) {\(D_1\)};
-    \node (k1) at (0,0) {\(K_1\)};
-    \node (d2) at (4,1.5) {\(D_2\)};
-    \node (k2) at (4,0) {\(K_2\)};
-    \draw [->] (k1) -- (r1);
-    \draw [->] (k2) -- (l2);
-    \draw [->] (k1) -- (d1);
-    \draw [->] (k2) -- (d2);
-    \draw [->] (d1) -- node [above,midway] {\(g_1\)} (m1);
-    \draw [->] (d2) -- node [above,midway] {\(f_2\)} (m1);
-    \draw [->] (l2) -- (m1);
-    \draw [->] (r1) -- (m1);
-    \draw [dotted,->] (r1) -- node [above,midway] {\(i\)} (d2);
-    \draw [dotted,->] (l2) -- node [above,midway] {\(j\)} (d1);
-    \end{tikzpicture}
-    \]
-  \item[parallel independence]
-    Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ be two transitions.
-    $t_1 \Diamond_{\text{par}} t_2$ iff there exists the morphism $i:L_1\to D_2$ such that $i\circ f_2= n_1$ and there exists the morphism $j:L_2\to D_1$ such that $j\circ f_1= m_2$:
-    \[
-    \begin{tikzpicture} %[scale=0.8]
-    \node (r1) at (1.5,0) {\(L_1\)};
-    \node (m1) at (2,1.5) {\(M_1\)};
-    \node (l2) at (2.5,0) {\(L_2\)};
-    \node (d1) at (0,1.5) {\(D_1\)};
-    \node (k1) at (0,0) {\(K_1\)};
-    \node (d2) at (4,1.5) {\(D_2\)};
-    \node (k2) at (4,0) {\(K_2\)};
-    \draw [->] (k1) -- (r1);
-    \draw [->] (k2) -- (l2);
-    \draw [->] (k1) -- (d1);
-    \draw [->] (k2) -- (d2);
-    \draw [->] (d1) -- node [above,midway] {\(f_1\)} (m1);
-    \draw [->] (d2) -- node [above,midway] {\(f_2\)} (m1);
-    \draw [->] (l2) -- (m1);
-    \draw [->] (r1) -- (m1);
-    \draw [dotted,->] (r1) -- node [above,midway] {\(i\)} (d2);
-    \draw [dotted,->] (l2) -- node [above,midway] {\(j\)} (d1);
-    \end{tikzpicture}
-    \]
-  \end{description}
-
-%We call such a TS an \emph{asynchronous} transition system~\cite{Mukund93}.
+\begin{definition}[Partial morphisms of productions~\cite{Ehrig:SPO}]
+  Given a production $p:L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$, its corresponding partial morphism, denoted $\spo(p):L\pmorph R$, is defined on $l(K)$ as $r\circ l^{-1}$ and undefined otherwise.
+%  Similarly, for a partial morphism $p:L\leftarrow R$, a span $\dom(p):L\overset{l}{\leftarrow} \text{dom}(p) \overset{r}{\rightarrow} R$ where $l$ is the inclusion of $\text{dom}(p)$ in $L$ and $r$ is the restriction of $p$ to $\text{dom}(p)$.
 \end{definition}
-
-\begin{lemma}[Local Church Rosser Theorem~\cite{AlgebraicGR}]
-  \label{church_rosser}
-  If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are sequentially independent, there exists $M'\in Q$ and two transitions $t_2':M\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1':M'\overset{m_1',p_1}{\Rightarrow} M_2$. Moreover, $t_1$ and $t_2'$ are parallel independent.
-
-If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ are parallel independent, then there exists $M'\in Q$ and two transitions $t_2':M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1':M_2\overset{m_1',p_1}{\Rightarrow} M'$. Moreover, $t_1$ and $t_2'$ (and $t_2$, $t_1'$) are sequential independent.
-\end{lemma}
-
-Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ be two parallel independent transitions.  Let us denote $t_2/t_1:M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1/t_2:M_2\overset{m_1',p_1}{\Rightarrow} M'$ the two transitions we obtained by~\autoref{church_rosser}.
-
-\begin{definition}[Equivalence up to permutation on traces]
-Define an equivalence up to permutations on traces, denoted $\congr$, as the least equivalence relation satisfying $t_1;(t_2/t_1)\congr t_2;(t_1/t_2)$.
-\end{definition}
-
-\begin{definition}[Equivalence on transitions]
-  Let $\sim$ be a binary relation on transitions such that for any two transitions $t_1\Diamond_{\text{par}} t_2$ and such that there exists $t_3$ and $t_4$ with $t_1;t_3\congr t_2;t_4$ then $t_1\sim t_4$ and $t_2\sim t_3$.
-\end{definition}
-
-The following property shows that one can define the equivalence relation above using sequential independent transitions as well.
-
-\begin{property}
-  Let $\sim'$ be a binary relation on transitions such that if $t_1\Diamond_{\text{seq}} t_2$ and there exists $t_3$ and $t_4$ with $t_1;t_2\congr t_3;t_4$ then $t_1\sim' t_4$ and $t_2\sim' t_3$. Then for any transitions $t_i$, $i\in\{1,..,4\}$ such that $t_1;t_2\congr t_3;t_4$ we have that
-  \begin{align*}
-    t_1 \sim' t_4\text{ and }t_2\sim' t_3 \iff t_1 \sim t_4\text{ and }t_2\sim t_3
-  \end{align*}
-\end{property}
-
-%We define an equivalence class on transitions, denoted $\congr$ as the least equivalence relation which satisfies $t_1\congr t_1/t_2$ and $t_2\congr t_2/t_1$, for any two transitions $t_1$ and $t_2$ parallel independent.
-%Note that, from~\autoref{church_rosser}, for two sequential independent transitions $t_1$ and $t_2$ we have that $t_1\congr t_1'$ and $t_2\congr t_2'$, where $t_1'$ and $t_2'$ are obtained by commutation.
-
-%We equip a graph transition system $(Q,R,E,T)$ with an irreflexive, symmetric relation on events $\Diamond\subseteq E\times E$, called independence, such that $e_1\Diamond e_1$ iff $e_1\Diamond_{\text{seq}} e_1$ or $e_1\Diamond_{\text{par}} e_1$.
-
-\begin{definition}[Dependence relation on transitions]
-  \label{def:dep}
-  \begin{description}
-  \item[] $~$
-  \item[sequential dependence]
-    \label{def:seq_dep}
-    Transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are sequential dependent, denoted $t_1 < t_2$, if there exists no morphism $j:L_2\to D_1$ such that $j\circ g_1= m_2$.
-
-  \item[parallel dependence]
-    \label{def:inhibition}
-    A transition $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ inhibits another transition $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$, denoted $t_1 \dashv t_2$, if there is no morphisms $j:L_2\to D_1$ such that $j\circ f_1= m_2$. The two transitions are parallel dependent if they are inhibiting each other.
-  \end{description}
-\end{definition}
-
-\autoref{def:dep}, \autoref{def:seq_dep} implies that if $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are sequential dependent then there is no graph $M'\in Q$ such that there exists the transitions
-$t_2':M\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1':M'\overset{m_1',p_1}{\Rightarrow} M_2$ with $t_1\Diamond_{\text{par}}t_2'$.
-
-From~\autoref{def:dep}, \autoref{def:inhibition} we have that if $t_1 \dashv t_2$ then there is no graph $M'\in Q$ such that there exists the transitions $t_2':M_1\overset{m_2',p_2}{\Rightarrow} M'$ with $t_1\Diamond_{\text{seq}}t_2'$.
-
-\begin{lemma}
-  \label{lem:not_seq_ind}
-  If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2: M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are not sequential independent, then either (i) $t_1 < t_2$ or (ii) there exists a morphism $j:L_2 \to M$ such that $j\circ g_1 = m_2$ and therefore there exists $M_2'$ and $t_2':M\overset{j\circ f_1,p_2}{\Rightarrow} M_2'$ with $t_2'\dashv t_1$.
-\end{lemma}
-\begin{proof}
-  If $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are not sequentially independent, from~\autoref{def:indep}, it follows that either (i) there is no morphism $j:L_2\to D_1$ such that $j\circ g_1= m_2$ and then $t_1 < t_2$ or
-(ii) there is no morphism $i:R_1\to D_2$ such that $i\circ f_2= n_1$. In the latter case, there is $j:L_2\to D_1$ such that $j\circ g_1= m_2$. It implies, from~\autoref{church_rosser} that there exists $M'\in Q$ and $t_2':M\overset{m_2',p_2}{\Rightarrow} M'$ and that $t_1$ is not parallel independent of $t_2'$. From the definition of parallel independence the only possibility is that there is no morphism $i:L_1\to D_2$ such that $i\circ f_2= n_1$. \autoref{def:inhibition} implies then that $t_2'\dashv t_1$.
-\end{proof}
-
-\begin{definition}[Equivalence on transitions]
-  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} M_2$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} M_3$ be two sequential transitions such that $\neg(t_1<t_2)$ and $\neg(t_1\Diamond_{\text{seq}}t_2)$. Denote $t_2|t_1$ the transition obtained by~\autoref{lem:not_seq_ind}.
-
-  Let $\sim_{\dashv}$ be a binary relation on transitions such that $t_2\sim_{\dashv}t_2|t_1$.
-
-  The equivalence relation on transitions, $\simeq$ is defined as the symmetric, reflexive and transitive closure of $\sim\cup\sim_{\dashv}$.
-\end{definition}
-
-\begin{lemma}
-  If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ are not parallel independent then either $t_1\dashv t_2$ or $t_2\dashv t_1$ (or both).
-\end{lemma}
-\begin{proof}
-  It follows from~\autoref{def:indep}.
-\end{proof}
