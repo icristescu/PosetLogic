@@ -11,7 +11,7 @@
   Denote $\varepsilon$ the empty graph.
 \end{definition}
 
-A mono is a morphism injective on nodes. A subgraph $S = (V_S,E_S)$ of $G$, is graph such that $V_S\subseteq V$ and $E_S\subseteq E$.
+A mono is a morphism injective on nodes, denoted $h:G_1\emb G_2$. A subgraph $S = (V_S,E_S)$ of $G$, is graph such that $V_S\subseteq V$ and $E_S\subseteq E$.
 
 \begin{definition}[Pushout]
   The \emph{pushout} of the span $G_1\leftarrow O\rightarrow G_2$ is the cospan $G_1\rightarrow M\leftarrow G_2$ such that the following diagram commutes
@@ -55,7 +55,7 @@ A mono is a morphism injective on nodes. A subgraph $S = (V_S,E_S)$ of $G$, is g
 
 \begin{definition}[Double-pushout rewriting]
 \label{def:dpo}
-  Let $p = L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$ be a span of injective morphisms, called a \emph{production} or a \emph{rule}. Let $M$ be a graph and $L\lemb M$ be an injective morphism in $M$, called \emph{a matching}.
+  Let $p = L\overset{l}{\lemb} K \overset{r}{\remb} R$ be a span of injective morphisms, called a \emph{production} or a \emph{rule}. Let $M$ be a graph and $L\lemb M$ be an injective morphism in $M$, called \emph{a matching}.
 
   The \emph{double pushout transformation} consists in defining the graphs $D'$, called the \emph{context} graph, and the graph $N$ such that in the following diagram:
   \[
