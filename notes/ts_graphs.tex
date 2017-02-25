@@ -2,18 +2,6 @@
 \subsection{Transition systems}
 \label{sec:ts}
 
-%% \begin{definition}[Transition systems]
-%%   \label{def:ts_nielsen}
-%% %\cite{NielsenRT92}
-%%   A transition system is a structure $TS = (Q,E,T)$ where $Q$ is a set of states, $E$ is a set of events and $T\subseteq Q\times E\times Q$ is a set of labelled transitions. Let $q_{\text{init}}\in Q$ be a special state, called the \emph{initial} state. Moreover a transition system satisfies the following axioms:
-%%   \begin{itemize}
-%%   \item no redundant events: $\forall e\in E$, $\exists (s,e,s')\in T$;
-%%   \item all states are reachable: $\forall q\in Q$, $\exists q_0,\cdots q_n \in Q$ and $\exists e_o,\cdots e_n\in E$ such that $q_{\text{init}} = q_0$, $q_n =q$ and $(q_i,e_i,q_{i+1}) \in T$.
-%% %  \item no circles:$\forall (s,e,s')\in T$, $s\neq s'$;
-%% %  \item each pair of states connected by a single transition: $\forall (s,e_1,s_1), (s,e_2,s_2)\in T$, $s_1=s_2\implies e_1=e_2$.
-%%   \end{itemize}
-%% \end{definition}
-
 \begin{definition}[TS on graphs]
   A transition system on graphs $TS = (Q,R,T)$ consists of
   \begin{itemize}
@@ -35,7 +23,6 @@
     %% \]
     %We sometimes write $M\overset{m(e),\labl(e)}{\Rightarrow} N$.
   \end{itemize}
-  %Moreover $TS$ satisfy the axioms of~\autoref{def:ts_nielsen}.
 \end{definition}
 
 %We denote $t:(s,e,s')$ a transition.
@@ -47,7 +34,7 @@ Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the d
   \begin{description}
   \item[sequential independence]
     Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ be two transitions.
-    $t_1 \Diamond_{\text{seq}} t_2$ iff there exists the morphism $i:R_1\to D_2$ such that $i\circ f_2 = n_1$ and there exists the morphism $j:L_2\to D_1$ such that $j\circ g_1= m_2$:
+    $t_1 \Diamond_{\text{seq}} t_2$ iff there exists the morphism $i:R_1\emb D_2$ such that $i\circ f_2 = n_1$ and there exists the morphism $j:L_2\emb D_1$ such that $j\circ g_1= m_2$:
     \[
     \begin{tikzpicture} %[scale=0.8]
     \node (r1) at (1.5,0) {\(R_1\)};
@@ -71,7 +58,7 @@ Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the d
     \]
   \item[parallel independence]
     Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ be two transitions.
-    $t_1 \Diamond_{\text{par}} t_2$ iff there exists the morphism $i:L_1\to D_2$ such that $i\circ f_2= n_1$ and there exists the morphism $j:L_2\to D_1$ such that $j\circ f_1= m_2$:
+    $t_1 \Diamond_{\text{par}} t_2$ iff there exists the morphism $i:L_1\emb D_2$ such that $i\circ f_2= n_1$ and there exists the morphism $j:L_2\emb D_1$ such that $j\circ f_1= m_2$:
     \[
     \begin{tikzpicture} %[scale=0.8]
     \node (r1) at (1.5,0) {\(L_1\)};
@@ -106,7 +93,7 @@ If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{
 
 \begin{definition}[Dependence relation on transitions]
   \label{def:dep}
-  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions in a trace $\theta:t_1;t_1':t_2';\cdots t_n';t_2$ and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules. The morphism $N_1\to M_2$ is the composition of $\spo(t_1')\circ\dots\spo(t_n')$.
+  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions in a trace $\theta:t_1;t_1':t_2';\cdots t_n';t_2$ and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules. The morphism $N_1\pmorph M_2$ is the composition of $\spo(t_1')\circ\dots\spo(t_n')$.
   \begin{description}
 %  \item[] $~$
   \item[high res dependence]
@@ -123,24 +110,24 @@ If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{
     \node (l1) at (-2,1) {\(L_1\)};
     \node (l2) at (2,1) {\(L_2\)};
     \node (r2) at (4,1) {\(R_2\)};
-    \draw [left hook->] (o) -- (r1);
-    \draw [left hook->] (o) -- (l2);
-    \draw [left hook->] (r1) --  (m);
-    \draw [left hook->] (r1) --  (n1);
-    \draw [left hook->] (l2) --  (m);
-    \draw [left hook->] (l2) --  (m2);
-    \draw [left hook->] (m) --  (n1);
-    \draw [left hook->] (m) --  (m2);
+    \draw [->] (o) -- (r1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (r1) --  (m);
+    \draw [->] (r1) --  (n1);
+    \draw [->] (l2) --  (m);
+    \draw [->] (l2) --  (m2);
+    \draw [->] (m) --  (n1);
+    \draw [->] (m) --  (m2);
     \draw [dotted, ->] (n1) --  (m2);
-    \draw [left hook->] (l1) --  (m1);
-    \draw [left hook->] (r2) --  (n2);
+    \draw [->] (l1) --  (m1);
+    \draw [->] (r2) --  (n2);
     \draw [vecArrow] (m1) -- node [above,midway] {$m_1,p_1$} (n1);
     \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
     \draw [vecArrow] (l2) -- (r2);
     \draw [vecArrow] (l1) -- (r1);
   \end{tikzpicture}
   \]
-  then the transitions are high res dependent, denoted $t_1 < t_2$.
+  then $t_2$ is high res dependent on $t_1$, denoted $t_1 < t_2$.
 \item[low res dependence]
 %  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules.
 If there exists $s:R_1\remb O\lemb L_2$ such that $p_1\redl{+}_s p_2$ and such that the diagram commutes
@@ -155,66 +142,113 @@ If there exists $s:R_1\remb O\lemb L_2$ such that $p_1\redl{+}_s p_2$ and such t
     \node (l1) at (-2,1) {\(L_1\)};
     \node (l2) at (2,1) {\(L_2\)};
     \node (r2) at (4,1) {\(R_2\)};
-    \draw [left hook->] (o) -- (r1);
-    \draw [left hook->] (o) -- (l2);
-    \draw [left hook->] (r1) --  (n1);
-    \draw [left hook->] (l2) --  (m2);
+    \draw [->] (o) -- (r1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (r1) --  (n1);
+    \draw [->] (l2) --  (m2);
     \draw [dotted, ->] (n1) --  (m2);
-    \draw [left hook->] (l1) --  (m1);
-    \draw [left hook->] (r2) --  (n2);
+    \draw [->] (l1) --  (m1);
+    \draw [->] (r2) --  (n2);
     \draw [vecArrow] (m1) -- node [above,midway] {$m_1,p_1$} (n1);
     \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
     \draw [vecArrow] (l2) -- (r2);
     \draw [vecArrow] (l1) -- (r1);
   \end{tikzpicture}
   \]
-  then the two transitions are low res dependent, denoted $t_1 \prec t_2$.
-\item[inhibition]
-  Let $t_1:N\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:N\overset{m_2,p_2}{\Rightarrow} N_2$ be two parallel transitions.
-% and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules.
-  Let the span $s:L_1\remb O\lemb L_2$ be the pullback of the cospan $L_1{\lemb}M{\remb}L_2$ in the multisum of $L_1$ and $L_2$. If the diagram commutes
+  then $t_2$ is low res dependent on $t_1$, denoted $t_1 \prec t_2$.
+  \end{description}
+\end{definition}
+Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
+
+
+\begin{definition}[Inhibition relations on transitions]
+  \label{def:dep}
+  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions in a trace $\theta:t_1;t_1':t_2';\cdots t_n';t_2$ and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules. The morphism $M_1\pmorph M_2$ is the composition of $\spo(t_1)\circ\spo(t_1')\circ\dots\spo(t_n')$.
+  \begin{description}
+  \item[high res inhibition]
+    %Let $t_1:N\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:N\overset{m_2,p_2}{\Rightarrow} N_2$ be two parallel transitions and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules.
+    Let the span $s:L_1\remb O\lemb L_2$ be the pullback of the cospan $L_1{\lemb}M{\remb}L_2$ in the multisum of $L_1$ and $L_2$ such that $p_1\redl{-}_s p_2$. If the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
     \node (m) at (1,2) {\(M\)};
-    \node (n) at (1,3) {\(N\)};
+    \node (m1) at (0,3) {\(M_1\)};
+    \node (n2) at (4,3) {\(N_2\)};
+    \node (m2) at (2,3) {\(M_2\)};
     \node (l1) at (0,1) {\(L_1\)};
     \node (l2) at (2,1) {\(L_2\)};
-    \draw [left hook->] (o) -- (l1);
-    \draw [left hook->] (o) -- (l2);
-    \draw [left hook->] (l1) --  (m);
-    \draw [left hook->] (l1) to [bend left] (n);
-    \draw [left hook->] (l2) --  (m);
-    \draw [left hook->] (l2) to [bend right] (n);
-    \draw [left hook->] (m) --  (n);
+    \node (r2) at (4,1) {\(R_2\)};
+    \draw [->] (o) -- (l1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (l1) --  (m);
+    \draw [->] (l1) --  (m1);
+    \draw [->] (l2) --  (m);
+    \draw [->] (l2) --  (m2);
+    \draw [->] (m) --  (m1);
+    \draw [->] (m) --  (m2);
+    \draw [dotted, ->] (m1) --  (m2);
+    \draw [->] (r2) --  (n2);
+    \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
+    \draw [vecArrow] (l2) -- (r2);
   \end{tikzpicture}
   \]
-  then $t_1$ inhibits $t_2$, denoted $t_1\dashv t_2$.
+  then $t_2$ is high res inhibiting $t_1$, denoted $t_2 \dashv t_1$.
+\item[low res inhibition]
+  If there exists $s:L_1\remb O\lemb L_2$ such that $p_1\redl{-}_s p_2$ and such that the diagram commutes
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (1,0) {\(O\)};
+    \node (m1) at (0,3) {\(M_1\)};
+    \node (n2) at (4,3) {\(N_2\)};
+    \node (m2) at (2,3) {\(M_2\)};
+    \node (l1) at (0,1) {\(L_1\)};
+    \node (l2) at (2,1) {\(L_2\)};
+    \node (r2) at (4,1) {\(R_2\)};
+    \draw [->] (o) -- (l1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (l1) --  (m1);
+    \draw [->] (l2) --  (m2);
+    \draw [dotted, ->] (m1) --  (m2);
+    \draw [->] (r2) --  (n2);
+    \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
+    \draw [vecArrow] (l2) -- (r2);
+  \end{tikzpicture}
+  \]
+  then $t_2$ is low res inhibiting $t_1$, denoted $t_1 \Dashv t_2$.
+%% If the diagram commutes
+%%   \[
+%%   \begin{tikzpicture} %[scale=0.8]
+%%     \node (o) at (1,0) {\(O\)};
+%%     \node (m) at (1,2) {\(M\)};
+%%     \node (n) at (1,3) {\(N\)};
+%%     \node (l1) at (0,1) {\(L_1\)};
+%%     \node (l2) at (2,1) {\(L_2\)};
+%%     \draw [->] (o) -- (l1);
+%%     \draw [->] (o) -- (l2);
+%%     \draw [->] (l1) --  (m);
+%%     \draw [->] (l1) to [bend left] (n);
+%%     \draw [->] (l2) --  (m);
+%%     \draw [->] (l2) to [bend right] (n);
+%%     \draw [->] (m) --  (n);
+%%   \end{tikzpicture}
+%%   \]
+%%   then $t_1$ inhibits $t_2$, denoted $t_1\dashv t_2$.
   \end{description}
 \end{definition}
+Note that $t_1\dashv t_2 \implies t_1\Dashv t_2$ but not the reverse.
 
-Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
+
+When we want to make the underlying span explict, we write $t_1 <^{s} t_2$, $t_1 \prec^{s} t_2$, $t_1 \dashv^{s} t_2$ and $t_1 \Dashv^{s} t_2$, respectively.
 
 \begin{lemma}
   \label{lem:seq_dep}
-  Two sequential transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are high res dependent if and only if there exists no morphism $j:L_2\to D_1$ such that $j\circ g_1= m_2$.
+  Two sequential transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are high res dependent if and only if there exists no morphism $j:L_2\emb D_1$ such that $j\circ g_1= m_2$.
 \end{lemma}
 
 \begin{lemma}
   \label{lem:inhibition}
-  A transition $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ inhibits a parallel transition $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ if and only if there is no morphisms $j:L_2\to D_1$ such that $j\circ f_1= m_2$.
+  A transition $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ is a high res inhibitor of a parallel transition $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ if and only if there is no morphisms $j:L_2\emb D_1$ such that $j\circ f_1= m_2$.
 \end{lemma}
-
-%% \begin{definition}[Dependence relation on transitions]
-%%   \label{def:dep}
-%%   \begin{description}
-%%   \item[] $~$
-%%   \item[sequential dependence]
-%%     Transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are sequential dependent, denoted $t_1 < t_2$, if there exists no morphism $j:L_2\to D_1$ such that $j\circ g_1= m_2$.
-%%   \item[parallel dependence]
-%%     A transition $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ inhibits another transition $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$, denoted $t_1 \dashv t_2$, if there is no morphisms $j:L_2\to D_1$ such that $j\circ f_1= m_2$. The two transitions are parallel dependent if they are inhibiting each other.
-%%   \end{description}
-%% \end{definition}
 
 \autoref{lem:seq_dep} implies that if $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are high res dependent then there is no graph $M'\in Q$ such that there exists the transitions
 $t_2':M\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1':M'\overset{m_1',p_1}{\Rightarrow} M_2$ with $t_1\Diamond_{\text{par}}t_2'$.
@@ -223,29 +257,20 @@ From~\autoref{lem:inhibition} we have that if $t_1 \dashv t_2$ then there is no 
 
 \begin{lemma}
   \label{lem:not_seq_ind}
-  If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2: M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are not sequential independent, then either (i) $t_1 < t_2$ or (ii) there exists a morphism $j:L_2 \to M$ such that $j\circ g_1 = m_2$ and therefore there exists $M_2'$ and $t_2':M\overset{j\circ f_1,p_2}{\Rightarrow} M_2'$ with $t_2'\dashv t_1$.
+  If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2: M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are not sequential independent, then either (i) $t_1 < t_2$ or (ii) there exists a morphism $j:L_2 \emb M$ such that $j\circ g_1 = m_2$ and therefore there exists $M_2'$ and $t_2':M\overset{j\circ f_1,p_2}{\Rightarrow} M_2'$ with $t_2'\dashv t_1$.
 \end{lemma}
 \begin{proof}
   If $M\overset{m_1,p_1}{\Rightarrow} M_1$ and $M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are not sequentially independent, from~\autoref{def:indep}, it follows that either (i) there is no morphism $j:L_2\to D_1$ such that $j\circ g_1= m_2$ and then $t_1 < t_2$ or
 (ii) there is no morphism $i:R_1\to D_2$ such that $i\circ f_2= n_1$. In the latter case, there is $j:L_2\to D_1$ such that $j\circ g_1= m_2$. It implies, from~\autoref{church_rosser} that there exists $M'\in Q$ and $t_2':M\overset{m_2',p_2}{\Rightarrow} M'$ and that $t_1$ is not parallel independent of $t_2'$. From the definition of parallel independence the only possibility is that there is no morphism $i:L_1\to D_2$ such that $i\circ f_2= n_1$. \autoref{def:inhibition} implies then that $t_2'\dashv t_1$.
 \end{proof}
 
-
-Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ be two parallel independent transitions. Let us denote $t_2/t_1:M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1/t_2:M_2\overset{m_1',p_1}{\Rightarrow} M'$ the two transitions we obtained by~\autoref{church_rosser}.
-
-
 %% \begin{definition}[Equivalence up to permutation on traces]
 %% Define an equivalence up to permutations on traces, denoted $\congr$, as the least equivalence relation satisfying $t_1;(t_2/t_1)\congr t_2;(t_1/t_2)$.
 %% \end{definition}
-
-\begin{definition}[Equivalence on transitions]
-  \label{def:equiv_trans}
-  Let $\sim$ be a binary relation on transitions such that for any two transitions $t_1\sim t_1'$ if there exists $t_2$, $t_1\Diamond_{\text{par}} t_2$ and $t_1' = t_1/t_2$.
+%% \begin{definition}[Equivalence on transitions]
 %% $t_1\Diamond_{\text{par}} t_2$ and such that there exists $t_3$ and $t_4$ with $t_1;t_3\congr t_2;t_4$ then $t_1\sim t_4$ and $t_2\sim t_3$.
-\end{definition}
-
+%% \end{definition}
 %% The following property shows that one can define the equivalence relation above using sequential independent transitions as well.
-
 %% \begin{property}
 %%   Let $\sim'$ be a binary relation on transitions such that if $t_1\Diamond_{\text{seq}} t_2$ and there exists $t_3$ and $t_4$ with $t_1;t_2\congr t_3;t_4$ then $t_1\sim' t_4$ and $t_2\sim' t_3$. Then for any transitions $t_i$, $i\in\{1,..,4\}$ such that $t_1;t_2\congr t_3;t_4$ we have that
 %%   \begin{align*}
@@ -255,16 +280,22 @@ Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Right
 
 %We define an equivalence class on transitions, denoted $\congr$ as the least equivalence relation which satisfies $t_1\congr t_1/t_2$ and $t_2\congr t_2/t_1$, for any two transitions $t_1$ and $t_2$ parallel independent.
 %Note that, from~\autoref{church_rosser}, for two sequential independent transitions $t_1$ and $t_2$ we have that $t_1\congr t_1'$ and $t_2\congr t_2'$, where $t_1'$ and $t_2'$ are obtained by commutation.
+%% \begin{definition}[Equivalence on transitions]
+%%   Let $\sim_{\dashv}$ be a binary relation on transitions such that $t_2\sim_{\dashv}t_2|t_1$.
+%%   The equivalence relation on transitions, $\simeq$ is defined as the symmetric, reflexive and transitive closure of $\sim\cup\sim_{\dashv}$.
+%% \end{definition}
 
-%We equip a graph transition system $(Q,R,E,T)$ with an irreflexive, symmetric relation on events $\Diamond\subseteq E\times E$, called independence, such that $e_1\Diamond e_1$ iff $e_1\Diamond_{\text{seq}} e_1$ or $e_1\Diamond_{\text{par}} e_1$.
 
+Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Rightarrow} M_2$ be two parallel independent transitions. Let us denote $t_2/t_1:M_1\overset{m_2',p_2}{\Rightarrow} M'$ and $t_1/t_2:M_2\overset{m_1',p_1}{\Rightarrow} M'$ the two transitions we obtained by~\autoref{church_rosser}.
+
+% Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} M_2$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} M_3$ be two sequential transitions such that $\neg(t_1<t_2)$ and $\neg(t_1\Diamond_{\text{seq}}t_2)$. Denote $t_2|t_1$ the transition obtained by~\autoref{lem:not_seq_ind}.
 
 \begin{definition}[Equivalence on transitions]
-  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} M_2$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} M_3$ be two sequential transitions such that $\neg(t_1<t_2)$ and $\neg(t_1\Diamond_{\text{seq}}t_2)$. Denote $t_2|t_1$ the transition obtained by~\autoref{lem:not_seq_ind}.
-
-  Let $\sim_{\dashv}$ be a binary relation on transitions such that $t_2\sim_{\dashv}t_2|t_1$.
-
-  The equivalence relation on transitions, $\simeq$ is defined as the symmetric, reflexive and transitive closure of $\sim\cup\sim_{\dashv}$.
+  \label{def:equiv_trans}
+  Let $\sim$ be a binary relation on transitions such that $t_1\sim t_1'$ iff there exists $t_2$, $t_1\Diamond_{\text{par}} t_2$ and $t_1' = t_1/t_2$.
+  %% \begin{itemize}
+  %% \item there exists $t_2$, $t_2;t_1$, $\neg(t_2<t_2)$, $\neg(t_2\Diamond_{\text{seq}}t_1)$ and $t_1=t_1|t_2$.
+  %% \end{itemize}
 \end{definition}
 
 \begin{lemma}

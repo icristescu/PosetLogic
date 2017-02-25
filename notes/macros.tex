@@ -34,8 +34,8 @@
 \newcommand{\seq}{\ensuremath{\sqsubseteq}}
 
 %functions
-\newcommand{\decor}{\ensuremath{\mathit{decorate}}}
-\newcommand{\linear}{\ensuremath{\mathit{linears}}}
+\newcommand{\decor}{\ensuremath{\mathsf{decorate}}}
+\newcommand{\linear}{\ensuremath{\mathsf{linears}}}
 
 %%%%% RCCS
 \newcommand{\out}[1]{\ensuremath{\overline{#1}}}
@@ -196,6 +196,19 @@
    preaction = {decorate},
    postaction = {draw,line width=1.4pt, white,shorten >= 4.5pt}]
 \tikzstyle{innerWhite} = [semithick, white,line width=1.4pt, shorten >= 4.5pt]
+
+
+\makeatletter
+\providecommand*{\Dashv}{%
+  \mathrel{%
+    \mathpalette\@Dashv\vDash
+  }%
+}
+\newcommand*{\@Dashv}[2]{%
+  \reflectbox{$\m@th#1#2$}%
+}
+\makeatother
+
 
 %colors
 \definecolor{colorp1}{RGB}{192,192,192}

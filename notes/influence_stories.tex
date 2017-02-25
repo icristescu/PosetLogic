@@ -1,6 +1,7 @@
 \section{Posets of graph rewriting events}
 
 \subsection{From transition systems to posets}
+\label{sec:concret}
 
 \begin{definition}[Causal trace]
   \label{def:causal_trace}
@@ -18,43 +19,25 @@
   Define $\leq$ the transitive and reflexive closure of low res dependence. We say that $\theta$ is a \emph{causal trace} if it is directed w.r.t. $\leq$.
 \end{definition}
 
-\begin{definition}[Augmented poset]
-  Let $s=(E,\cover,\prec,\dashv,\labl)$ be a set of events equipped with three binary relations on events $\cover$, $\prec$, $\dashv$ and a labelling function $\labl:E\to R$. We can retrive a poset from $s$, denoted $(E,\leq)$, where $\leq$ is the transitive and reflexive closure of $\prec$.
-  %Let $s=(E, \leq,\dashv,\labl)$ be a set of events equipped with a partial order $\leq$, a binary relation on events $\dashv$ and a labelling function $\labl:E\to R$.
-  We call $s$ an \emph{augmented poset}.
-\end{definition}
-
 \begin{definition}[The abstraction on a trace]
   \label{def:abstraction}
   Let us denote with $\Theta$ the set of causal traces.
   Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
-    \begin{itemize}
-    \item given a transition $t:M\overset{m,p}{\Rightarrow} M'$ define the \emph{abstract event} $e$ associated to it
-      $\alpha(t) = e_t$ such that $\labl(e) = p$.
-    \item define an augmented poset from a trace $\alpha(\theta) = (E,\cover,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
-      \begin{align*}
-        %\alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
-        e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
-        e_i \prec e_j \iff t_i \prec_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
-        e_i \dashv e_j \iff t_i \dashv_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
-      \end{align*}
-    %% \item define a decorated poset from a trace $\alpha(\theta) = (E,\redl{+},\redl{-},\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
-    %%   \begin{align*}
-    %%     %\alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
-    %%     e_i \redl{+}_O e_j \iff t_i <_{\theta} t_j, \labl(t_i) \redl{+}_O \labl(t_j)
-    %%     \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
-    %%     e_i \redl{-}_O e_j \iff t_i \dashv_{\theta} t_j, \labl(t_i) \redl{-}_O \labl(t_j)
-    %%     \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
-    %%   \end{align*}
-    \end{itemize}
-  %\item
-    Let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of causal traces.
-    Define the set of augmented posets $\mathcal{S}$ obtained by abstraction on $\Theta$ as follows
-    \[
-    \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)\text{ with }k\leq n
-    \]
-    where for each augmented poset $s$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = s$.
-  %\end{itemize}
+  \begin{itemize}
+  \item given a transition $t_i:M_i\overset{m,p}{\Rightarrow} M_{i+1}$ define the \emph{abstract event} $\alpha(t_i) = e_i$ such that $\labl(e_i) = p$.
+  \item define an augmented poset from a trace $\alpha(\theta) = (E,\cover,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
+    \begin{align*}
+      e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
+      e_i \prec e_j \iff t_i \prec_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
+      e_i \dashv e_j \iff t_i \dashv_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
+    \end{align*}
+  \end{itemize}
+  Let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of causal traces.
+  Define the set of augmented posets $\mathcal{S}$ obtained by abstraction on $\Theta$ as follows
+  \[
+  \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)/_{\iso}\text{ with }k\leq n
+  \]
+  where for each augmented poset $s$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = s$.
 \end{definition}
 
 \begin{example}
@@ -71,6 +54,7 @@
 \end{example}
 
 \begin{definition}[Decorated poset]
+  \label{def:decorate_poset}
   \begin{enumerate}
   \item[] $~$
   \item Given a set of events $E$ and a labeling function $\labl$ on events, define a function $\decor:E\times E \to E\times E\times G$ that associates to a pair of events $(e,e')$ the following set
@@ -79,7 +63,7 @@
        \decor_{-}(e,e') = \{(e,e',O) : O\text{ is a graph such that }\labl(e)\redl{-}_O \labl(e')\}
     \end{align*}
 
-  \item Let $s = (E,\cover,\dashv,\labl)$ be an augmented poset. A \emph{decorated} poset of $s$, denoted $s^{\star}$, is defined as follows
+  \item Let $s = (E,\cover,\prec,\dashv,\labl)$ be an augmented poset. A \emph{decorated} poset of $s$, denoted $s^{\star}$, is defined as follows
     \begin{align*}
       s^{\star} = (E,\redl{+},\redl{-},\labl), \text{ where }
       &e\redl{+}_O e' \iff (e,e',O)\in\decor_+(e,e')\text{ and }e\prec e'\\
@@ -97,10 +81,8 @@ Note that the notation $e\redl{+}_O e'$ is an overload of the notation $\labl(e)
   \begin{description}
   \item[directed]
     $s$ is directed w.r.t. the transitive and reflexive closure of $\redl{+}$;
-  \item[events are not pairwise inhibiting]
-    $\forall e_1,e_2\in s$, $e_1\redl{-}_s e_2\implies \neg(e_2 \redl{-}_{s'} e_1)$, for some $s$, $s'$;
-  \item[events cannot inhibit their causes]
-    $\forall e_1,e_2\in s$, $e_1\leq e_2\implies \neg(e_2 \redl{-}_{s} e_1)$, for some $s$;
+  \item[no decoration is empty]
+    $\forall e_1,e_2\in s$, if $e_1\redl{+}_{s} e_2$ or $e_1\redl{-}_{s} e_2$ then $s\not\iso\varepsilon$;
   \item[constraints on decorating meets]
     $\forall e_1,e_2,e_3\in s$ such that $e_1\redl{+}_{s_1} e_3$ and $e_2\redl{+}_{O_2} e_3$, let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$.
 If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1$ then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
@@ -126,7 +108,8 @@ If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1
       \draw [->] (o) to [bend right] (k2);
     \end{tikzpicture}
     \]
-  \item[constraints on decorating joins]
+    There is a similar constraint for negative influence, i.e. for $e_1\redl{-}_{s_1} e_3$ and $e_2\redl{-}_{s_2} e_3$.
+  \item[constraints on decorating forks]
     $\forall e_1,e_2,e_3\in s$ such that $e_3\redl{+}_{s_1} e_1$ and $e_3\redl{+}_{O_2} e_2$, let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$.
     If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1$ then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
        \[
@@ -151,6 +134,7 @@ If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1
       \draw [->] (o) to [bend right] (k2);
     \end{tikzpicture}
     \]
+    and similarly for $e_3\redl{-}_{s_1} e_1$ and $e_3\redl{-}_{O_2} e_2$.
   \end{description}
   where $\labl(e_i)=r_i:L_i\remb K_i\lemb R_i$.
 \end{definition}
@@ -190,8 +174,6 @@ We show in~\autoref{sec:valid_decor} that an abstraction from a causal trace to 
 to do: the other examples on decoration.
 \end{mdframed}
 
-
-
 \subsection{From posets to traces}
 
 \begin{definition}[Refinement of an event in a trace]
@@ -227,13 +209,32 @@ to do: the other examples on decoration.
 %%%%%the algorithm%%%%%%%
 
 \begin{definition}[Linear extensions of posets]
-  A linear extension, denoted $\underline{s}$, of a poset $s=(E,\tleq)$ is any total order that extends the partial order $\tleq$. We denote $\linear(s)$ the set of all possible linear extensions of $s$. A linear extension of a augmented poset $s=(E,\cover,\prec,\dashv)$ is any total order such that
+  \label{def:linears}
+  A linear extension of a poset $s=(E,\tleq)$ is any total order that extends the partial order $\tleq$. We denote $\linear(s)$ the set of all possible linear extensions of $s$. A linear extension of a augmented poset $s=(E,\cover,\prec,\dashv)$ is any total order such that
   \begin{align*}
     (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, &e_1\leq e_2\implies e_1\seq e_2\\
     & e_1\dashv e_2\implies e_2\seq e_1.
   \end{align*}
 \end{definition}
+Note that linearisations do not create cycles, as follows from the definition of augmented posets.
 
+\paragraph{A candidate for the concretisation}
+Let $s = (E,\seq,\cover,\prec,\dashv,\labl)$ be a linear extension of an augmented poset. The function $\mathsf{concretise}(s,\emptyset,\emptyset)$ defined below returns a set of concretisations for $s$.
+\begin{align*}
+  &\mathsf{concretise}(s,s_1,\mathit{concretisations}_1) = \\
+  &\quad\text{if }(E_s\setminus E_{s_1} = \emptyset)\text{ then return }\mathit{concretisations}_1\\
+  &\quad e = \text{min}_{\sqsubset}(E_s\setminus E_{s_1})\\
+  &\quad\mathit{concretisations}_2 = \emptyset \\
+  &\quad\text{for each }(\theta_1,\mathtt{Ref}_1)\text{ in }\mathit{concretisations}_1\\
+  &\quad\qquad s_2 = s\setminus\{s_1\cup\{e\}\}\\
+  &\quad\qquad\text{for each }(s_2)^{\star}\text{ in }\mathsf{decorate}(s_2)\\
+  &\quad\qquad\qquad (s_1)^{\star} = \mathsf{decoration\_of\_trace}(\theta_1)\\
+  &\quad\qquad\qquad \text{ if }s_2^{\star}\subseteq (s_1)^{\star}\text{ and }\mathsf{valid}(s_2^{\star})\text{ then }\\
+  &\quad\qquad\qquad\qquad (\mathit{\theta_2},\mathtt{Ref}_2) = \mathsf{refine}(\theta_1,\mathtt{Ref}_1,s_2^{\star})\\
+  &\quad\qquad\qquad\qquad \mathit{concretisations}_2 = \mathit{concretisations}_2 \cup (\mathit{\theta_2},\mathtt{Ref}_2)\\
+  &\quad\text{return }\mathit{concretisations}_2
+\end{align*}
+where $\mathsf{decorate}$ returns a decoration of $s$ as in~\autoref{def:decorate_poset}, $\mathsf{decoration\_of\_trace}$ is an abstraction of a trace to its decorated poset, defined in the~\autoref{sec:abstract_decoration}, $\mathsf{valid}$ is from~\autoref{def:constraints_poset} and lastly, $\mathsf{refine}$ is a function that extends a trace and a refinement to the new event $e$. We provide more details for $\mathsf{refine}$ in the appendix. Also in the appendix, we show that at each call of $\mathsf{concretise}$, the concretisations obtained so far are correct w.r.t.~\autoref{def:concret}.
 
 \subsection{Interpreting inhibition on posets}
 

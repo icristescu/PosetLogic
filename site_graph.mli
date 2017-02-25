@@ -13,11 +13,11 @@ type internal_state = {
     property : int;
   }
 
-type site_graph = {
+type t = {
     nodes : node list;
     edges : edge list;
     property_set : internal_state list;
   }
 
-val print_graph : site_graph -> unit
+val print_graph : t -> unit
 val test : unit -> unit

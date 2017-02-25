@@ -11,41 +11,32 @@
   A labeled poset $s=\{E,\leq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
 \end{definition}
 
+\begin{definition}[Augmented poset]
+  Let $s=(E,\cover,\prec,\dashv,\labl)$ be a set of events equipped with three binary relations on events $\cover$, $\prec$, $\dashv$ and a labelling function $\labl:E\to R$. We can retrive a poset from $s$, denoted $(E,\leq)$, where $\leq$ is the transitive and reflexive closure of $\prec$.
+  We call $s$ an \emph{augmented poset}.
+
+  Plus the constraint of no cycles with inhibition.
+
+  %% \item[events are not pairwise inhibiting]
+  %%   $\forall e_1,e_2\in s$, $e_1\redl{-}_s e_2\implies \neg(e_2 \redl{-}_{s'} e_1)$, for some $s$, $s'$;
+  %% \item[events cannot inhibit their causes]
+  %%   $\forall e_1,e_2\in s$, $e_1\redl{+}_s e_2\implies \neg(e_2 \redl{-}_{s} e_1)$, for some $s$;
+
+\end{definition}
+
+\begin{mdframed}[backgroundcolor=blue!20]
+  adapt to augmented posets
+\end{mdframed}
+
 \begin{definition}[Morphisms on posets]
   Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the cover relation. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
 
   A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
 \end{definition}
 
-\begin{lemma}
-  Posets and their morphisms form a category.
-\end{lemma}
-\begin{mdframed}[backgroundcolor=blue!20]
-  \begin{proof}
-    to do
-  \end{proof}
-\end{mdframed}
-
 \begin{definition}[Directed poset]
   A directed poset $s=\{E,\leq\}$ is a poset in which every pair of events has an upper bound.
 \end{definition}
-
-%% \begin{definition}
-%% \label{def:posets_otimes}
-%%   Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i}{\remb} s_i\overset{g_i}{\emb} s_2)_i$ such that
-%%   \begin{align*}
-%%     s_1\times s_2 =& \big\{ s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \big\}\\
-%%     s_1\otimes s_2 =& \big\{ s : s_1\overset{f}{\remb} s\overset{g}{\emb} s_2\in (s_1\times s_2)\text{ and }\nexists s'\text{ s.t. }s\emb s'
-%%     \text{ and }s_1\overset{f'}{\remb} s'\overset{g'}{\emb} s_2\in (s_1\times s_2)\big\}
-%%   \end{align*}
-%% \end{definition}
-
-%% \begin{property}
-%%   For all $s_1\overset{f}{\remb} s\overset{g}{\emb} s_2 \in (s_1\times s_2)$, $\mathit{image}(f) \iso \mathit{image}(g)$.
-%% \end{property}
-%% \begin{proof}
-%%   The function $h:\mathit{image}(f)\to\mathit{image}(g)$ is defined $h = g \circ f^{-1}$ and the reverse $h^{-1} = f \circ g^{-1}$. $h$ is a morphism, it follows from $f$ and $g$ being bijective morphisms.
-%% \end{proof}
 
 \subsection{Grammar}
 

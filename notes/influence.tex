@@ -13,13 +13,13 @@ Let us now define the notions of influence between rules, that allows us to over
     \node (m2) at (0,1) {\(\cdots\)};
     \node (mn) at (1,1) {\(M_n\)};
     \node (n) at (0,2.5) {\(M'\)};
-    \draw [right hook->] (l1) -- (m1);
-    \draw [left hook->] (l2) -- (m1);
-    \draw [right hook->] (l1) -- (mn);
-    \draw [left hook->] (l2) -- (mn);
-    \draw [right hook->] (l1) to [bend left] (n);
-    \draw [left hook->] (l2) to [bend right] (n);
-    \draw [left hook->, dotted] (m1) -- (n);
+    \draw [->] (l1) -- (m1);
+    \draw [->] (l2) -- (m1);
+    \draw [->] (l1) -- (mn);
+    \draw [->] (l2) -- (mn);
+    \draw [->] (l1) to [bend left] (n);
+    \draw [->] (l2) to [bend right] (n);
+    \draw [->, dotted] (m1) -- (n);
   \end{tikzpicture}
   \]
 \end{definition}
@@ -72,7 +72,7 @@ Let us now define the notions of influence between rules, that allows us to over
   \label{def:pos_infl}
   Let $L_1{\remb} D_1 {\lemb} R_1$ and $L_2{\remb} D_2 {\lemb} R_2$ be two rules.
 
-  Let the cospan $R_1\lemb M\remb L_2$ be in the multisum of $R_1$ and $L_2$, from which we get the span $R_1\leftarrow O\rightarrow L_2$ as pullback.
+  Let the cospan $R_1\lemb M\remb L_2$ be in the multisum of $R_1$ and $L_2$, from which we get the span $R_1\remb O\lemb L_2$ as pullback.
 
   There is a \emph{positive influence} between the two rules induced by the cospan $s:R_1\remb O\lemb L_2$ and denoted $r_1\redl{+}_s r_2$ if the pullback of the cospan $D_1\lemb R_1\remb O$, denoted $P$, and $O$ is not an iso. In other words, $O$ is not contained in $P$.
   \[
@@ -84,14 +84,14 @@ Let us now define the notions of influence between rules, that allows us to over
     \node (r1) at (0,1) {\(R_1\)};
     \node (l1) at (-2,1) {\(L_1\)};
     \node (l2) at (2,1) {\(L_2\)};
-    \draw [right hook->] (p) -- (d1);
-    \draw [left hook->] (p) -- node [right,midway] {$\not\iso$}  (o);
-    \draw [right hook->] (d1) -- (r1);
-    \draw [right hook->] (d1) -- (l1);
-    \draw [left hook->] (o) -- (r1);
-    \draw [left hook->] (o) -- (l2);
-    \draw [left hook->] (r1) --  (m);
-    \draw [left hook->] (l2) --  (m);
+    \draw [->] (p) -- (d1);
+    \draw [->] (p) -- node [right,midway] {$\not\iso$}  (o);
+    \draw [->] (d1) -- (r1);
+    \draw [->] (d1) -- (l1);
+    \draw [->] (o) -- (r1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (r1) --  (m);
+    \draw [->] (l2) --  (m);
   \end{tikzpicture}
   \]
 

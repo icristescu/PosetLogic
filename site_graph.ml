@@ -13,7 +13,7 @@ type internal_state = {
     property : int;
   }
 
-type site_graph = {
+type t = {
     nodes : node list;
     edges : edge list;
     property_set : internal_state list;

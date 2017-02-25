@@ -1,4 +1,4 @@
-\section{Valid decorated posets}
+\subsection{Valid decorated posets}
 \label{sec:valid_decor}
 
 \begin{lemma}
@@ -213,13 +213,9 @@ Inutuitively,~\autoref{lem:constraint_mj} says that if two events cannot \emph{p
 \end{proof}
 
 
-\begin{mdframed}[backgroundcolor=blue!20]
-to do: define alpha  on decorated posets.
-\end{mdframed}
-
 \begin{lemma}
   \label{prop:constraints_poset}
-  For any causal trace $\theta$, $\alpha(\theta)$ is a valid decorated poset.
+  For any causal trace $\theta$, $\mathsf{decoration\_of\_trace}(\theta)$ is a valid decorated poset.
 \end{lemma}
 \begin{proof}
   It is straigthforward from~\autoref{def:causal_trace},~\autoref{lem:inhibiting_pair},~\autoref{lem:constraint_inhibit} and \autoref{lem:constraint_mj}.

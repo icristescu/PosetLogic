@@ -55,7 +55,7 @@ A mono is a morphism injective on nodes, denoted $h:G_1\emb G_2$. A subgraph $S 
 
 \begin{definition}[Double-pushout rewriting]
 \label{def:dpo}
-  Let $p = L\overset{l}{\lemb} K \overset{r}{\remb} R$ be a span of injective morphisms, called a \emph{production} or a \emph{rule}. Let $M$ be a graph and $L\lemb M$ be an injective morphism in $M$, called \emph{a matching}.
+  Let $p = L\overset{l}{\remb} K \overset{r}{\lemb} R$ be a span of injective morphisms, called a \emph{production} or a \emph{rule}. Let $M$ be a graph and $L\lemb M$ be an injective morphism in $M$, called \emph{a matching}.
 
   The \emph{double pushout transformation} consists in defining the graphs $D'$, called the \emph{context} graph, and the graph $N$ such that in the following diagram:
   \[
@@ -79,7 +79,7 @@ A mono is a morphism injective on nodes, denoted $h:G_1\emb G_2$. A subgraph $S 
 \end{definition}
 
   %We denote $L\action R$ the span $p:L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$.
-  The inverse rule is defined as $p^{-1} = R\overset{r}{\leftarrow} K \overset{l}{\rightarrow} L$.
+  The inverse rule is defined as $p^{-1} = R\overset{r}{\remb} K \overset{l}{\lemb} L$.
   We write $M\overset{m,p}{\Rightarrow}N$ to denote the dpo rewrite of $M$ to $N$ of~\autoref{def:dpo}.
   We sometimes also write $L\overset{\mathit{id}_L,p}{\Rightarrow}R$ (or $L{\Rightarrow}R$) for
   %the production $p:L\action R$ and
@@ -88,7 +88,7 @@ A mono is a morphism injective on nodes, denoted $h:G_1\emb G_2$. A subgraph $S 
   %For any graph $G$ let us denote $V_G$ and $E_G$ the corresponding set of nodes and edges, respectively.
 
 \begin{property}[Gluing conditions]
-  Let $p = L\overset{l}{\leftarrow} K \overset{r}{\rightarrow} R$ be a production and let $L\overset{m}\lemb M$ be a matching in a graph $M$.
+  Let $p = L\overset{l}{\remb} K \overset{r}{\lemb} R$ be a production and let $L\overset{m}\lemb M$ be a matching in a graph $M$.
   Define the \emph{gluing points} and \emph{dangling points} as the two following sets:
   \begin{align*}
   \text{GP} &= l_V(V_K)\cup l_E(V_K)\\
@@ -100,10 +100,10 @@ A mono is a morphism injective on nodes, denoted $h:G_1\emb G_2$. A subgraph $S 
 Henceforth we only consider productions that satisfy the gluing condition.
 
 \begin{remark}
-Other graph rewriting techniques exists that allows production with dangling points. However, we are interested in reversible rules, and the DPO approach gives us the inverse of a rule in a straightforward way. We plan to extend the current work to rules with side effect in the future.
+Other graph rewriting techniques exists that allows production with dangling points. However, we are interested in reversible rules, and the dpo approach gives us the inverse of a rule in a straightforward way. We plan to extend the current work to rules with side effect in the future.
 \end{remark}
 
-\begin{definition}[Partial graph morphism]
+\begin{definition}[Partial morphism]
   A partial morphism $g:L \pmorph R$ is a total morphism from the subgraph $\text{dom}(g)$ of $L$ to $R$, that is $g:L \supseteq \text{dom}(g) \to R$.
 \end{definition}
 

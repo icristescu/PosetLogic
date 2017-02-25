@@ -1,28 +1,27 @@
-\section{Appendix}
 
-\subsection{Denotations for a formula}
-\label{app:denote}
-\[
-\begin{array}{rcl}
-  \den{x^e} &=& \{v : \{x^e\}\to \mathcal{E}\}\\
-  \den{x^s} &=& \{v : \{x^s\}\to \mathcal{S}\}\\
-  \den{\forall x.\varphi} &=& \{v :\fn{\varphi}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v \in \{\varphi\}\text{ and }\enc{\forall x.\varphi}_v= T\}\\
-  \den{\varphi_1 \wedge \varphi_2} &=& \{v: \fn{\varphi_1}\cup\fn{\varphi_2}\to\mathcal{E}\uplus\mathcal{S}~\Big|~ \\
-  &&\begin{array}{ll}
-  \quad v(x) = v_1(x)\wedge v(x) = v_2(x), &\text{ if }x\in\fn{\varphi_1}\cap\fn{\varphi_2}\\
-  \quad v(x) = v_1(x) &\text{ if }x\in\fn{\varphi_1},x\notin\fn{\varphi_2}\\
-  \quad v(x) = v_2(x) &\text{ if }x\in\fn{\varphi_2},x\notin\fn{\varphi_1}\\
-  \end{array}\\
-  &&\text{ and }v_i\in\den{\varphi_i}\text{ for }i=1,2\}\\
-  \den{\neg(\varphi)} &=& \{v :\fn{\varphi}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e) = \mathcal{E}\setminus v'(x^e)\text{ and }v(x^s) = \mathcal{S}\setminus v'(x^s)\\
-  &&\text{ for }x^e, x^s\in \fn{\varphi}, v'\in\den{\varphi}\}
-  \\
-  \den{ x^e\in x^s} &=& \{v :\{x^e,x^s\}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e)\in v(x^s) \} \\
-  \den{ x^e\in f(t^s_1,\cdots t^s_n)} &=& \{v :\{x^e\}\cup\fn{t^s_1}\cdots\cup\fn{t^s_n}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e)\in f(\enc{t^s_1}_v,\cdots \enc{t^s_n}_v \} \\
-  \\
-  \den{\text{func}(t_1,\cdots t_n)}_{v} &=& \text{func}(\den{t_1}_{v},\cdots,\den{t_n}_{v}) \\
-\end{array}
-\]
+%% \subsection{Denotations for a formula}
+%% \label{app:denote}
+%% \[
+%% \begin{array}{rcl}
+%%   \den{x^e} &=& \{v : \{x^e\}\to \mathcal{E}\}\\
+%%   \den{x^s} &=& \{v : \{x^s\}\to \mathcal{S}\}\\
+%%   \den{\forall x.\varphi} &=& \{v :\fn{\varphi}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v \in \{\varphi\}\text{ and }\enc{\forall x.\varphi}_v= T\}\\
+%%   \den{\varphi_1 \wedge \varphi_2} &=& \{v: \fn{\varphi_1}\cup\fn{\varphi_2}\to\mathcal{E}\uplus\mathcal{S}~\Big|~ \\
+%%   &&\begin{array}{ll}
+%%   \quad v(x) = v_1(x)\wedge v(x) = v_2(x), &\text{ if }x\in\fn{\varphi_1}\cap\fn{\varphi_2}\\
+%%   \quad v(x) = v_1(x) &\text{ if }x\in\fn{\varphi_1},x\notin\fn{\varphi_2}\\
+%%   \quad v(x) = v_2(x) &\text{ if }x\in\fn{\varphi_2},x\notin\fn{\varphi_1}\\
+%%   \end{array}\\
+%%   &&\text{ and }v_i\in\den{\varphi_i}\text{ for }i=1,2\}\\
+%%   \den{\neg(\varphi)} &=& \{v :\fn{\varphi}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e) = \mathcal{E}\setminus v'(x^e)\text{ and }v(x^s) = \mathcal{S}\setminus v'(x^s)\\
+%%   &&\text{ for }x^e, x^s\in \fn{\varphi}, v'\in\den{\varphi}\}
+%%   \\
+%%   \den{ x^e\in x^s} &=& \{v :\{x^e,x^s\}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e)\in v(x^s) \} \\
+%%   \den{ x^e\in f(t^s_1,\cdots t^s_n)} &=& \{v :\{x^e\}\cup\fn{t^s_1}\cdots\cup\fn{t^s_n}\to\mathcal{E}\uplus\mathcal{S} ~\Big|~ v(x^e)\in f(\enc{t^s_1}_v,\cdots \enc{t^s_n}_v \} \\
+%%   \\
+%%   \den{\text{func}(t_1,\cdots t_n)}_{v} &=& \text{func}(\den{t_1}_{v},\cdots,\den{t_n}_{v}) \\
+%% \end{array}
+%% \]
 %% \begin{mdframed}[backgroundcolor=blue!20]
 %% to do: valuation for the rest of the predicates
 %% \end{mdframed}
@@ -35,6 +34,11 @@
 
   Morphisms on numbered site graphs are the morphisms on site graphs that additionally preserves the identity function on nodes.
 \end{definition}
+
+\begin{mdframed}[backgroundcolor=blue!20]
+make this consistent with id graphs
+\end{mdframed}
+
 
 \begin{lemma}
   In the category of numbered site graphs and morphisms there exists the product between any two numbered site graphs.
