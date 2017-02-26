@@ -189,7 +189,7 @@ to do: the other examples on decoration.
   Let $\underline s=(E,\cover,\prec,\dashv,\labl)$ be an augmented poset $s$.
   A \emph{concretisation} of $s$ is a triple $(s,\theta,\mathtt{Ref}:E\leftrightarrow\theta)$ such that $\mathtt{Ref}$ is a refinement function and such that
   \begin{align*}
-    e_1\cover e_2 \iff& \mathtt{Ref}(e_1) <_{\theta}\mathtt{Ref}(e_2)\\
+    %e_1\cover e_2 \iff& \mathtt{Ref}(e_1) <_{\theta}\mathtt{Ref}(e_2)\\
     e_1\prec e_2 \iff& \mathtt{Ref}(e_1) \prec_{\theta}\mathtt{Ref}(e_2)\\
     e_1\dashv e_2 \iff& \mathtt{Ref}(e_1) \dashv_{\theta}\mathtt{Ref}(e_2)
   \end{align*}
@@ -225,13 +225,13 @@ Let $s = (E,\seq,\cover,\prec,\dashv,\labl)$ be a linear extension of an augment
   &\quad\text{if }(E_s\setminus E_{s_1} = \emptyset)\text{ then return }\mathit{concretisations}_1\\
   &\quad e = \text{min}_{\sqsubset}(E_s\setminus E_{s_1})\\
   &\quad\mathit{concretisations}_2 = \emptyset \\
-  &\quad\text{for each }(\theta_1,\mathtt{Ref}_1)\text{ in }\mathit{concretisations}_1\\
+  &\quad\text{for each }(s_1^{\star},\theta_1,\mathtt{Ref}_1)\text{ in }\mathit{concretisations}_1\\
   &\quad\qquad s_2 = s\setminus\{s_1\cup\{e\}\}\\
-  &\quad\qquad\text{for each }(s_2)^{\star}\text{ in }\mathsf{decorate}(s_2)\\
-  &\quad\qquad\qquad (s_1)^{\star} = \mathsf{decoration\_of\_trace}(\theta_1)\\
-  &\quad\qquad\qquad \text{ if }s_2^{\star}\subseteq (s_1)^{\star}\text{ and }\mathsf{valid}(s_2^{\star})\text{ then }\\
+  &\quad\qquad\text{for each }s_2^{\star}\text{ in }\mathsf{decorate}(s_2)\\
+  %&\quad\qquad\qquad (s_1)^{\star} = \mathsf{decoration\_of\_trace}(\theta_1)\\
+  &\quad\qquad\qquad \text{ if }s_2^{\star}\subseteq s_1^{\star}\text{ and }\mathsf{valid}(s_2^{\star})\text{ then }\\
   &\quad\qquad\qquad\qquad (\mathit{\theta_2},\mathtt{Ref}_2) = \mathsf{refine}(\theta_1,\mathtt{Ref}_1,s_2^{\star})\\
-  &\quad\qquad\qquad\qquad \mathit{concretisations}_2 = \mathit{concretisations}_2 \cup (\mathit{\theta_2},\mathtt{Ref}_2)\\
+  &\quad\qquad\qquad\qquad \mathit{concretisations}_2 = \mathit{concretisations}_2 \cup (s_2^{\star},\mathit{\theta_2},\mathtt{Ref}_2)\\
   &\quad\text{return }\mathit{concretisations}_2
 \end{align*}
 where $\mathsf{decorate}$ returns a decoration of $s$ as in~\autoref{def:decorate_poset}, $\mathsf{decoration\_of\_trace}$ is an abstraction of a trace to its decorated poset, defined in the~\autoref{sec:abstract_decoration}, $\mathsf{valid}$ is from~\autoref{def:constraints_poset} and lastly, $\mathsf{refine}$ is a function that extends a trace and a refinement to the new event $e$. We provide more details for $\mathsf{refine}$ in the appendix. Also in the appendix, we show that at each call of $\mathsf{concretise}$, the concretisations obtained so far are correct w.r.t.~\autoref{def:concret}.
