@@ -29,6 +29,13 @@
 \subsection{Rules in Kappa: the prefix convention}
 \label{app:prefix_convention}
 
+In Kappa, we write rules $L\action R$ and derive the domain of definition. For instance, for the rule
+\begin{verbatim}
+  A(x!1), C(y!1), B(y) -> A(x!1), C(y), B(y!1)
+\end{verbatim}
+we obtain the domain of definition \verb|A(x?), C(y?), B(y?)|.
+
+
 \begin{definition}[Numbered site graphs]
   Let us equip a site graph $G$ with an identity function $\idf:\nodes_G\to \nat$ such that $\forall n_1, n_2\in\nodes_G$, if $\idf(n_1)=\idf(n_2)$ then $n_1 = n_2$.
 

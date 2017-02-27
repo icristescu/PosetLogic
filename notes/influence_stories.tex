@@ -25,9 +25,9 @@
   Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
   \begin{itemize}
   \item given a transition $t_i:M_i\overset{m,p}{\Rightarrow} M_{i+1}$ define the \emph{abstract event} $\alpha(t_i) = e_i$ such that $\labl(e_i) = p$.
-  \item define an augmented poset from a trace $\alpha(\theta) = (E,\cover,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
+  \item define an augmented poset from a trace $\alpha(\theta) = (E,\prec,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
     \begin{align*}
-      e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
+      %e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
       e_i \prec e_j \iff t_i \prec_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
       e_i \dashv e_j \iff t_i \dashv_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j.
     \end{align*}
@@ -73,20 +73,46 @@
   \end{enumerate}
 \end{definition}
 
-Note that the notation $e\redl{+}_O e'$ is an overload of the notation $\labl(e)\redl{+}_O \labl(e')$. The first is defined on events using the abstraction function. The second, defined on rules, can be inferred from the rules itself.
+Note that the notation $e\redl{+}_s e'$ is an overload of the notation $\labl(e)\redl{+}_s \labl(e')$. The first is defined on events using the abstraction function. The second, defined on rules, can be inferred from the rules itself.
+
+\begin{definition}
+  Let $e_1$,$e_2$ be two events in a decorated poset and let $s:L_1\remb O\lemb L_2$ be a span. We say that $e_1$ and $e_2$ are \emph{pairs for positive influence w.r.t. $s$} if for all events $e_3$ such that $e_3\redl{+}_{s_1} e_1$ and $s_1:R_3\remb O_1\lemb L_1$ for which the diagram commutes
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+      \node (o) at (0,-1) {\(O\)};
+      \node (r3) at (0,1) {\(R_3\)};
+      \node (o1) at (-1,0) {\(O_1\)};
+      \node (o2) at (1,0) {\(O_2\)};
+      \node (r1) at (-2,1) {\(L_1\)};
+      \node (r2) at (2,1) {\(L_2\)};
+      \draw [dotted,->] (o) -- (o1);
+      \draw [dotted,->] (o) -- (o2);
+      \draw [->] (o1) -- (r3);
+      \draw [->] (o2) -- (r3);
+      \draw [->] (o1) -- (r1);
+      \draw [->] (o2) -- (r2);
+      \draw [->] (o) to [bend left] (r1);
+      \draw [->] (o) to [bend right] (r2);
+    \end{tikzpicture}
+    \]
+there exists $s_2:R_3\remb O_2\lemb L_2$ that commutes and such that $e_3\redl{+}_{s_2} e_2$.
+Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r.t. $s$} if for any event $e_3$ that has a negative influence on $e_1$ involving some part of $s$ then $e_3$ has a negative influence on $e_2$ as well.
+\end{definition}
 
 \begin{definition}[Valid decorated poset]
   \label{def:constraints_poset}
-  A decorated poset $s = (E,\redl{+},\redl{-},\labl)$ is \emph{valid} if the following hold:
+  A decorated poset $s = (E,\redl{+},\redl{-},\labl)$ is \emph{valid} if it is directed w.r.t. the transitive and reflexive closure of $\redl{+}$ and if the following constraints on decorations are meet:
   \begin{description}
-  \item[directed]
-    $s$ is directed w.r.t. the transitive and reflexive closure of $\redl{+}$;
   \item[no decoration is empty]
-    $\forall e_1,e_2\in s$, if $e_1\redl{+}_{s} e_2$ or $e_1\redl{-}_{s} e_2$ then $s\not\iso\varepsilon$;
-  \item[constraints on decorating meets]
-    $\forall e_1,e_2,e_3\in s$ such that $e_1\redl{+}_{s_1} e_3$ and $e_2\redl{+}_{O_2} e_3$, let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$.
-If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1$ then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
-    \[
+    Let $e_1,e_2\in s$ be two events. If $e_1\redl{+}_{s} e_2$ or $e_1\redl{-}_{s} e_2$ then $s$ is not empty;
+  \item[constraints on decorating positive meets]
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:R_1\remb O_1\lemb L_3$ and $s_2:R_2\remb O_2\lemb L_3$ two spans with $e_1\redl{+}_{s_1} e_3$ and $e_2\redl{+}_{s_2} e_3$.
+    Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
+    \begin{itemize}
+    \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below in which case $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$;
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':R_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{+}_{s'} e_1$.
+    \end{itemize}
+   \[
     \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O\)};
       \node (r3) at (0,1) {\(L_3\)};
@@ -94,6 +120,8 @@ If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1
       \node (o2) at (1,0) {\(O_2\)};
       \node (r1) at (-2,1) {\(R_1\)};
       \node (r2) at (2,1) {\(R_2\)};
+      \node (l1) at (-4,1) {\(L_1\)};
+      \node (l2) at (4,1) {\(L_2\)};
       \node (k1) at (-3,0) {\(K_1\)};
       \node (k2) at (3,0) {\(K_2\)};
       \draw [->] (o) -- (o1);
@@ -104,15 +132,56 @@ If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1
       \draw [->] (o2) -- (r2);
       \draw [->] (k1) -- (r1);
       \draw [->] (k2) -- (r2);
+      \draw [->] (k1) -- (l1);
+      \draw [->] (k2) -- (l2);
       \draw [->] (o) to [bend left] (k1);
       \draw [->] (o) to [bend right] (k2);
     \end{tikzpicture}
     \]
-    There is a similar constraint for negative influence, i.e. for $e_1\redl{-}_{s_1} e_3$ and $e_2\redl{-}_{s_2} e_3$.
-  \item[constraints on decorating forks]
-    $\forall e_1,e_2,e_3\in s$ such that $e_3\redl{+}_{s_1} e_1$ and $e_3\redl{+}_{O_2} e_2$, let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$.
-    If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1$ then there exists the morphisms $O\emb K_1$ and $O\emb K_2$ such that the diagram below commutes:
-       \[
+  \item[constraints on decorating negative meets]
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:L_1\remb O_1\lemb L_3$ and $s_2:L_2\remb O_2\lemb L_3$ two spans with $e_1\redl{-}_{s_1} e_3$ and $e_2\redl{-}_{s_2} e_3$.
+    Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
+    \begin{itemize}
+    \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below;
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':L_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{-}_{s'} e_1$; %and $e_1$,$e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
+    \end{itemize}
+   \[
+    \begin{tikzpicture} %[scale=0.8]
+      \node (o) at (0,-1) {\(O\)};
+      \node (r3) at (0,1) {\(L_3\)};
+      \node (o1) at (-1,0) {\(O_1\)};
+      \node (o2) at (1,0) {\(O_2\)};
+      \node (r1) at (-2,1) {\(L_1\)};
+      \node (r2) at (2,1) {\(L_2\)};
+      \node (l1) at (-4,1) {\(R_1\)};
+      \node (l2) at (4,1) {\(R_2\)};
+      \node (k1) at (-3,0) {\(K_1\)};
+      \node (k2) at (3,0) {\(K_2\)};
+      \draw [->] (o) -- (o1);
+      \draw [->] (o) -- (o2);
+      \draw [->] (o1) -- (r3);
+      \draw [->] (o2) -- (r3);
+      \draw [->] (o1) -- (r1);
+      \draw [->] (o2) -- (r2);
+      \draw [->] (k1) -- (r1);
+      \draw [->] (k2) -- (r2);
+      \draw [->] (k1) -- (l1);
+      \draw [->] (k2) -- (l2);
+      \draw [->] (o) to [bend left] (k1);
+      \draw [->] (o) to [bend right] (k2);
+    \end{tikzpicture}
+    \]
+    and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
+  \item[constraints on decorating positive forks]
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:L_1\remb O_1\lemb R_3$ and $s_2:L_2\remb O_2\lemb R_3$ two spans with $e_3\redl{+}_{s_1} e_1$ and $e_3\redl{+}_{s_2} e_2$.
+    Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
+    \begin{itemize}
+    \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below;
+      %in which case $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$;
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':L_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{-}_{s'} e_1$;
+      % and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
+    \end{itemize}
+   \[
     \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O\)};
       \node (r3) at (0,1) {\(R_3\)};
@@ -120,6 +189,8 @@ If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1
       \node (o2) at (1,0) {\(O_2\)};
       \node (r1) at (-2,1) {\(L_1\)};
       \node (r2) at (2,1) {\(L_2\)};
+      \node (l1) at (-4,1) {\(R_1\)};
+      \node (l2) at (4,1) {\(R_2\)};
       \node (k1) at (-3,0) {\(K_1\)};
       \node (k2) at (3,0) {\(K_2\)};
       \draw [->] (o) -- (o1);
@@ -130,17 +201,64 @@ If there is no $s$, $s'$ such that $e_1\redl{-}_s e_2$ and $e_2\redl{-}_{s'} e_1
       \draw [->] (o2) -- (r2);
       \draw [->] (k1) -- (r1);
       \draw [->] (k2) -- (r2);
+      \draw [->] (k1) -- (l1);
+      \draw [->] (k2) -- (l2);
       \draw [->] (o) to [bend left] (k1);
       \draw [->] (o) to [bend right] (k2);
     \end{tikzpicture}
     \]
-    and similarly for $e_3\redl{-}_{s_1} e_1$ and $e_3\redl{-}_{O_2} e_2$.
+    and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
+  \item[constraints on decorating negative forks]
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:L_1\remb O_1\lemb R_3$ and $s_2:L_2\remb O_2\lemb R_3$ two spans with $e_3\redl{-}_{s_1} e_1$ and $e_3\redl{-}_{s_2} e_2$.
+    Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
+    \begin{itemize}
+    \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below;
+      %in which case $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$;
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':L_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{-}_{s'} e_1$;
+      %and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
+    \end{itemize}
+   \[
+    \begin{tikzpicture} %[scale=0.8]
+      \node (o) at (0,-1) {\(O\)};
+      \node (r3) at (0,1) {\(L_3\)};
+      \node (o1) at (-1,0) {\(O_1\)};
+      \node (o2) at (1,0) {\(O_2\)};
+      \node (r1) at (-2,1) {\(L_1\)};
+      \node (r2) at (2,1) {\(L_2\)};
+      \node (l1) at (-4,1) {\(R_1\)};
+      \node (l2) at (4,1) {\(R_2\)};
+      \node (k1) at (-3,0) {\(K_1\)};
+      \node (k2) at (3,0) {\(K_2\)};
+      \draw [->] (o) -- (o1);
+      \draw [->] (o) -- (o2);
+      \draw [->] (o1) -- (r3);
+      \draw [->] (o2) -- (r3);
+      \draw [->] (o1) -- (r1);
+      \draw [->] (o2) -- (r2);
+      \draw [->] (k1) -- (r1);
+      \draw [->] (k2) -- (r2);
+      \draw [->] (k1) -- (l1);
+      \draw [->] (k2) -- (l2);
+      \draw [->] (o) to [bend left] (k1);
+      \draw [->] (o) to [bend right] (k2);
+    \end{tikzpicture}
+    \]
+    and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
   \end{description}
   where $\labl(e_i)=r_i:L_i\remb K_i\lemb R_i$.
 \end{definition}
 
-
-We show in~\autoref{sec:valid_decor} that an abstraction from a causal trace to a decorated poset only produces valid decorations.
+\begin{lemma}
+  \label{prop:constraints_poset}
+  From a causal trace $\theta$ define the \emph{abstraction} function $\mathsf{decoration\_of\_trace}$ that maps a trace into a decorated poset as follows:
+  \begin{align*}
+    &\mathsf{decoration\_of\_trace}(t_i:M_i\overset{m,p}{\Rightarrow} M_{i+1}) = e_i \\
+    &e_i \redl{+}_s e_j \iff t_i <_{\theta}^s t_j, \labl(t_i)\redl{+}_s \labl(t_j)\\
+    &e_i \redl{-}_s e_j \iff t_i \dashv_{\theta} t_j, \labl(t_i) \redl{-}_s \labl(t_j).
+  \end{align*}
+  Then, for any causal trace $\theta$, $\mathsf{decoration\_of\_trace}(\theta)$ is a valid decorated poset.
+\end{lemma}
+The proof is in~\autoref{sec:valid_decor}.
 
 
 %% \begin{example} - for the cover relation
@@ -170,9 +288,26 @@ We show in~\autoref{sec:valid_decor} that an abstraction from a causal trace to 
   \end{align*}
 \end{example}
 
-\begin{mdframed}[backgroundcolor=blue!20]
-to do: the other examples on decoration.
-\end{mdframed}
+\begin{example}
+  For the rules
+  \[
+  r_3: A \Rightarrow B-A-C\qquad r_1: B-A\Rightarrow B-A-D \qquad t_2: A-C\Rightarrow A-C-D\qquad r_4: A\Rightarrow \varepsilon.
+  \]
+  we have that $e_3\redl{+}_{A-B} r_1$ and $e_3\redl{+}_{A-C} e_1$. However events $e_1$ and $e_2$ are pairs for the negative influence of $e_4$ due to the resource $A$.
+\end{example}
+
+\begin{example}
+  Consider the transitions
+  \[
+  t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow \varepsilon \qquad t_2: A\Rightarrow \varepsilon
+  \]
+  for which there is no trace where both $t_3<t_1$ and $t_3<t_2$ hold. The resource $A$ produced by $t_1$ can only be consumed once.
+  If, however, $t_1$ and $t_2$ do not consume $A$ but preserve it:
+  \[
+  t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow A,B \qquad t_2: A\Rightarrow A,C
+  \]
+  then indeed both $t_1<t_3$ and $t_2<t_3$ hold.
+\end{example}
 
 \subsection{From posets to traces}
 

@@ -177,30 +177,6 @@ Inutuitively,~\autoref{lem:constraint_mj} says that if two events cannot \emph{p
   %% \]
   %% we can indeed have that both $t_1<t_3$ and $t_2<t_3$.
 \end{example}
-\begin{example}
-  Consider the transitions
-  \[
-  t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow \varepsilon \qquad t_2: A\Rightarrow \varepsilon
-  \]
-  for which there is no trace where both $t_3<t_1$ and $t_3<t_2$ hold. The resource $A$ produced by $t_1$ can only be consumed once.
-  If, however, $t_1$ and $t_2$ do not consume $A$ but preserve it:
-  \[
-  t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow A,B \qquad t_2: A\Rightarrow A,C
-  \]
-  then indeed both $t_1<t_3$ and $t_2<t_3$ hold.
-\end{example}
-  %% Note that though the following trace $\theta$, produced by transitions $t_3;t_1;t_2$, is valid
-  %% \[
-  %% \theta:\varepsilon \Rightarrow A \Rightarrow A, B\Rightarrow B\qquad t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow A,B\qquad t_2: A\Rightarrow \varepsilon
-  %% \]
-  %% we cannot deduce $t_3<t_2'$, for $t_2'\congr t_2$, as in the trace $\theta$ above, transitions cannot commute.
-\begin{example}
-  For a trace $t_1;t_2;t_3$ with the transitions
-  \[
-  t_1: A \Rightarrow A,B\qquad t_2: A,B\Rightarrow B,C \qquad t_3: B,C\Rightarrow D
-  \]
-  one cannot deduce $t_1<t_3$, as transitions $t_1$ and $t_2$ do not commute.
-\end{example}
 
 
 \begin{lemma}
@@ -214,7 +190,7 @@ Inutuitively,~\autoref{lem:constraint_mj} says that if two events cannot \emph{p
 
 
 \begin{lemma}
-  \label{prop:constraints_poset}
+  \label{prop:app_constraints_poset}
   For any causal trace $\theta$, $\mathsf{decoration\_of\_trace}(\theta)$ is a valid decorated poset.
 \end{lemma}
 \begin{proof}

@@ -83,37 +83,10 @@ An embedding or a mono, denoted $h:G\lemb H$, is an injective morphism on edges,
   \end{itemize}
 \end{definition}
 
-\begin{example}
-In Kappa, we write rules $L\action R$ and derive the domain of definition. For instance, for the rule
-\begin{verbatim}
-  A(x!1), C(y!1), B(y) -> A(x!1), C(y), B(y!1)
-\end{verbatim}
-we obtain the domain of definition \verb|A(x?), C(y?), B(y?)|. This is not in the scope of our paper, please see~\autoref{app:prefix_convention} for more details.
-\end{example}
-
 The category of site graphs and morphisms does not have all the pushouts. %but does have all pullbacks.
 
 \begin{example}[Inexistence of pushout in the category of site graphs]
   For the two graphs \verb|A(x!1), B(x!1)| and \verb|A(x)| there is no pushout.
-  %% Let $G$, $H$ and $O$ three site graphs defined as follows\footnote{Henceforth we write the symmetric reduction for the set $\links$.}:
-  %% \begin{align*}
-  %%   \ag_G = \{a\},   \type(a) = A,   \links_G = \{[(a,i),B] \} \\
-  %%   \ag_H = \{a'\},  \type(a') = A,  \links_H = \{[(a',i),C]\} \\
-  %%   \ag_o = \{a''\}, \type(a'') = A, \links_O = \{[(a'',i),\_]\}.
-  %% \end{align*}
-  %% There is no site graph $M$ such that the following diagram commutes:
-  %% \[
-  %% \begin{tikzpicture} %[scale=0.8]
-  %%   \node (o) at (0,-1) {\(O\)};
-  %%   \node (l1) at (-1.5,0) {\(G\)};
-  %%   \node (l2) at (1.5,0) {\(H\)};
-  %%   \node (m) at (0,1) {\(M\)};
-  %%   \draw [right hook->] (o) -- (l1);
-  %%   \draw [left hook->] (o) -- (l2);
-  %%   \draw [right hook->] (l1) -- (m);
-  %%   \draw [left hook->] (l2) -- (m);
-  %% \end{tikzpicture}
-  %% \]
 \end{example}
 
 \begin{lemma}
@@ -173,90 +146,7 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
  \end{enumerate}
  \end{proof}
 
-\subsection{Influence in Kappa}
-  In categories where the multisum between two graphs can be empty (such as the category of site graphs in Kappa), we can distinguish between \emph{low resolution} influence, in case the multisum is empty, and \emph{medium resolution} otherwise.
-%There is a third notion of \emph{high resolution} influence which additionally checks that the graph $M$ of the multisum cospans, is reachable from an initial graph.
-
-\begin{definition}[Low and medium resolution positive influence]
-  \label{def:pos_infl}
-  Let $L_1{\remb} D_1 {\lemb} R_1$ and $L_2{\remb} D_2 {\lemb} R_2$ be two rules. Let $R_1\leftarrow O\rightarrow L_2$ be a span of injective morphisms.
-
-  There is a \emph{low res positive influence} between the two rules induced by $O$ and denoted $r_1\xrightarrow[low]{+} _O r_2$ if the pullback of the cospan $D_1\lemb R_1\remb O$, denoted $P$, and $O$ is not an iso. In other words, $O$ is not contained in $P$.
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-    \node (p) at (0,-1) {\(P\)};
-    \node (d1) at (-1,0) {\(D_1\)};
-    \node (o) at (1,0) {\(O\)};
-    \node (m) at (1,2) {\(M\)};
-    \node (r1) at (0,1) {\(R_1\)};
-    \node (l1) at (-2,1) {\(L_1\)};
-    \node (l2) at (2,1) {\(L_2\)};
-    \draw [right hook->] (p) -- (d1);
-    \draw [left hook->] (p) -- node [right,midway] {$\not\iso$}  (o);
-    \draw [right hook->] (d1) -- (r1);
-    \draw [right hook->] (d1) -- (l1);
-    \draw [left hook->] (o) -- (r1);
-    \draw [left hook->] (o) -- (l2);
-    \draw [left hook->] (r1) --  (m);
-    \draw [left hook->] (l2) --  (m);
-  \end{tikzpicture}
-  \]
-
-  If $R_1\leftarrow O\rightarrow L_2$ is also the pullback of $R_1\rightarrow M\leftarrow L_2$ from the multisum of $R_1$ and $L_2$ then we say that there is a \emph{medium res positive influence} between the two rules induced by $O$ and denoted $r_1 \xrightarrow[med]{+} _Or_2$.
-\end{definition}
-
-We define similarly the negative influence.
-All properties from~\autoref{sec:ts} and~\autoref{sec:infl} hold for site graphs and medium res influence.
-
-We have seen that sequential dependence implies a medium res positive influence between rules~\autoref{def:causal_pair}.
-Let us introduce a new relation between transitions that reflects the low res positive influence.
-
-\begin{definition}[Precedence]
-  \label{def:prec}
-  Let $M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions and let $\theta:N_1\Rightarrow^{\star}M_2$ be a trace.
-
-  $(p_1,M,m_1) \prec (p_2,M_1,m_2)$ iff there exists a low res positive influence between $N_1$ and $M_2$.
-\end{definition}
-
-\begin{lemma}
-  \label{lem:prec}
-  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions such that there exists $O$ with $t_1\xrightarrow[low]{+} _O t_2$. Then there exists $O'$ with $p_1\xrightarrow[low]{+} _{O'} p_2$ and such that $O'\emb O$.
-\end{lemma}
-\begin{mdframed}[backgroundcolor=blue!20]
-  \begin{proof}
-    to do.
-  \end{proof}
-\end{mdframed}
-
-\subsection{Stories}
-
-\begin{definition}
-  A story $s=\{E,\tleq,\prec,\labl\}$ consists of a set of events $E$, a labelling function $\labl:E\to\mathcal{R}$, a partial order on events $\tleq$, and a binary relation $\prec\subseteq E\times E$ such that
-\[
-e< e'\implies e\prec e'
-\]
-where $<$ is the transitive reduction of $\tleq$. Let $\tprec$ be the transitive and reflexive closure of $\prec$. Then $s$ is directed w.r.t. $\tprec$.
-  %% \begin{itemize}
-  %% \item $e<e'\implies\labl(e)\xrightarrow[medium]{+} \labl(e')$;
-  %% \item $e\dashv e'\implies\labl(e)\xrightarrow[medium]{-} \labl(e')$;
-  %% \item $e\sqsubset e'\implies\text{ either }e<e'\text{ or }\exists e''. (e''<e'\text{ and }e'\dashv e'')$.
-  %% \end{itemize}
-\end{definition}
-
-We adapt~\autoref{def:abstraction} to abstract stories from a trace.
-\begin{definition}[Abstraction on a trace for stories]
-  \label{def:abstraction_stories}
-  Let $\Theta$ be a set of traces and let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace. The abstraction function $\alpha:\Theta\to\mathcal{S}$ is defined as in~\autoref{def:abstraction} with the additional constraint that precedence and inhibition are preserved as well:
-    \begin{align*}
-      \alpha(t_i:M_{i-1}\overset{m_{i},p_{i}}{\Rightarrow}M_i) = e_i \\
-      e_i < e_j \iff t_i < t_j \qquad
-      %e_i \dashv e_j \iff t_i \dashv t_j \qquad
-      e_i \prec e_j \iff t_i \prec t_j
-    \end{align*}
-    where $\alpha(\theta) = (E,<,\prec,\labl)$ and $\alpha(t_i)=e_i$, $\alpha(t_j)=e_j$.
-\end{definition}
-
-From $e_i \prec e_j$ we cannot construct a refinement of $\labl(e_i)$ and $\labl(e_j)$. We transform a story into a poset with inhibition.
+%\input{influence_kappa.tex}
 
 \begin{lemma}
   Let $\theta$ be a trace and $s=\{E,\tleq,\tprec,\labl\}$ be a story such that $\alpha(\theta) = s$. For any events $e_1,e_2\in E$ if $e_1\prec e_2$ and $e_1\not< e_2$ then there exists $e_3\in E$ such that $e_3\tprec e_2$ and either $e_1< e_3$ or $e_3\dashv e_1$.
@@ -329,10 +219,6 @@ We denote this event $e_3$.
 Event $e_3$ cannot remove node $(a,i)$ as $(a,i)\in \nodes_{L_2}$. Therefore $e_3\tprec e_2$. From an argument similar to the first case, we have that either $e_1< e_3$ or $e_3\dashv e_1$.
 \end{proof}
 
-\begin{definition}
-  A story with inhibition $\textbf{s}=\{E,\tleq,\dashv,\labl\}$ consists of a set of events $E$, a labelling function $\labl:E\to\mathcal{R}$, a partial order on events $\tleq$, and a binary relation $\dashv\subseteq E\times E$ such that $\textbf{s}$ is directed w.r.t. the transitive closure of $(< \cup \dashv)$.
-\end{definition}
-
 \begin{example}
 %In site graph we can express a dependence between events that is neither sequential dependence nor inhibition. It comes from the distinction between low res and medium res influence.
 Let us consider an example, with the following three rules
@@ -354,19 +240,6 @@ In a trace, $e_1$ and $e_3$ cannot occur sequentially, but $e_2$ has to occur in
 
 \begin{mdframed}[backgroundcolor=blue!20]
   \begin{itemize}
-%% Thus, we denote $e<^{\star}e'$ whenever $\labl(e)\xrightarrow[low]{+} \labl(e')$. Stories in Kappa are sets of events equipped with three binary relations $<$, $\dashv$ and $<^{\star}$ and the following properties hold between them:
-%% \begin{align*}
-%%   e < e' \implies e<^{\star}e'\text{ but not the reverse; }\\
-%% \labl(e)\xrightarrow[medium]{+} \labl(e') \implies \labl(e)\xrightarrow[low]{+} \labl(e')\text{ but not the reverse; }\\
-%%   e<^{\star}e'\text{ and }\neg(\labl(e)\xrightarrow[medium]{+} \labl(e'))\implies \exists e'', e''\dashv e\text{ and }e''< e'.
-%% \end{align*}
-%% Note that if $e_1\ll e_2$ there are three cases possible:
-%% \begin{itemize}
-%% \item $e_1< e_2$
-%% \item $\labl(e)\xrightarrow{+}\labl(e')$ and $\neg(e_1 < e_2)$
-%% \item $\neg(\labl(e)\xrightarrow{+}\labl(e'))$
-%% \end{itemize}
-  \item add non-causal precedence to the concretisation function;
   \item no context of inihibition: detect conflict in the site graph.
   \end{itemize}
 \end{mdframed}

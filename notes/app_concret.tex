@@ -84,6 +84,7 @@ The trace $\theta:M_1\Rightarrow M_2\cdots M_n$ is obtained by induction on $s_1
 Let us first show that producing an id graph from $L$ in \autoref{eq:idprod1} to \autoref{eq:idprod2} is correct: there are no two decorations that disagree on the identifier of a node. The second part of the following lemma says that adding a new transition to the trace does not reintroduce node identifiers.
 
 \begin{lemma}
+  \label{lem:correction}
   Let us suppose we have the following:
   \begin{itemize}
   \item two linear augmented posets $s_1$, $s_2$ such that $s_2=s_1\cup\{e\}$ and $e$ is maximal in $s_2$;
@@ -93,45 +94,77 @@ Let us first show that producing an id graph from $L$ in \autoref{eq:idprod1} to
   \begin{enumerate}
   \item For two decorations of $e$ in $s_2^{\star}$, $\mathit{span}_1$ and $\mathit{span}_2$ such that either
     \begin{enumerate}
-    \item $R_1 \overset{g_1}{\remb} O_1 \overset{o_1}{\lemb} L \overset{o_2}{\remb} O_2\overset{g_2}{\lemb} R_2$ or
+    \item
+      $R_1 \overset{g_1}{\remb} O_1 \overset{o_1}{\lemb} L \overset{o_2}{\remb} O_2\overset{g_2}{\lemb} R_2$ or
     \item $L_1 \overset{g_1}{\remb} O_1 \overset{o_1}{\lemb} L \overset{o_2}{\remb} O_2\overset{g_2}{\lemb} L_2$ or
     \item $L_1 \overset{g_1}{\remb} O_1 \overset{o_1}{\lemb} L \overset{o_2}{\remb} O_2\overset{g_2}{\lemb} R_2$.
     \end{enumerate}
-    we have that for all $n\in L$ such that $o_1^{-1}(n) = n_1\in O$ and $o_2^{-1}(n) = n_2\in O$, $\text{id}(g_1(n_1)) = \text{id}(g_2(n_2))$.
-  \item Let $L_I$ be the id graph constructed as in \autoref{eq:idprod1} to~\autoref{eq:idprod2}. Then $L_I\subseteq M_n$.
+    we have that for all $n\in L$ such that $o_1^{-1}(n) = n_1\in O_1$ and $o_2^{-1}(n) = n_2\in O_2$, $\text{id}(g_1(n_1)) = \text{id}(g_2(n_2))$.
+  \item
+  \label{lem:correction_2}
+  Let $L_I$ be the id graph constructed as in \autoref{eq:idprod1} to~\autoref{eq:idprod2}. Then $L_I\subseteq M_n$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
   \begin{enumerate}
   \item
-  \begin{enumerate}
-  \item It follows that there exists $e_1,e_2\in s_2^{\star}$ such that $e_1\redl{+}_{\mathit{span}_1} e$ and $e_2\redl{+}_{\mathit{span}_2} e$ and that the constraint on decorating positive meets in~\autoref{def:constraints_poset} is not satisfied. Contradiction with the hypothesis that $s_2^{\star}$ is a valid decoration.
-  \item Thanks to our symplifying assumption~\autoref{rm:simply} there exists an event $e_3$ which introduces node $n_1$. It follows then $e_3\redl{+}_{\mathit{span}_3} e_1$ where node $n_1$ is in the decoration $\mathit{span}_3$. Either $e_3\redl{+}_{\mathit{span}_3'} e_2$ with $n_2$ in the decoration $\mathit{span}_3'$ in which case, by induction we have that $\text{id}(n_1) = \text{id}(n_2)$, or $\neg(e_3\redl{+}_{\mathit{span}_3'} e_2)$. This contradicts the constraint on decorating forks of negative influence in~\autoref{def:constraints_poset}.
-  \item It follows that there exists $e_1,e_2\in s_2^{\star}$ such that $e_2\redl{+}_{\mathit{span}_2} e$ and $e\redl{-}_{\mathit{span}_2} e_1$. But then there exists a span ${\mathit{span}_3}$ such that $e_2\redl{+}_{\mathit{span}_3} e_1$ and the constraint on decorating positive forks in~\autoref{def:constraints_poset} is again not satisfied.
-  \end{enumerate}
-  \item Suppose that there exists $n\in L_I$ and $n\notin M_n$. From the symplifying assumption~\autoref{rm:simply} there exists an event $e_1$ which introduces node $n$. But $n\notin M_n$, implies that there exists an event $e_2$ which "consumes" $n$, i.e. $e_1\redl{+}_n e_2$ and $e_2\redl{-}_n e$. %we cannot use this last part $e_2\redl{-}_n e$ because we haven't yet proved that the concretisation of s2 doesn't introduce extra decorations.
-From $e_1\redl{+}_n e_2$ and $e_1\redl{+}_n e$ we have that the constraint on decorating positive forks in~\autoref{def:constraints_poset} is not satisfied.
+    \begin{enumerate}
+    \item It follows that there exists $e_1,e_2\in s_2^{\star}$ such that $e_1\redl{+}_{\mathit{span}_1} e$ and $e_2\redl{+}_{\mathit{span}_2} e$, with $\labl(e_i) = L_i\remb K_i\remb R_i$. We reason on the subscases of the constraint on decorating positive meets in~\autoref{def:constraints_poset} to deduce a contradiction:
+      \begin{itemize}
+      \item if $g(n_1)$ is in $K_1$ and $g(n_2)$ is in $K_2$ then we have that any event that has a positive influence on $e_1$ w.r.t. $n_1$ has a positive influence on $e_2$ w.r.t. $n_2$. Our simplyifing assumption~\autoref{rm:simply} ensures that there exists an event $e_n$ which introduces node $n_1$ and $n_2$ as a single node, hence the two nodes have the same id.
+      \item otherwise, the only cases possible are either $e_1$ introduces node $n_1$ and $e_1\redl{+} e_2$ or the other way around. In both cases the two nodes are identified as the same node.
+      \end{itemize}
+    \item Similar to the case above, we use the constraint on decorating negative forks in~\autoref{def:constraints_poset} and the symplifying assumption~\autoref{rm:simply}.
+    \item It follows that there exists $e_1,e_2\in s_2^{\star}$ such that $e_2\redl{+}_{\mathit{span}_2} e$ and $e\redl{-}_{\mathit{span}_2} e_1$. But then there exists a span ${\mathit{span}_3}$ such that $e_2\redl{+}_{\mathit{span}_3} e_1$ and the constraint on decorating positive forks in~\autoref{def:constraints_poset} is again not satisfied.
+    \end{enumerate}
+  \item Suppose that there exists $n\in L_I$ and $n\notin M_n$. From the symplifying assumption~\autoref{rm:simply} there exists an event $e_1$ which introduces node $n$. But $n\notin M_n$, implies that there exists an event $e_2$ which "consumes" $n$, i.e. $e_1\redl{+} e_2$ and $e_2\redl{-} e$. %we cannot use this last part $e_2\redl{-}_n e$ because we haven't yet proved that the concretisation of s2 doesn't introduce extra decorations.
+From $e_1\redl{+} e_2$ and $e_1\redl{+} e$ with node $n$ common to the two decorations, we have that the constraint on decorating positive forks in~\autoref{def:constraints_poset} is not satisfied.
   \end{enumerate}
 \end{proof}
 
-%A corollary for the second part of the lemma above is that the $\mathsf{refine}$ function does not create extra decorations, i.e. $\mathsf{decoration\_of\_trace}(\theta_2)=(s_2)^{\star}$. This is one part in the correction theorem below.
-
 \begin{theorem}
-  Let $s_1$ be a linear augmented poset, let $\theta_1$ be a trace and $\mathtt{Ref}_1$ a refinement function on $\theta_1$ such that for any events $e_1,e_2\in s_1$
-  \begin{align}
-    \label{eq1}
+  Let $s_1$ be a linear augmented poset, let $\theta_1$ be a trace and $\mathtt{Ref}_1$ a refinement function on $\theta_1$ such that the precedence and inhibition relations on transitions are preserved, i.e. for any events $e_1,e_2\in s_1$
+  \begin{align*}
     e_1\prec e_2 \iff& \mathtt{Ref}(e_1) \prec_{\theta}\mathtt{Ref}(e_2)\\
-    \label{eq2}
-    e_1\Dashv e_2 \iff& \mathtt{Ref}(e_1) \dashv_{\theta}\mathtt{Ref}(e_2)
-  \end{align}
-  Let $s_2$ be a linear augmented poset such that $s_2=s_1\cup\{e\}$ and $e$ is maximal in $s_2$.
-  For any $\theta_2$ and $\mathtt{Ref}_2$ obtained by $\mathsf{concretise}(s_2,s_1,\{(\theta_1,\mathtt{Ref}_1)\})$ the conditions~\autoref{eq1}, \autoref{eq2} hold.
+    e_1\dashv e_2 \iff& \mathtt{Ref}(e_1) \dashv_{\theta}\mathtt{Ref}(e_2).
+  \end{align*}
+  Let $s_2$ be a linear augmented poset such that $s_2=s_1\cup\{e\}$ and $e$ is maximal in $s_2$ w.r.t. the total order in $s_2$.
+  For any $\theta_2$ and $\mathtt{Ref}_2$ obtained by $\mathsf{concretise}(s_2,s_1,\{(\theta_1,\mathtt{Ref}_1)\})$ the precedence and inhibition relations on transitions are preserved.
 \end{theorem}
 \begin{proof}
   Let $s_1^{\star}$ be a decoration of $s_1$ such that $\mathsf{decoration\_of\_trace}(\theta_1)=(s_1)^{\star}$.
-  First we note that we can translate conditions~\autoref{eq1}, \autoref{eq2} on decorations:
+  First we note that we can translate the conditions above on decorations:
   \begin{align*}
     e_1\prec e_2 \iff&e_1\redl{+}_s e_2 \iff \mathtt{Ref}(e_1) \prec_{\theta}^{s}\mathtt{Ref}(e_2)\\
-    e_1\Dashv e_2 \iff&e_1\redl{-}_s e_2 \iff \mathtt{Ref}(e_1) \dashv_{\theta}^{s}\mathtt{Ref}(e_2)
+    e_1\dashv e_2 \iff&e_1\redl{-}_s e_2 \iff \mathtt{Ref}(e_1) \dashv_{\theta}^{s}\mathtt{Ref}(e_2)
   \end{align*}
+  Moreover we only need to show that the constraints hold for the last event added to $s_2$.
+  The first implication follows from the definition of low res precedence and inhibition (\autoref{def:dep}). In the diagram below
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (1,0) {\(O\)};
+    \node (m1) at (-2,3) {\(M_1\)};
+    \node (n1) at (0,3) {\(N_1\)};
+    \node (n2) at (4,3) {\(N_2\)};
+    \node (m2) at (2,3) {\(M_2\)};
+    \node (r1) at (0,1) {\(R_1\)};
+    \node (l1) at (-2,1) {\(L_1\)};
+    \node (l2) at (2,1) {\(L_2\)};
+    \node (r2) at (4,1) {\(R_2\)};
+    \draw [->] (o) -- (r1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (r1) --  (n1);
+    \draw [->] (l2) --  (m2);
+    \draw [dotted, ->] (n1) --  (m2);
+    \draw [->] (l1) --  (m1);
+    \draw [->] (r2) --  (n2);
+    \draw [vecArrow] (m1) -- node [above,midway] {$m_1,p_1$} (n1);
+    \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
+    \draw [vecArrow] (l2) -- (r2);
+    \draw [vecArrow] (l1) -- (r1);
+  \end{tikzpicture}
+  \]
+  the partial morphism $N_1\pmorph M_2$ is defined using the identifiers on nodes. Because identifiers do not repeat (from~\autoref{lem:correction_2}), the morphism is well defined.
+
+  For the reverse implication we have to show that the concretisation does not add additional decorations. It follows from~\autoref{def:constraints_poset}. Whenever two decorations identify a node in the left hand side of $e_1$ with a node in the left hand side of $e_2$ then the two events $e_1$ and $e_2$ are pairs for positive and negative influence.
 \end{proof}

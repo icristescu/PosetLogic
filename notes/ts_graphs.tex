@@ -97,7 +97,7 @@ If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{
   \begin{description}
 %  \item[] $~$
   \item[high res dependence]
-    Let the span $s:R_1\remb O\lemb L_2$ be the pullback of the cospan $R_1{\lemb}M{\remb}L_2$ in the multisum of $R_1$ and $L_2$ such that $p_1\redl{+}_s p_2$. If the diagram commutes
+    Let the span $\spa:R_1\remb O\lemb L_2$ be the pullback of the cospan $R_1{\lemb}M{\remb}L_2$ in the multisum of $R_1$ and $L_2$ such that $p_1\redl{+}_{\spa} p_2$. If the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -130,7 +130,7 @@ If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{
   then $t_2$ is high res dependent on $t_1$, denoted $t_1 < t_2$.
 \item[low res dependence]
 %  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules.
-If there exists $s:R_1\remb O\lemb L_2$ such that $p_1\redl{+}_s p_2$ and such that the diagram commutes
+If there exists $\spa:R_1\remb O\lemb L_2$ such that $p_1\redl{+}_{\spa} p_2$ and such that the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -160,14 +160,13 @@ If there exists $s:R_1\remb O\lemb L_2$ such that $p_1\redl{+}_s p_2$ and such t
 \end{definition}
 Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
 
-
 \begin{definition}[Inhibition relations on transitions]
   \label{def:dep}
   Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions in a trace $\theta:t_1;t_1':t_2';\cdots t_n';t_2$ and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules. The morphism $M_1\pmorph M_2$ is the composition of $\spo(t_1)\circ\spo(t_1')\circ\dots\spo(t_n')$.
   \begin{description}
   \item[high res inhibition]
     %Let $t_1:N\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:N\overset{m_2,p_2}{\Rightarrow} N_2$ be two parallel transitions and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules.
-    Let the span $s:L_1\remb O\lemb L_2$ be the pullback of the cospan $L_1{\lemb}M{\remb}L_2$ in the multisum of $L_1$ and $L_2$ such that $p_1\redl{-}_s p_2$. If the diagram commutes
+    Let the span $\spa:L_1\remb O\lemb L_2$ be the pullback of the cospan $L_1{\lemb}M{\remb}L_2$ in the multisum of $L_1$ and $L_2$ such that $p_1\redl{-}_{\spa} p_2$. If the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -192,9 +191,9 @@ Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
     \draw [vecArrow] (l2) -- (r2);
   \end{tikzpicture}
   \]
-  then $t_2$ is high res inhibiting $t_1$, denoted $t_2 \dashv t_1$.
+  then $t_2$ is high res inhibiting $t_1$, denoted $t_2 \Dashv t_1$.
 \item[low res inhibition]
-  If there exists $s:L_1\remb O\lemb L_2$ such that $p_1\redl{-}_s p_2$ and such that the diagram commutes
+  If there exists $\spa:L_1\remb O\lemb L_2$ such that $p_1\redl{-}_{\spa} p_2$ and such that the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -214,31 +213,20 @@ Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
     \draw [vecArrow] (l2) -- (r2);
   \end{tikzpicture}
   \]
-  then $t_2$ is low res inhibiting $t_1$, denoted $t_1 \Dashv t_2$.
-%% If the diagram commutes
-%%   \[
-%%   \begin{tikzpicture} %[scale=0.8]
-%%     \node (o) at (1,0) {\(O\)};
-%%     \node (m) at (1,2) {\(M\)};
-%%     \node (n) at (1,3) {\(N\)};
-%%     \node (l1) at (0,1) {\(L_1\)};
-%%     \node (l2) at (2,1) {\(L_2\)};
-%%     \draw [->] (o) -- (l1);
-%%     \draw [->] (o) -- (l2);
-%%     \draw [->] (l1) --  (m);
-%%     \draw [->] (l1) to [bend left] (n);
-%%     \draw [->] (l2) --  (m);
-%%     \draw [->] (l2) to [bend right] (n);
-%%     \draw [->] (m) --  (n);
-%%   \end{tikzpicture}
-%%   \]
-%%   then $t_1$ inhibits $t_2$, denoted $t_1\dashv t_2$.
+  then $t_2$ is low res inhibiting $t_1$, denoted $t_1 \dashv t_2$.
   \end{description}
 \end{definition}
-Note that $t_1\dashv t_2 \implies t_1\Dashv t_2$ but not the reverse.
+Note that $t_1\Dashv t_2 \implies t_1\dashv t_2$ but not the reverse.
 
+When we want to make the underlying span explict, we write $t_1 <^{\spa} t_2$, $t_1 \prec^{\spa} t_2$, $t_1 \dashv^{\spa} t_2$ and $t_1 \Dashv^{\spa} t_2$, respectively.
 
-When we want to make the underlying span explict, we write $t_1 <^{s} t_2$, $t_1 \prec^{s} t_2$, $t_1 \dashv^{s} t_2$ and $t_1 \Dashv^{s} t_2$, respectively.
+\begin{example}
+  For a trace $t_1;t_2;t_3$ with the transitions
+  \[
+  t_1: A \Rightarrow A,B\qquad t_2: A,B\Rightarrow B,C \qquad t_3: B,C\Rightarrow D
+  \]
+  one can deduce $t_1\prec t_2$ but cannot deduce $t_1<t_3$, as transitions $t_1$ and $t_2$ do not commute.
+\end{example}
 
 \begin{lemma}
   \label{lem:seq_dep}

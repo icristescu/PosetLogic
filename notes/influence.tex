@@ -71,10 +71,10 @@ Let us now define the notions of influence between rules, that allows us to over
 \begin{definition}[Positive influence]
   \label{def:pos_infl}
   Let $L_1{\remb} D_1 {\lemb} R_1$ and $L_2{\remb} D_2 {\lemb} R_2$ be two rules.
-
+%
   Let the cospan $R_1\lemb M\remb L_2$ be in the multisum of $R_1$ and $L_2$, from which we get the span $R_1\remb O\lemb L_2$ as pullback.
-
-  There is a \emph{positive influence} between the two rules induced by the cospan $s:R_1\remb O\lemb L_2$ and denoted $r_1\redl{+}_s r_2$ if the pullback of the cospan $D_1\lemb R_1\remb O$, denoted $P$, and $O$ is not an iso. In other words, $O$ is not contained in $P$.
+%
+  There is a \emph{positive influence} between the two rules induced by the cospan $\spa:R_1\remb O\lemb L_2$ and denoted $r_1\redl{+}_{\spa} r_2$ if the pullback of the cospan $D_1\lemb R_1\remb O$, denoted $P$, and $O$ is not an iso. In other words, $O$ is not contained in $P$.
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (p) at (0,-1) {\(P\)};
@@ -94,8 +94,9 @@ Let us now define the notions of influence between rules, that allows us to over
     \draw [->] (l2) --  (m);
   \end{tikzpicture}
   \]
-
-  Define $r_1\redl{+} r_2$ if there exists $s$ such that $r_1\redl{+}_s r_2$.
+  Define $r_1\redl{+} r_2$ if there exists $\spa$ such that $r_1\redl{+}_{\spa} r_2$.
 \end{definition}
 
-Similarly, define the negative influence $r_1\redl{-}_s r_2$ if there exists the span $s:L_1{\remb} O {\lemb} L_2$ and there is no iso between the pullback of the cospan $D_1\lemb L_1\remb O$ and $O$.
+Similarly, define the negative influence $r_1\redl{-}_{\spa} r_2$ if there exists the span $\spa:L_1{\remb} O {\lemb} L_2$ and there is no iso between the pullback of the cospan $D_1\lemb L_1\remb O$ and $O$.
+
+We say that a span $\spa:G\remb O\lemb H$ is empty if $O\iso\varepsilon$. For two spans $\spa_1 = G\remb O_1\lemb H$ and $\spa_2 = G\remb O_1\lemb H$ we write $\spa_1\subseteq \spa_2$ whenever there exists an mono $O_1\emb O_2$ that commutes.

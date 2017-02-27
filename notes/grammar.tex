@@ -1,41 +1,33 @@
 \section{Logic on posets}
-
-\subsection{Category of posets}
 \label{sec:posets}
 
-\begin{definition}[Poset]
-  \label{def:poset}
-  A poset $s=\{E,\leq\}$ is a finite set of events $E$ and a partial order on events $\leq\subseteq E\times E$. The \emph{cover} relation on events $\cover\subseteq E\times E$ is the transitive reduction of $\leq$.
-  We use the predicates $\text{min}(s)$ and $\text{max}(s)$ to retrieve the minimal and maximal events, respectively.
+%\subsection{Category of posets}
 
-  A labeled poset $s=\{E,\leq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
-\end{definition}
+%% \begin{definition}[Poset]
+%%   A poset $s=\{E,\leq\}$ is a finite set of events $E$ and a partial order on events $\leq\subseteq E\times E$. The \emph{cover} relation on events $\cover\subseteq E\times E$ is the transitive reduction of $\leq$.
+%%   We use the predicates $\text{min}(s)$ and $\text{max}(s)$ to retrieve the minimal and maximal events, respectively.
+%%   A labeled poset $s=\{E,\leq,\labl\}$ is a set with an additional labelling function $\labl$ defined on events.
+%% \end{definition}
 
 \begin{definition}[Augmented poset]
-  Let $s=(E,\cover,\prec,\dashv,\labl)$ be a set of events equipped with three binary relations on events $\cover$, $\prec$, $\dashv$ and a labelling function $\labl:E\to R$. We can retrive a poset from $s$, denoted $(E,\leq)$, where $\leq$ is the transitive and reflexive closure of $\prec$.
-  We call $s$ an \emph{augmented poset}.
+  \label{def:poset}
+  An \emph{augmented poset} $s=(E,\prec,\dashv)$ is a set of events $E$ equipped with two binary relations on events: \emph{precedence} denoted $\prec$, and \emph{inhibition} denoted $\dashv$, such that the following hold:
+  \begin{itemize}
+  \item \emph{events are not pairwise inhibiting:}
+    $\forall e_1,e_2\in s$, $e_1\dashv^{\star} e_2\implies \neg(e_2 \dashv^{\star} e_1)$;
+  \item \emph{events cannot inhibit their succesors:}
+    $\forall e_1,e_2\in s$, $e_1\leq e_2\implies \neg(e_1 \dashv^{\star} e_2)$;
+  \end{itemize}
+  where $\leq$ is the transitive and reflexive closure of $\prec$ and $\dashv^{\star}$ is the transitive and closure of $\dashv$.
 
-  Plus the constraint of no cycles with inhibition.
-
-  %% \item[events are not pairwise inhibiting]
-  %%   $\forall e_1,e_2\in s$, $e_1\redl{-}_s e_2\implies \neg(e_2 \redl{-}_{s'} e_1)$, for some $s$, $s'$;
-  %% \item[events cannot inhibit their causes]
-  %%   $\forall e_1,e_2\in s$, $e_1\redl{+}_s e_2\implies \neg(e_2 \redl{-}_{s} e_1)$, for some $s$;
-
+  A labeled poset $s=(E,\prec,\dashv,\labl)$ is an augmented poset with an additional labelling function $\labl:E\to \textit{labels}$ defined on events.
+  We use the predicates $\text{min}(s)$ and $\text{max}(s)$ to retrieve the minimal and maximal events, respectively.
+  A poset is \emph{directed} when every pair of events has an upper bound.
 \end{definition}
 
-\begin{mdframed}[backgroundcolor=blue!20]
-  adapt to augmented posets
-\end{mdframed}
-
-\begin{definition}[Morphisms on posets]
-  Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the cover relation. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
-
-  A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
-\end{definition}
-
-\begin{definition}[Directed poset]
-  A directed poset $s=\{E,\leq\}$ is a poset in which every pair of events has an upper bound.
+\begin{definition}[Morphisms on posets\footnote{Augmented posets and morphisms form a category.}]
+  Given two posets $s_1$, $s_2$ a morphism $f:s_1\to s_2$ is a total function on events that preserves labels and preserves the precedence and inhibition relations. We denote $s_1\iso s_2$ whenever there is an isomorphism between $s_1$ and $s_2$.
+%  A morphisms on posets is \emph{injective}, denoted $s_1\emb s_2$, when it is injective on events.
 \end{definition}
 
 \subsection{Grammar}
@@ -97,66 +89,5 @@ The evaluation of $\varphi$ is defined below, where a valuation function is need
 \end{align*}
 
 A formula $\varphi$ is satisfiable if there exists $v$ such that $\enc{\varphi}_v = T$.
-
-The denotation of $\varphi$ is the set of valuations for which $\varphi$ evaluates to true. We give the denotation of a formula in~\autoref{app:denote}.
-
-%% Let us introduce now what we mean by a common substructure to posets.
-
-%% \begin{definition}
-%%   Let $s_1$ and $s_2$ be two posets.
-%%   A common substructure of $s_1$ and $s_2$ is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ such that $\mathit{image}(f_i) \iso \mathit{image}(g_i)$, that is $\forall e\in m_i$, $\labl(f_i(e)) = \labl(g_i(e))$.
-%% \end{definition}
-
-%% Instead of returning all common substructures we are interested in the "maximal" ones, in the sense of embeddings.
-
-%% \begin{definition}
-%%   \begin{itemize}
-%%   \item The \emph{multiproduct} of $s_1$ and $s_2$ is the family of spans $(s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2)_i$ where for any other span $s_1\overset{f'}{\remb} m'\overset{g'}{\emb} s_2$ there exists a unique $m_i$ and a unique injective morphism $m'\emb m_i$ such that the diagram commutes:
-%%   \[
-%%   \begin{tikzpicture} %[scale=0.8]
-%%     \node (s1) at (-2,0) {\(s_1\)};
-%%     \node (s2) at (2,0) {\(s_2\)};
-%%     \node (m1) at (0,0) {\(m_i\)};
-%%     \node (m2) at (0,-1) {\(m'\)};
-%%     \draw [right hook->] (m1) -- (s1);
-%%     \draw [left hook->] (m1) -- (s2);
-%%     \draw [right hook->] (m2) -- (s1);
-%%     \draw [left hook->] (m2) -- (s2);
-%%     \draw [left hook->, dotted] (m2) -- (m1);
-%%   \end{tikzpicture}
-%%   \]
-
-%%   \item The restriction of a poset $m=\{E,<,\labl\}$ to a set of events $D\subseteq E$ is the poset $m|D = \{D,<|_D,\labl|_D\}$ where $<|_D$ and $\labl|_D$ is the restriction of $<$ and $\labl$ respectively to the set $D$.
-
-%%   \item Define $s_1\otimes s_2$ the family of spans $(s_1\overset{f_i'}{\remb} m_i'\overset{g_i'}{\emb} s_2)_i$ such that for each span in $s_1\otimes s_2$ there is a span $s_1\overset{f_i}{\remb} m_i\overset{g_i}{\emb} s_2$ in the multiproduct of $s_1$ and $s_2$ with
-%%    \[ m_i' = m_i|D_i \]
-%%     for $D_i = \{ e\in m_i : \labl(f_i(e)) = \labl(g_i(e))\}$.
-%%   \end{itemize}
-%% \end{definition}
-
-%% \begin{lemma}
-%%   The product of two posets $s_0=\{E_0,<,\labl_0\}$ and $s_1=\{E_1,<,\labl_1\}$, denoted $s_0\times s_1 = \{E,<,\labl\}$, is the poset obtained as follows:
-%%   \begin{itemize}
-%%   \item $E=E_0\times E_1$ is the product on sets, with $e=(e_0,e_1)\in E$ and the two projections $\pi_0(e_0,e_1) = e_0$ and $\pi_1(e_0,e_1) = e_1$;
-%%   \item $\labl:E_0\times E_1 \to \mathcal{R}\times\mathcal{R}$ is defined as $\labl(e) = \big(\labl(\pi_0(e)),\labl(\pi_1(e))\big)$. Let us also introduce the two projections on labels $\lambda_{0,1}:\mathcal{R}\times\mathcal{R}\to\mathcal{R}$, defined as $\lambda_0(A,B)=A$ and $\lambda_1(A,B)=B$.
-%%   \item $e< e' \iff \pi_0(e)<\pi_0(e')$ and $\pi_1(e)<\pi_1(e')$
-%%   \end{itemize}
-%%   The two projections morphisms $(\pi_0,\lambda_0):s_0\times s_1\to s_0$ and $(\pi_1,\lambda_1):s_1\times s_1\to s_1$ are given by the projections on the underlying sets and labels.
-%% \end{lemma}
-
-%% \begin{definition}
-%%   \begin{itemize}
-%%   \item A synchronisation algebra on the set of labels $\mathcal{R}\cup\{0\}$ consists of a binary, commutative and associative operation $\cdot$ such that
-%%     \[ A\cdot A = A \text{ and }A\cdot B = 0\text{ when }A\neq B\]
-%%     for all $A,B\in \mathcal{R}\cup\{0\}$.
-%%   \item The synchronised product of two posets $s_0=\{E_0,<,\labl_0\}$ and $s_1=\{E_1,<,\labl_1\}$, denoted $s_0\otimes s_1 = \{E,<,\labl\}$, is obtained as follows:
-%%     \begin{itemize}
-%%     \item let $s_{\text{prod}} = s_0\times s_1$ be the product with $(\pi_0,\lambda_0)$ and $(\pi_1,\lambda_1)$ the two projections;
-%%     \item define $D\subseteq\mathcal{R}\times\mathcal{R}$ a set of labels such that
-%%       \[ D = \{ a\in \mathcal{R}\times\mathcal{R} : \lambda_0(a)\cdot \lambda_1(a) = 0\}; \]
-%%     \item remove from $s_{\text{prod}}$ the set of events $E_D = \{e\in E_{\text{prod}} : \labl(e)\in D \}$;
-%%     \item define $s_0\otimes s_1 = \{E_{\text{prod}}\setminus E_D,<,r\circ\labl\}$ where $r$ is the following relabelling function
-%%       \[ r(a) = \lambda_0(a)\cdot \lambda_1(a). \]
-%%     \end{itemize}
-%%   \end{itemize}
-%% \end{definition}
+The denotation of $\varphi$ is the set of valuations for which $\varphi$ evaluates to true.
+%We give the denotation of a formula in~\autoref{app:denote}.
