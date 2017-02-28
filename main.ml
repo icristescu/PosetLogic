@@ -80,20 +80,18 @@ let () =
       (Sys.argv.(0) ^
        " stories\n outil") in
   let () = set_flags () in
-  let () = parse_fm () in
-  let () = Site_graph.test () in
-  ()
-(*
+  (*  let () = parse_fm () in*)
   let posets = Domain.set_posets (!files) in
-(*  test_z3 posets*)
-  let m = Formulas.interpretation posets in
+  ()
+  (*  test_z3 posets*)
+  (*  let m = Formulas.interpretation posets in
   List.iteri
     (fun i fm ->
       Format.printf "\n evaluate formula %i:\n" i;
       (evaluate fm m empty_valuation))
     (!read_fm)
-(*  let (valuation,fm) = test_subset posets in
+   *)
+  (*  let (valuation,fm) = test_subset posets in
   if (Formulas.holds m valuation fm) then Format.printf"true\n"
   else Format.printf "false\n"
- *)
- *)
+   *)

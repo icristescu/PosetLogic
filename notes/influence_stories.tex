@@ -6,16 +6,13 @@
 \begin{definition}[Causal trace]
   \label{def:causal_trace}
   Let $\theta:M_0\overset{m_1,p_1}{\Rightarrow} M_1\overset{m_2,p_2}{\Rightarrow} M_2 \cdots \overset{m_n,p_n}{\Rightarrow} M_n$ be a trace.
-  Two transitions $t_1$ and $t_2$ of $\theta$ are high res dependent in $\theta$, if $t_1<_{\theta} t_2$ can be derived by the following rules:
+  Two transitions $t_1$ and $t_2$ of $\theta$ are low res dependent in $\theta$, if $t_1\prec_{\theta} t_2$ can be derived by the following rules:
   \begin{align*}
-    \frac{t_1 < t_2}{t_1 <_{\theta} t_2}\quad
-    \frac{t_1\simeq t_1'<t_2'\simeq t_2}{t_1 <_{\theta} t_2}
+    \frac{t_1 \prec t_2}{t_1 \prec_{\theta} t_2}\quad
+    \frac{t_1\simeq t_1'\prec t_2'\simeq t_2}{t_1 \prec_{\theta} t_2}
   \end{align*}
-  Two transitions $t_1$ and $t_2$ of $\theta$ are low res dependent in $\theta$, if $t_1\prec_{\theta} t_2$ can be derived by similar rules to the ones above. In a similar manner, we define when a transition $t_1$ inhibits a transition $t_2$ of $\theta$, denoted $t_1\dashv_{\theta} t_2$.
-  %% \begin{align*}
-  %%   \frac{t_1 \dashv t_2}{t_1 \dashv_{\theta} t_2}\quad
-  %%   \frac{t_1\simeq t_1'\dashv t_2'\simeq t_2}{t_1 \dashv_{\theta} t_2}
-  %% \end{align*}
+  %Two transitions $t_1$ and $t_2$ of $\theta$ are low res dependent in $\theta$, if $t_1\prec_{\theta} t_2$ can be derived by similar rules to the ones above.
+  In a similar manner, we define when a transition $t_1$ inhibits a transition $t_2$ of $\theta$, denoted $t_1\dashv_{\theta} t_2$.
   Define $\leq$ the transitive and reflexive closure of low res dependence. We say that $\theta$ is a \emph{causal trace} if it is directed w.r.t. $\leq$.
 \end{definition}
 
@@ -57,23 +54,23 @@
   \label{def:decorate_poset}
   \begin{enumerate}
   \item[] $~$
-  \item Given a set of events $E$ and a labeling function $\labl$ on events, define a function $\decor:E\times E \to E\times E\times G$ that associates to a pair of events $(e,e')$ the following set
+  \item Given a set of events $E$ and a labeling function $\labl$ on events, define a function $\decor:E\times E \to E\times E\times \spa$ that associates to a pair of events $(e,e')$ the following set
     \begin{align*}
-      \decor_{+}(e,e') = \{(e,e',O) : O\text{ is a graph such that }\labl(e)\redl{+}_O \labl(e')\}\\
-       \decor_{-}(e,e') = \{(e,e',O) : O\text{ is a graph such that }\labl(e)\redl{-}_O \labl(e')\}
+      \decor_{+}(e,e') = \{(e,e',\spa) : \spa\text{ is a span such that }\labl(e)\redl{+}_{\spa} \labl(e')\}\\
+       \decor_{-}(e,e') = \{(e,e',\spa) : \spa\text{ is a graph such that }\labl(e)\redl{-}_{\spa} \labl(e')\}
     \end{align*}
 
-  \item Let $s = (E,\cover,\prec,\dashv,\labl)$ be an augmented poset. A \emph{decorated} poset of $s$, denoted $s^{\star}$, is defined as follows
+  \item Let $s = (E,\prec,\dashv,\labl)$ be an augmented poset. A \emph{decorated} poset of $s$, denoted $s^{\star}$, is defined as follows
     \begin{align*}
       s^{\star} = (E,\redl{+},\redl{-},\labl), \text{ where }
-      &e\redl{+}_O e' \iff (e,e',O)\in\decor_+(e,e')\text{ and }e\prec e'\\
-      &e\redl{-}_O e' \iff (e,e',O)\in\decor_-(e,e')\text{ and }e\dashv e'\\
+      &e\redl{+}_{\spa} e' \iff (e,e',{\spa})\in\decor_+(e,e')\text{ and }e\prec e'\\
+      &e\redl{-}_{\spa} e' \iff (e,e',{\spa})\in\decor_-(e,e')\text{ and }e\dashv e'\\
     \end{align*}
     We denote $\decor(s)$ the set of all decorated posets of $s$.
   \end{enumerate}
 \end{definition}
 
-Note that the notation $e\redl{+}_s e'$ is an overload of the notation $\labl(e)\redl{+}_s \labl(e')$. The first is defined on events using the abstraction function. The second, defined on rules, can be inferred from the rules itself.
+Note that the notation $e\redl{+}_{\spa} e'$ is an overload of the notation $\labl(e)\redl{+}_{\spa} \labl(e')$. The first is defined on events using the abstraction function. The second, defined on rules, can be inferred from the rules itself.
 
 \begin{definition}
   Let $e_1$,$e_2$ be two events in a decorated poset and let $s:L_1\remb O\lemb L_2$ be a span. We say that $e_1$ and $e_2$ are \emph{pairs for positive influence w.r.t. $s$} if for all events $e_3$ such that $e_3\redl{+}_{s_1} e_1$ and $s_1:R_3\remb O_1\lemb L_1$ for which the diagram commutes
@@ -260,6 +257,22 @@ Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r
 \end{lemma}
 The proof is in~\autoref{sec:valid_decor}.
 
+In the following chain of abstractions:
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+%    \node (s) at (0,0) {\((E,\leq,\labl)\)};
+    \node (as) at (3,0) {\((E,\prec,\dashv,\labl)\)};
+    \node (ds) at (6,0) {\((E,\redl{+},\redl{-},\labl)\)};
+    \node (trace) at (9,0) {\(\theta:t_1;t_2;\cdots t_n\)};
+%    \draw [->] (s) to [bend left] (as);
+%    \draw [->] (as) to [bend left] (s);
+    \draw [->] (ds) to [bend left] (as);
+    \draw [->] (as) to [bend left] (ds);
+    \draw [->] (ds) to [bend left] (trace);
+    \draw [->] (trace) to [bend left] (ds);
+  \end{tikzpicture}
+  \]
+the definition above covers the abstractions from causal traces to decorated posets. The abstraction of~\autoref{def:abstraction} goes from causal traces to augmented posets. The concretisation function from an augmented poset to a decorated one returns all decorations of~\autoref{def:decorate_poset} that are valid.
 
 %% \begin{example} - for the cover relation
 %%   Let us consider the following rules:
@@ -369,7 +382,7 @@ Let $s = (E,\seq,\cover,\prec,\dashv,\labl)$ be a linear extension of an augment
   &\quad\qquad\qquad\qquad \mathit{concretisations}_2 = \mathit{concretisations}_2 \cup (s_2^{\star},\mathit{\theta_2},\mathtt{Ref}_2)\\
   &\quad\text{return }\mathit{concretisations}_2
 \end{align*}
-where $\mathsf{decorate}$ returns a decoration of $s$ as in~\autoref{def:decorate_poset}, $\mathsf{decoration\_of\_trace}$ is an abstraction of a trace to its decorated poset, defined in the~\autoref{sec:abstract_decoration}, $\mathsf{valid}$ is from~\autoref{def:constraints_poset} and lastly, $\mathsf{refine}$ is a function that extends a trace and a refinement to the new event $e$. We provide more details for $\mathsf{refine}$ in the appendix. Also in the appendix, we show that at each call of $\mathsf{concretise}$, the concretisations obtained so far are correct w.r.t.~\autoref{def:concret}.
+where $\mathsf{decorate}$ returns a decoration of $s$ as in~\autoref{def:decorate_poset}, $\mathsf{decoration\_of\_trace}$ is an abstraction of a trace to its decorated poset, defined in the~\autoref{prop:constraints_poset}, $\mathsf{valid}$ is from~\autoref{def:constraints_poset} and lastly, $\mathsf{refine}$ is a function that extends a trace and a refinement to the new event $e$. We provide more details for $\mathsf{refine}$ in the appendix. Also in the appendix, we show that at each call of $\mathsf{concretise}$, the concretisations obtained so far are correct w.r.t.~\autoref{def:concret}.
 
 \subsection{Interpreting inhibition on posets}
 
@@ -393,5 +406,5 @@ where $\mathsf{decorate}$ returns a decoration of $s$ as in~\autoref{def:decorat
     \draw [->] (n2) -- (n);
   \end{tikzpicture}
   \]
-  where $\mathtt{Ref}_1(e_1) = M_1\Rightarrow N_1$, $\mathtt{Ref}_2(e_2) = M_2\Rightarrow N_2$, and $\labl(e_1)\redl{-}_s\labl(e_2)$, for some cospan $s:L_1\remb O\lemb L_2$
+  where $\mathtt{Ref}_1(e_1) = M_1\Rightarrow N_1$, $\mathtt{Ref}_2(e_2) = M_2\Rightarrow N_2$, and $\labl(e_1)\redl{-}_{\spa}\labl(e_2)$, for some cospan $\spa:L_1\remb O\lemb L_2$.
 \end{definition}

@@ -89,6 +89,8 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
   For the two graphs \verb|A(x!1), B(x!1)| and \verb|A(x)| there is no pushout.
 \end{example}
 
+However this is not an issue for the dpo rewriting with kappa rules.
+
 \begin{lemma}
   Let $L\overset{h}{\remb} K \overset{g}{\lemb} R$ be a rule and let $M$ and $m:L\emb M$ be a site graph and matching, respectively. The DPO rewriting can be applied whenever the gluing conditions hold.
 \end{lemma}
@@ -110,8 +112,25 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
     \draw [->] (r) -- (n);
   \end{tikzpicture}
   \]
-  Let us first construct $D$ and show that it is a pushout complement. Secondly, we construct $N$ and show that it is the pushout.
+  We first define a pushout in a "constructive" manner. Then we construct the graph $D$ and show that show that it is a pushout complement. Lastly, we construct $N$ and show that it is the pushout.
+
   \begin{enumerate}
+  \item Let $R\overset{r}{\remb}K\overset{k}{\lemb} D$ be a span and let $N$ be the following graph:
+    \begin{itemize}
+    \item let $\equiv$ be the smallest equivalence relation with $(k(u),r(u))\in\equiv$, for all $u\in\nodes_K$.
+    \item $\nodes_N = (\nodes_D\cup \nodes_R)|_{\equiv}$
+    \item $\ag_N = \{a: a\in \text{first}(u), u\in\nodes_N\}$
+    \item $\links_N = \{(k(u),k(v)) : (u,v)\in\links_K\}\cup\{(r(u),r(v)) : (u,v)\in\links_R\}$
+    \item $p_{k,N} = k(p_{k,D}) \cup r(p_{k,R})$
+    \end{itemize}
+    We show that if $N$ is a site graph, i.e. there are no conflicts in $\links_N$ and $p_{k,N}$, then it is the pushout. Let us suppose that there exists $N'$ and two morphisms $g':D\emb N'$ and $n':R\to N'$ such that $\forall u\in\nodes_K$, $g'(k(u)) = n'(r(u))$. Define the morphism $h:N\to N'$ as follows:
+    \begin{align*}
+      u\in \nodes_D\cap\nodes_R, &h(u) = g'(k(u)) = n'(r(u))\\
+      u\in \nodes_D, u\notin\nodes_R, &h(u) = g'(k(u))\\
+      u\in \nodes_R, u\notin\nodes_D, &h(u) = n'(r(u))
+    \end{align*}
+    The morphism preserves agent types, edges and property sets, which follows from the composition of morphisms. Moreover $h$ is unique.
+
   \item The graph $D$ is defined as follows:
     \begin{itemize}
     \item $\nodes_D = \nodes_M\setminus m(\nodes_L) \cup m(l(\nodes_K))$
@@ -122,12 +141,11 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
     It is a site graph, because it is a subgraph of $M$, and therefore there is no conflict on the edges and property sets.
 
     The morphism $f:D\to M$ is defined as the inclusion morphism.
-    Let us now show that $D\overset{f}{\leftarrow}M\overset{g}{\rightarrow} L$ is the pushout of the span $L\overset{l}{\rightarrow}K\overset{k}{\leftarrow} D$.
- \begin{mdframed}[backgroundcolor=blue!20]
-    to do
-  \end{mdframed}
+    Let us now show that $D\overset{f}{\leftarrow}M\overset{g}{\rightarrow} L$ is the pushout of the span $L\overset{l}{\rightarrow}K\overset{k}{\leftarrow} D$. We show that $M$ can be obtained as in the first item of the proof from the graphs $D$ and $L$.
 
-  \item The pushout of the span $R\overset{r}{\rightarrow}K\overset{k}{\leftarrow} D$ is constructed as follow:
+    By manipulating the definition of the set $\nodes_D$ we obtain $\nodes_D\setminus m(l(\nodes_K))\cup m(\nodes_L) = \nodes_M$ which is equivalent to first merging sets $\nodes_D$ and $m(\nodes_L)$ and then define an equivalence class on nodes such that $(m(l(u)),k(u))\in\equiv$, for all $u\in\nodes_K$. Therefore $\nodes_M = (\nodes_D\cup m(\nodes_L))|_{\equiv}$. We proceed similarly for the links and the property sets.
+
+  \item The pushout of the span $R\overset{r}{\rightarrow}K\overset{k}{\leftarrow} D$  is constructed as follow:
     \begin{itemize}
     \item let $\equiv$ be the smallest equivalence relation with $(k(u),r(u))\in\equiv$, for all $u\in\nodes_K$.
     \item $\nodes_N = (\nodes_D\cup \nodes_R)|_{\equiv}$
@@ -135,21 +153,20 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
     \item $\links_D = \{(k(u),k(v)) : (u,v)\in\links_K\}\cup\{(r(u),r(v)) : (u,v)\in\links_R\}$
     \item $p_{k,N} = k(p_{k,D}) \cup r(p_{k,R})$
     \end{itemize}
-    First let us show that $N$ is a site graph. For that we have to show that $\links_N$ is conflict free. Suppose that there exists $((a,i),(b,j)\in \links_D$ and $((a,i),(c,j)\in \links_R$ and such that $(a,i)\in\nodes_K$. We have then that both $((a,i),(b,j)$ and $((a,i),(c,j)$ are edges in $N$, which are conflicting. However, from the definition of rule (\autoref{def:rule_site}), there exists $x$ such that $((a,i),x)\in\links_K$ and therefore either $k$ or $r$ is not a morphism.
+    First let us show that $N$ is a site graph. For that we have to show that $\links_N$ is conflict free. Suppose that there exists $(a,i),(b,j)\in \links_D$ and $(a,i),(c,j)\in \links_R$ and such that $(a,i)\in\nodes_K$. We have then that both $(a,i),(b,j)$ and $(a,i),(c,j)$ are edges in $N$, which are conflicting. However, from the definition of rule (\autoref{def:rule_site}), there exists $x$ such that $(a,i),x)\in\links_K$ and therefore either $k$ or $r$ is not a morphism.
 %
     Suppose that there is a conflict in $N$ due to the property sets. For example, let $(a,i)\in p{k,R}$, $(a,i)\in p{k',D}$ and $k\neq k'$. We can reach a contradiction by deriving that $(a,i)\in p{k'',L}$ from \autoref{def:rule_site}.
 
-    Let us now show that $N$ is the pushout.
-  \begin{mdframed}[backgroundcolor=blue!20]
-    to do
-  \end{mdframed}
+    We have that $N$ is the pushout from the first item of our proof.
  \end{enumerate}
  \end{proof}
 
 %\input{influence_kappa.tex}
+Results form~\autoref{sec:ts} hold on site graphs as well with one inconvience. As the pushout of two site graphs is not always a site graphs we have to ensure that whenever we compose transition as in~\autoref{def:concret} we do obtain site graphs. The problem occurs whenever we have two events $e_1$ and $e_2$ for which there is a decoration $R_1\remb O\lemb L_2$ but there is a conflict in the pushout.
+The following lemma ensures that for any two such events, there is an intermediate event, occuring between $e_1$ and $e_2$, that "resolves" the conflict.
 
 \begin{lemma}
-  Let $\theta$ be a trace and $s=\{E,\tleq,\tprec,\labl\}$ be a story such that $\alpha(\theta) = s$. For any events $e_1,e_2\in E$ if $e_1\prec e_2$ and $e_1\not< e_2$ then there exists $e_3\in E$ such that $e_3\tprec e_2$ and either $e_1< e_3$ or $e_3\dashv e_1$.
+  Let $\theta$ be a causal trace and $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$, $t_2M_2\overset{m_2,p_2}{\Rightarrow} N_2$ two transitions such that $t_1\prec t_2$ but $t_1< t_2$. Then there exists transition $t_3$ such that $t_3\leq t_2$ and either $t_1\prec t_2$ or $t_3\dashv t_1$.
 \end{lemma}
 \begin{proof}
   From~\autoref{def:prec} there exists $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ two transitions such that $\alpha(t_1)=e_1$, $\alpha(t_2)=e_2$ and $\theta:N_1\Rightarrow^{\star}M_2$ a trace between them. Let us first make some remarks.

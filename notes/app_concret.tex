@@ -36,7 +36,10 @@ The spans are either positive or negative influences:
 Note that from~\autoref{def:linears}, for any events $e_i$,$e$ in an augmented poset, if $e_i\redl{+} e$ or $e\redl{-}e_i$ then $e_i\sqsubseteq e$.
 
 \begin{definition}[Id graphs]
-  We define an \emph{id graph} $G_I = (N,E)$ as a simple graphs $G = (V,E)$ where each node has associated an id unique in the graph: $n=(i,v)$ , where $v\in V$ and $i\in\nat$.
+  We define an \emph{id graph} as a simple graph $G = (V,E)$ equipped with an identity function on nodes $\idf:V\to \nat$ such that $\forall n_1, n_2\in V$, if $\idf(n_1)=\idf(n_2)$ then $n_1 = n_2$.
+%where each node has associated an id unique in the graph: $n=(i,v)$ , where $v\in V$ and $i\in\nat$.
+
+  Morphisms on id graphs preserves the identity function on nodes.
 \end{definition}
 
 Id graphs will help us keep track of the decorations.

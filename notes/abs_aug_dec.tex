@@ -15,20 +15,3 @@
     &e\dashv e'\iff e\redl{-}_s e'.
   \end{align*}
 \end{definition}
-
-In the following chain of abstractions:
-  \[
-  \begin{tikzpicture} %[scale=0.8]
-%    \node (s) at (0,0) {\((E,\leq,\labl)\)};
-    \node (as) at (3,0) {\((E,\cover,\prec,\dashv,\labl)\)};
-    \node (ds) at (6,0) {\((E,\redl{+},\redl{-},\labl)\)};
-    \node (trace) at (9,0) {\(\theta:t_1;t_2;\cdots t_n\)};
-%    \draw [->] (s) to [bend left] (as);
-%    \draw [->] (as) to [bend left] (s);
-    \draw [->] (ds) to [bend left] (as);
-    \draw [->] (as) to [bend left] (ds);
-    \draw [->] (ds) to [bend left] (trace);
-    \draw [->] (trace) to [bend left] (ds);
-  \end{tikzpicture}
-  \]
-the definition above covers the abstractions from causal traces to decorated posets and from decorated posets to augmented posets. The abstractio of~\autoref{def:abstraction} is the composition of the two. The concretisation function from an augmented poset to a decorated one returns all decorations of~\autoref{def:decorate_poset} that are valid.
