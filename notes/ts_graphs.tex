@@ -104,7 +104,7 @@ If two transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{
     \draw [->] (l2) --  (m2);
     \draw [->] (m) --  (n1);
     \draw [->] (m) --  (m2);
-    \draw [dotted, ->] (n1) --  (m2);
+    \draw [-{Stealth[left]}] (n1) --  (m2);
     \draw [->] (l1) --  (m1);
     \draw [->] (r2) --  (n2);
     \draw [vecArrow] (m1) -- node [above,midway] {$m_1,p_1$} (n1);
@@ -132,7 +132,7 @@ If there exists $\spa:R_1\remb O\lemb L_2$ such that $p_1\redl{+}_{\spa} p_2$ an
     \draw [->] (o) -- (l2);
     \draw [->] (r1) --  (n1);
     \draw [->] (l2) --  (m2);
-    \draw [dotted, ->] (n1) --  (m2);
+    \draw [-{Stealth[left]}] (n1) --  (m2);
     \draw [->] (l1) --  (m1);
     \draw [->] (r2) --  (n2);
     \draw [vecArrow] (m1) -- node [above,midway] {$m_1,p_1$} (n1);
@@ -170,7 +170,7 @@ Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
     \draw [->] (l2) --  (m2);
     \draw [->] (m) --  (m1);
     \draw [->] (m) --  (m2);
-    \draw [dotted, ->] (m1) --  (m2);
+    \draw [-{Stealth[left]}] (m1) --  (m2);
     \draw [->] (r2) --  (n2);
     \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
     \draw [vecArrow] (l2) -- (r2);
@@ -192,7 +192,7 @@ Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
     \draw [->] (o) -- (l2);
     \draw [->] (l1) --  (m1);
     \draw [->] (l2) --  (m2);
-    \draw [dotted, ->] (m1) --  (m2);
+    \draw [-{Stealth[left]}] (m1) --  (m2);
     \draw [->] (r2) --  (n2);
     \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
     \draw [vecArrow] (l2) -- (r2);

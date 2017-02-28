@@ -323,6 +323,7 @@ the definition above covers the abstractions from causal traces to decorated pos
 \end{example}
 
 \subsection{From posets to traces}
+\label{sec:refinement}
 
 \begin{definition}[Refinement of an event in a trace]
   Let $E$ be a set of events and let $\theta$ be a trace. A refinement function is a bijection between events and transitions such that
@@ -385,6 +386,7 @@ Let $s = (E,\seq,\cover,\prec,\dashv,\labl)$ be a linear extension of an augment
 where $\mathsf{decorate}$ returns a decoration of $s$ as in~\autoref{def:decorate_poset}, $\mathsf{decoration\_of\_trace}$ is an abstraction of a trace to its decorated poset, defined in the~\autoref{prop:constraints_poset}, $\mathsf{valid}$ is from~\autoref{def:constraints_poset} and lastly, $\mathsf{refine}$ is a function that extends a trace and a refinement to the new event $e$. We provide more details for $\mathsf{refine}$ in the appendix. Also in the appendix, we show that at each call of $\mathsf{concretise}$, the concretisations obtained so far are correct w.r.t.~\autoref{def:concret}.
 
 \subsection{Interpreting inhibition on posets}
+\label{sec:inhibition}
 
 \begin{definition}[Refinement based on negative influence]
   \label{def:ref_neg_infl}

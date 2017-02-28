@@ -25,7 +25,7 @@ A site-graph is a structure $(\ag,\type,\nodes,\links,p_k)$ where
 Denote $\varepsilon$ the empty $\Sigma$-graph.
 \end{definition}
 
-\begin{definition}[Morphisms]
+\begin{definition}[Morphisms on site-graphs]
 \label{def:site_morph}
 A morphism $h:G\to H$ is a total function on agents $h:\ag_G\to\ag_H$ such that
 \begin{itemize}
@@ -53,7 +53,7 @@ An embedding or a mono, denoted $h:G\lemb H$, is an injective morphism on edges,
 \end{definition}
 
 \begin{lemma}
-  Site-graphs and morphisms form a category.
+  Site-graphs and their morphisms form a category.
 \end{lemma}
 \begin{proof}
   The category of site graphs has as objects the site graphs of~\autoref{def:site_graphs} and arrows are the morphisms of~\autoref{def:site_morph}.
@@ -70,7 +70,7 @@ An embedding or a mono, denoted $h:G\lemb H$, is an injective morphism on edges,
   The axioms of associativity and identity law easily hold.
 \end{proof}
 
-\begin{definition}[Rules]
+\begin{definition}[Kappa rules]
   \label{def:rule_site}
   A rule is a span $L\overset{h}{\remb} D \overset{g}{\lemb} R$ such that $h$ and $g$ are monos on site graphs and the following hold
   \begin{itemize}
@@ -158,18 +158,71 @@ However this is not an issue for the dpo rewriting with kappa rules.
     Suppose that there is a conflict in $N$ due to the property sets. For example, let $(a,i)\in p{k,R}$, $(a,i)\in p{k',D}$ and $k\neq k'$. We can reach a contradiction by deriving that $(a,i)\in p{k'',L}$ from \autoref{def:rule_site}.
 
     We have that $N$ is the pushout from the first item of our proof.
- \end{enumerate}
- \end{proof}
+  \end{enumerate}
+\end{proof}
+
+%In~\autoref{def:pos_infl} we defined influence between rules in the category of simple graphs. We adapt the definition to site graphs, by
+
+
+%% \begin{definition}[Low and medium res influence]
+%%   Let $r_1:L_1{\remb} D_1 {\lemb} R_1$ and $r_2:L_2{\remb} D_2 {\lemb} R_2$ be two rules.
+%%   Let the cospan $R_1\lemb M\remb L_2$ be in the multisum of $R_1$ and $L_2$, defined on simple graphs, from which we get the span $R_1\remb O\lemb L_2$ as pullback, such that
+%%   If the graph $O$ is a site graph then $r_1\redl{+} r_2$
+
+
+%% \end{definition}
 
 %\input{influence_kappa.tex}
-Results form~\autoref{sec:ts} hold on site graphs as well with one inconvience. As the pushout of two site graphs is not always a site graphs we have to ensure that whenever we compose transition as in~\autoref{def:concret} we do obtain site graphs. The problem occurs whenever we have two events $e_1$ and $e_2$ for which there is a decoration $R_1\remb O\lemb L_2$ but there is a conflict in the pushout.
-The following lemma ensures that for any two such events, there is an intermediate event, occuring between $e_1$ and $e_2$, that "resolves" the conflict.
+Results form~\autoref{sec:ts} hold on site graphs. However, as the pushout of two site graphs is not always a site graphs we have to ensure that whenever we compose transition as in~\autoref{sec:refinement} and~\autoref{sec:inhibition} we do obtain site graphs. Let us first consider the issue with the concretisation function.
+
+ The problem occurs whenever we have two events $e_1$ and $e_2$ for which there is a decoration $R_1\remb O\lemb L_2$ but for which the graph obtained in the pushout is not a site graph. Let us first refine low res precedence to distinguish between the case where the pushout of a decoration yields a site graph and the case where it does not.
+
+\begin{definition}[Medium res dependence]
+  Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions in a trace $\theta:t_1;t_1':t_2';\cdots t_n';t_2$ and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules. The morphism $N_1\pmorph M_2$ is the composition of $\spo(t_1')\circ\dots\spo(t_n')$.
+
+  If there exists $\spa:R_1\remb O\lemb L_2$ such that $p_1\redl{+}_{\spa} p_2$ and such that the diagram commutes
+
+  Let the span $\spa:R_1\remb O\lemb L_2$ be the pullback of the cospan $R_1{\lemb}M{\remb}L_2$ in the multisum of $R_1$ and $L_2$ such that $p_1\redl{+}_{\spa} p_2$. If there are no morphisms $M\lemb M_1$ or $M\lemb M_2$ such that the diagram commutes
+  \[
+  \begin{tikzpicture} %[scale=0.8]
+    \node (o) at (1,0) {\(O\)};
+    \node (m) at (1,2) {\(M\)};
+    \node (m1) at (-2,3) {\(M_1\)};
+    \node (n1) at (0,3) {\(N_1\)};
+    \node (n2) at (4,3) {\(N_2\)};
+    \node (m2) at (2,3) {\(M_2\)};
+    \node (r1) at (0,1) {\(R_1\)};
+    \node (l1) at (-2,1) {\(L_1\)};
+    \node (l2) at (2,1) {\(L_2\)};
+    \node (r2) at (4,1) {\(R_2\)};
+    \draw [->] (o) -- (r1);
+    \draw [->] (o) -- (l2);
+    \draw [->] (r1) --  (m);
+    \draw [->] (r1) --  (n1);
+    \draw [->] (l2) --  (m);
+    \draw [->] (l2) --  (m2);
+    %% \draw [dotted,->] (m) --  (n1);
+    %% \draw [dotted,->] (m) --  (m2);
+    \draw [-{Stealth[left]}] (n1) --  (m2);
+    \draw [->] (l1) --  (m1);
+    \draw [->] (r2) --  (n2);
+    \draw [vecArrow] (m1) -- node [above,midway] {$m_1,p_1$} (n1);
+    \draw [vecArrow] (m2) -- node [above,midway] {$m_2,p_2$} (n2);
+    \draw [vecArrow] (l2) -- (r2);
+    \draw [vecArrow] (l1) -- (r1);
+  \end{tikzpicture}
+  \]
+  then $t_2$ is medium res dependent on $t_1$, denoted $t_1\ll t_2$.
+\end{definition}
+Note that in simple grahs medium res and low res dependence coincide. In site graphs $t_1\ll t_2 \implies t_1 \prec t_2$ but not the reverse.
+
+The following lemma ensures that for any two such events, for which the decoration leads to a medium res precedence there exists an event occuring between the two that "resolves" the conflict.
 
 \begin{lemma}
-  Let $\theta$ be a causal trace and $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$, $t_2M_2\overset{m_2,p_2}{\Rightarrow} N_2$ two transitions such that $t_1\prec t_2$ but $t_1< t_2$. Then there exists transition $t_3$ such that $t_3\leq t_2$ and either $t_1\prec t_2$ or $t_3\dashv t_1$.
+  Let $\theta$ be a causal trace and $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$, $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions such that $t_1\prec t_2$ but $\neg(t_1\ll t_2)$. Then there exists transition $t_3$ such that $t_3\leq t_2$ and either $t_1\prec t_2$ or $t_3\dashv t_1$.
 \end{lemma}
 \begin{proof}
-  From~\autoref{def:prec} there exists $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ two transitions such that $\alpha(t_1)=e_1$, $\alpha(t_2)=e_2$ and $\theta:N_1\Rightarrow^{\star}M_2$ a trace between them. Let us first make some remarks.
+  Let $\theta':t_1;\cdots t_2$ be a subtrace of $\theta$.
 
   First, as $e_1\not< e_2$, the trace $\theta$ is not empty. There exists at least one transition in $\theta$. We consider two cases: there is only one transition in $\theta$ and then the more general case of more than one transition.
 
