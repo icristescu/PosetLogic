@@ -99,4 +99,13 @@ Let us now define the notions of influence between rules, that allows us to over
 
 Similarly, define the negative influence $r_1\redl{-}_{\spa} r_2$ if there exists the span $\spa:L_1{\remb} O {\lemb} L_2$ and there is no iso between the pullback of the cospan $D_1\lemb L_1\remb O$ and $O$.
 
+\begin{property}
+  Let the cospan $G_1\lemb M\remb G_2$ be in the multisum of $G_1$ and $G_2$, and let the span $G_1\remb O\lemb G_2$ be its pullback. Then $G_1\lemb M\remb G_2$ is the pushout of $G_1\remb O\lemb G_2$.
+\end{property}
+\begin{proof}
+ Suffices to show that there exists no cospan $G_1\lemb M_k\remb G_2$ be in the multisum of $G_1$ and $G_2$, such that $G_1\remb O\lemb G_2$ is its pullback.
+\end{proof}
+
+The property allows one to derive the influence between two rules using the multisum, but then to forget the multisum and only keep the spans $\spa$ in the influence $r_1\redl{+}_{\spa} r_2$.
+
 We say that a span $\spa:G\remb O\lemb H$ is empty if $O\iso\varepsilon$. For two spans $\spa_1 = G\remb O_1\lemb H$ and $\spa_2 = G\remb O_1\lemb H$ we write $\spa_1\subseteq \spa_2$ whenever there exists an mono $O_1\emb O_2$ that commutes.
