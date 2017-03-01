@@ -347,7 +347,7 @@ Now let us discuss on the relations between $t_1$ and $t_3$. We distinguish two 
     \draw [dotted,->] (n) -- (n1);
   \end{tikzpicture}
   \]
-  and such that for any other site-graph $N$ for which the diagram commutes, there exists a unique mono $N\to N_1$ that commutes.
+  and such that for any other site-graph $N$ for which the diagram commutes, there exists a unique mono $N\lemb N_1$ that commutes.
   \item Given $N_1$ and $N_2$ constructed as above, there exists a graph $D$ such that $N_1\lemb D\remb N_2$ is a kappa rule.
   \[
   \begin{tikzpicture} %[scale=0.8]
@@ -372,19 +372,24 @@ Now let us discuss on the relations between $t_1$ and $t_3$. We distinguish two 
 
     We construct $N_1 = (\ag_1,\nodes_1,\links_1)$ as the site graph $M$ from which whenever there is a pair of conflicting edges, we remove the one that comes from $M_2$:
     \begin{align*}
-      &\ag_1 = \ag_M\qquad
-      \nodes_1 = \nodes_M\\
-      &\links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{free\}, \xi\in\text{image}(f_2) \}
+      \ag_1 = \ag_M\qquad
+      \nodes_1 = \nodes_M\qquad
+      \links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{free\}, \xi\in\text{image}(f_2) \}
     \end{align*}
-    We have that $N_1$ is a site-graph as there can only be pairs of conflicting edges. Once one of the two is removed, the set of edges is conflict free. The morphism $N_1\lemb M$ is the inclusion on agents and nodes. The morphism $M_1\to N_1$ is identical to the morphism $f_1:M_1\to M$ as $N_1\subseteq\text{image}(f_1)(M_1)$. Remains to show that for any other site-graph $N$ for which the diagram commutes, there is a unique morphism $N\to N_1$.
-    \begin{mdframed}[backgroundcolor=blue!20]
-      to do.
-    \end{mdframed}
+    We have that $N_1$ is a site-graph as there can only be pairs of conflicting edges. Once one of the two is removed, the set of edges is conflict free. The morphism $N_1\lemb M$ is the inclusion on agents and nodes. The morphism $M_1\lemb N_1$ is identical to the morphism $f_1:M_1\lemb M$ as $N_1\subseteq\text{image}(f_1)(M_1)$. Remains to show that for any other site-graph $N$ for which the diagram commutes, there is a unique morphism $h:N\lemb N_1$.
+    Let us denote the morphisms as follows: $M_1\overset{g_1}{\lemb}N_1\overset{h_1}{\lemb} M$ and $M_1\overset{g_1'}{\lemb}N\overset{h_1'}{\lemb} M$.
+    We define $h$ as follows:
+    \begin{align*}
+      h(n) = n_1&\text{ if }n\in\text{image}(g_1')\text{ with }m_1\in M_1,g_1'(m_1) = n_1\text{ and }g_1(m_1)=n_1\\
+      &\text{ if }n\notin\text{image}(g_1')\text{ then }h_1'(n)=m\in\text{image}(f_2)\text{ and }n_1\in N_1,h_1(n_1) = m
+    \end{align*}
+    The implication $n\notin\text{image}(g_1')\implies h_1'(n)=m\in\text{image}(f_2)$ follows from $M$ being obtained by pushout. By construction of $N_1$, there exists $n_1\in N_1$ such that $h_1(n_1) = m$. The function is well defined and unique. Indeed, for nodes in $\text{image}(g_1')$ it is straightforward that $h$ is unique. Suppose by contradiction, that there exists $n_1, n_2 \in \text{image}(g_1(N_1))$ such that $h_1(n_1)=h_1(n_2)$. But this contradicts the fact that $h_1$ is an injective morphism.
+
   \item Define $D=(\ag_D,\nodes_D,\links_D)$ from graph $M$ by removing all pairs of conflicting edges:
     \begin{align*}
-      &\ag_1 = \ag_M\qquad
-      \nodes_1 = \nodes_M\\
-      &\links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{free\} \}
+      \ag_1 = \ag_M\qquad
+      \nodes_1 = \nodes_M\qquad
+      \links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{\text{free}\} \}
     \end{align*}
     The morphisms $D\lemb M_1$ and $D\lemb M_2$ are the inclusions. The constraints of~\autoref{def:rule_site} hold in a straightforward manner.
   \end{itemize}

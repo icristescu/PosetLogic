@@ -73,7 +73,7 @@
 Note that the notation $e\redl{+}_{\spa} e'$ is an overload of the notation $\labl(e)\redl{+}_{\spa} \labl(e')$. The first is defined on events using the abstraction function. The second, defined on rules, can be inferred from the rules itself.
 
 \begin{definition}
-  Let $e_1$,$e_2$ be two events in a decorated poset and let $s:L_1\remb O\lemb L_2$ be a span. We say that $e_1$ and $e_2$ are \emph{pairs for positive influence w.r.t. $s$} if for all events $e_3$ such that $e_3\redl{+}_{s_1} e_1$ and $s_1:R_3\remb O_1\lemb L_1$ for which the diagram commutes
+  Let $e_1$,$e_2$ be two events in a decorated poset and let $\spa:L_1\remb O\lemb L_2$ be a span. We say that $e_1$ and $e_2$ are \emph{pairs for positive influence w.r.t. $\spa$} if for all events $e_3$ such that $e_3\redl{+}_{\spa_1} e_1$ and $\spa_1:R_3\remb O_1\lemb L_1$ for which the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
       \node (o) at (0,-1) {\(O\)};
@@ -92,8 +92,8 @@ Note that the notation $e\redl{+}_{\spa} e'$ is an overload of the notation $\la
       \draw [->] (o) to [bend right] (r2);
     \end{tikzpicture}
     \]
-there exists $s_2:R_3\remb O_2\lemb L_2$ that commutes and such that $e_3\redl{+}_{s_2} e_2$.
-Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r.t. $s$} if for any event $e_3$ that has a negative influence on $e_1$ involving some part of $s$ then $e_3$ has a negative influence on $e_2$ as well.
+there exists $\spa_2:R_3\remb O_2\lemb L_2$ that commutes and such that $e_3\redl{+}_{\spa_2} e_2$.
+Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r.t. $\spa$} if for any event $e_3$ that has a negative influence on $e_1$ involving some part of $s$ then $e_3$ has a negative influence on $e_2$ as well.
 \end{definition}
 
 \begin{definition}[Valid decorated poset]
@@ -101,13 +101,13 @@ Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r
   A decorated poset $s = (E,\redl{+},\redl{-},\labl)$ is \emph{valid} if it is directed w.r.t. the transitive and reflexive closure of $\redl{+}$ and if the following constraints on decorations are meet:
   \begin{description}
   \item[no decoration is empty]
-    Let $e_1,e_2\in s$ be two events. If $e_1\redl{+}_{s} e_2$ or $e_1\redl{-}_{s} e_2$ then $s$ is not empty;
+    Let $e_1,e_2\in s$ be two events. If $e_1\redl{+}_{\spa} e_2$ or $e_1\redl{-}_{\spa} e_2$ then $\spa$ is not empty;
   \item[constraints on decorating positive meets]
-    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:R_1\remb O_1\lemb L_3$ and $s_2:R_2\remb O_2\lemb L_3$ two spans with $e_1\redl{+}_{s_1} e_3$ and $e_2\redl{+}_{s_2} e_3$.
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $\spa_1:R_1\remb O_1\lemb L_3$ and $\spa_2:R_2\remb O_2\lemb L_3$ two spans with $e_1\redl{+}_{\spa_1} e_3$ and $e_2\redl{+}_{\spa_2} e_3$.
     Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
     \begin{itemize}
     \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below in which case $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$;
-    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':R_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{+}_{s'} e_1$.
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $\spa':R_2\remb O'\lemb L_1$, with $\spa\subseteq \spa'$ for which $e_2\redl{+}_{\spa'} e_1$.
     \end{itemize}
    \[
     \begin{tikzpicture} %[scale=0.8]
@@ -136,11 +136,11 @@ Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r
     \end{tikzpicture}
     \]
   \item[constraints on decorating negative meets]
-    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:L_1\remb O_1\lemb L_3$ and $s_2:L_2\remb O_2\lemb L_3$ two spans with $e_1\redl{-}_{s_1} e_3$ and $e_2\redl{-}_{s_2} e_3$.
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $\spa_1:L_1\remb O_1\lemb L_3$ and $\spa_2:L_2\remb O_2\lemb L_3$ two spans with $e_1\redl{-}_{\spa_1} e_3$ and $e_2\redl{-}_{\spa_2} e_3$.
     Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
     \begin{itemize}
     \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below;
-    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':L_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{-}_{s'} e_1$; %and $e_1$,$e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $\spa':L_2\remb O'\lemb L_1$, with $\spa\subseteq \spa'$ for which $e_2\redl{-}_{\spa'} e_1$; %and $e_1$,$e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
     \end{itemize}
    \[
     \begin{tikzpicture} %[scale=0.8]
@@ -170,12 +170,12 @@ Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r
     \]
     and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
   \item[constraints on decorating positive forks]
-    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:L_1\remb O_1\lemb R_3$ and $s_2:L_2\remb O_2\lemb R_3$ two spans with $e_3\redl{+}_{s_1} e_1$ and $e_3\redl{+}_{s_2} e_2$.
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $\spa_1:L_1\remb O_1\lemb R_3$ and $\spa_2:L_2\remb O_2\lemb R_3$ two spans with $e_3\redl{+}_{\spa_1} e_1$ and $e_3\redl{+}_{\spa_2} e_2$.
     Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
     \begin{itemize}
     \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below;
       %in which case $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$;
-    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':L_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{-}_{s'} e_1$;
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $\spa':L_2\remb O'\lemb L_1$, with $\spa\subseteq \spa'$ for which $e_2\redl{-}_{\spa'} e_1$;
       % and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
     \end{itemize}
    \[
@@ -206,12 +206,12 @@ Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r
     \]
     and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
   \item[constraints on decorating negative forks]
-    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $s_1:L_1\remb O_1\lemb R_3$ and $s_2:L_2\remb O_2\lemb R_3$ two spans with $e_3\redl{-}_{s_1} e_1$ and $e_3\redl{-}_{s_2} e_2$.
+    Let $e_1,e_2,e_3$ be three events in $s$ such that there exists $\spa_1:L_1\remb O_1\lemb R_3$ and $\spa_2:L_2\remb O_2\lemb R_3$ two spans with $e_3\redl{-}_{\spa_1} e_1$ and $e_3\redl{-}_{\spa_2} e_2$.
     Let $O_1\remb O\lemb O_2$ be the pullback of the span $O_1\lemb L_3 \remb O_2$. Then one of the following holds:
     \begin{itemize}
     \item either there exists the morphisms $O\emb K_1$ and $O\emb K_2$ that commute in the diagram below;
       %in which case $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$;
-    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $s':L_2\remb O'\lemb L_1$, with $s\subseteq s'$ for which $e_2\redl{-}_{s'} e_1$;
+    \item or there exists the morphism $O\emb K_1$ but no morphism $O\emb K_2$ that commutes. Then there exists $\spa':L_2\remb O'\lemb L_1$, with $\spa\subseteq \spa'$ for which $e_2\redl{-}_{\spa'} e_1$;
       %and $e_1$ and $e_2$ are pairs for positive and negative influence w.r.t. $L_1\remb O\lemb L_2$.
     \end{itemize}
    \[
@@ -250,8 +250,8 @@ Similarly we say that $e_1$ and $e_2$ are \emph{pairs for negative influence w.r
   From a causal trace $\theta$ define the \emph{abstraction} function $\mathsf{decoration\_of\_trace}$ that maps a trace into a decorated poset as follows:
   \begin{align*}
     &\mathsf{decoration\_of\_trace}(t_i:M_i\overset{m,p}{\Rightarrow} M_{i+1}) = e_i \\
-    &e_i \redl{+}_s e_j \iff t_i <_{\theta}^s t_j, \labl(t_i)\redl{+}_s \labl(t_j)\\
-    &e_i \redl{-}_s e_j \iff t_i \dashv_{\theta} t_j, \labl(t_i) \redl{-}_s \labl(t_j).
+    &e_i \redl{+}_{\spa} e_j \iff t_i <_{\theta}^s t_j, \labl(t_i)\redl{+}_{\spa} \labl(t_j)\\
+    &e_i \redl{-}_{\spa} e_j \iff t_i \dashv_{\theta} t_j, \labl(t_i) \redl{-}_{\spa} \labl(t_j).
   \end{align*}
   Then, for any causal trace $\theta$, $\mathsf{decoration\_of\_trace}(\theta)$ is a valid decorated poset.
 \end{lemma}
@@ -296,8 +296,8 @@ the definition above covers the abstractions from causal traces to decorated pos
   \]
   But we can come up with two decorations for such poset, where one of them leads to a invalid decorated poset:
   \begin{align*}
-  \text{good decoration: }&e_1\redl{+}_A e_3\qquad e_2\redl{+}_B e_3\\
-  \text{bad decoration: }&e_1\redl{+}_A e_3\qquad e_2\redl{+}_A e_3
+  \text{good decoration: }e_1\redl{+}_A e_3\qquad e_2\redl{+}_B e_3\qquad
+  \text{bad decoration: }e_1\redl{+}_A e_3\qquad e_2\redl{+}_A e_3
   \end{align*}
 \end{example}
 
