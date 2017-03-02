@@ -229,28 +229,28 @@ let pushout graph1 graph2 =
   if (check_site_graph graph) then (Some graph)
   else None
 
-let test_check_site_graphs =
-  if (check_site_graph bad_graph1) then Format.printf "bad1 : site graph\n"
-  else Format.printf "bad1 : not a site graphs\n";
-  if (check_site_graph test_graph5) then Format.printf "graph5 : site graph\n"
-  else Format.printf "graph5 : not a site graphs\n";
-  if (check_site_graph bad_graph3) then Format.printf "bad3 : site graph\n"
-  else Format.printf "bad3 : not a site graphs\n";
-  if (check_site_graph bad_graph4) then Format.printf "bad4 : site graph\n"
-  else Format.printf "bad4 : not a site graphs\n";
-  Format.printf "\n\n"
+(* let test_check_site_graphs = *)
+(*   if (check_site_graph bad_graph1) then Format.printf "bad1 : site graph\n" *)
+(*   else Format.printf "bad1 : not a site graphs\n"; *)
+(*   if (check_site_graph test_graph5) then Format.printf "graph5 : site graph\n" *)
+(*   else Format.printf "graph5 : not a site graphs\n"; *)
+(*   if (check_site_graph bad_graph3) then Format.printf "bad3 : site graph\n" *)
+(*   else Format.printf "bad3 : not a site graphs\n"; *)
+(*   if (check_site_graph bad_graph4) then Format.printf "bad4 : site graph\n" *)
+(*   else Format.printf "bad4 : not a site graphs\n"; *)
+(*   Format.printf "\n\n" *)
 
-let test_pushout =
-  let () =
-    match (pushout test_graph1 test_graph2) with
-    | Some gr -> Format.printf "pushout 1, 2: \n"; print_graph gr
-    | None -> Format.printf "pushout not a site graphs\n" in
-  Format.printf "\n\n";
-  let () =
-    match (pushout test_graph3 test_graph4) with
-    | Some gr -> Format.printf "pushout 3, 4:\n"; print_graph gr
-    | None -> Format.printf "pushout not a site graphs\n" in
-  ()
+(* let test_pushout = *)
+(*   let () = *)
+(*     match (pushout test_graph1 test_graph2) with *)
+(*     | Some gr -> Format.printf "pushout 1, 2: \n"; print_graph gr *)
+(*     | None -> Format.printf "pushout not a site graphs\n" in *)
+(*   Format.printf "\n\n"; *)
+(*   let () = *)
+(*     match (pushout test_graph3 test_graph4) with *)
+(*     | Some gr -> Format.printf "pushout 3, 4:\n"; print_graph gr *)
+(*     | None -> Format.printf "pushout not a site graphs\n" in *)
+(*   () *)
 
-let test () =
-  test_pushout
+(* let test () = *)
+(*   test_pushout *)

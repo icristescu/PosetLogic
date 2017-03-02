@@ -1,10 +1,13 @@
 let files = ref []
 let formula_file = ref ""
+let rule_file = ref ""
 let read_fm = ref []
+let read_rule = ref []
 let debug_mode = ref false
 
 let options = [
-    ("-f", Arg.Set_string formula_file, "file name skeleton for outputs");
+    ("-f", Arg.Set_string formula_file, "file name for formulas");
+    ("-r", Arg.Set_string rule_file, "file name for rules");
     ("-debug", Arg.Set debug_mode, "print internal info");]
 
 let test_z3 t =
@@ -50,6 +53,20 @@ let parse_fm () =
     done
   with Lexer.Eof -> ()
 
+let parse_rules () =
+  let () = if (!Parameter.debug_mode) then
+             Format.printf "parse file %s\n" (!rule_file) in
+  let chan = open_in (!rule_file) in
+  try
+    let lexbuf = Lexing.from_channel chan in
+    while true do
+      let result = ParserRule.newline LexerRule.token lexbuf in
+      read_rule := result::(!read_rule);
+      if (!Parameter.debug_mode) then
+        (Format.printf "parsing \n"; Ast.print result;Format.printf"\n")
+    done
+  with LexerRule.Eof -> ()
+
 let set_flags () =
   Parameter.debug_mode := !debug_mode
 
@@ -80,7 +97,7 @@ let () =
       (Sys.argv.(0) ^
        " stories\n outil") in
   let () = set_flags () in
-  (*  let () = parse_fm () in*)
+  let () = parse_rules () in
   let posets = Domain.set_posets (!files) in
   ()
   (*  test_z3 posets*)
