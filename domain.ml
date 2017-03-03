@@ -51,8 +51,8 @@ let set_posets file_list =
       (fun t file ->
         let s = Poset.read_poset_from_file file in
         add_posets s t) posets file_list in
-  let posets' = add_posets (Poset.test_poset) posets_file in
+  (*let posets' = add_posets (Poset.test_poset) posets_file in*)
   let () = if (!Parameter.debug_mode)
            then (Format.printf "set_posets: \n";
-                 print_posets posets') in
-  posets'
+                 print_posets posets_file) in
+  posets_file

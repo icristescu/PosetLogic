@@ -167,9 +167,6 @@ let denotations (_,_,domain as m) fm =
          vals
          (List.filter (fun d -> domain_match_sort d "Poset") domain)
     | [] ->
- (*      let () = if (!Parameter.debug_mode) then
-                  Format.printf "holds test for valuation ";
-                print_valuation v (vars) in*)
        if (holds m valuation fm) then (valuation::vals) else (vals) in
   let default_valuation x = raise (ExceptionDefn.Uninterpreted_Variable(x)) in
   denote_var (free_var fm) default_valuation []
@@ -246,17 +243,15 @@ let obs = function
     Domain.Pos p -> p
   | _ -> raise (ExceptionDefn.Malformed_Args("obs"))
 
-let negative_influence = function
-    (Domain.Ev e1, Domain.Pos p1, Domain.Ev e2, Domain.Pos p2) ->
-    let bla = Concret.concret p1 in
+let negative_influence rules = function
+    (Domain.Pos p1, Domain.Pos p2) ->
+    let t = Concret.concret p1 rules in
+    let () = if (!Parameter.debug_mode) then Trace.print t in
     true
    | _ ->  raise(ExceptionDefn.Malformed_Args("negative_influence"))
 
 let id_label_event str = function
-    [e] ->
-(*    let () = if (!Parameter.debug_mode) then
-               Format.printf "id_label_event %s\n" str in*)
-    ((label e) = str)
+    [e] -> ((label e) = str)
   | _ -> raise (ExceptionDefn.Malformed_Args("id_label_event"))
 
 let check_pred p =
@@ -265,7 +260,7 @@ let check_pred p =
     (String.equal is_label "label")
   else false
 
-let interpretation t =
+let interpretation t rules =
   let domain = (List.map (fun p -> Domain.Pos(p)) (Domain.get_posets(t)))@
                  (List.map (fun e -> Domain.Ev(e)) (Domain.get_events(t))) in
   let func f args =
@@ -288,7 +283,7 @@ let interpretation t =
       | ("equal_posets", [p1;p2]) -> equal_posets (p1,p2)
       | ("equal_events", [e1;e2]) -> equal_events (e1,e2)
       | ("sub_posets", [p1;p2]) -> sub_poset (p1,p2)
-      | ("negative_influence", [x1;p1;x2;p2]) ->
-         negative_influence (x1,p1,x2,p2)
+      | ("negative_influence", [p1;p2]) ->
+         negative_influence rules (p1,p2)
       | _ -> raise (ExceptionDefn.Uninterpreted_Predicate(p)) in
   (func,pred,domain)

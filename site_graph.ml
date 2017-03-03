@@ -19,6 +19,8 @@ type t = {
     property_set : internal_state list;
   }
 
+let empty = {nodes=[];edges=[];property_set=[]}
+
 let test_graph1 =
   let node0 = {
       agent = 0;

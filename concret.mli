@@ -1,2 +1,2 @@
 
-val concret : Poset.t -> Trace.t list
+val concret : Poset.t -> Ast.t list -> Trace.t

@@ -1,6 +1,10 @@
 type t = {
-    source : Site_graph.t;
-    dest : Site_graph.t;
-    rule : Rule.t;
-    node_map : (int*int) list;
+    lhs: Idgraph.mixture;
+    rhs: Idgraph.mixture;
+    rule : Ast.t;
   }
+
+val empty : t
+val print : t -> unit
+val get_rhs : t -> Idgraph.mixture
+val make : Idgraph.mixture -> Ast.t -> Event.quark list -> t

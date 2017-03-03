@@ -1,16 +1,16 @@
-type ('a) link =
+type link =
   | LNK_VALUE of int
   | FREE
   | LNK_ANY
   | LNK_SOME
-  | LNK_TYPE of 'a (* port *)
-    * 'a (*agent_type*)
+  | LNK_TYPE of string (* port *)
+    * string (*agent_type*)
 
 type internal = string list
 
 type port = {port_nme:string;
              port_int:internal;
-             port_lnk:string link list;}
+             port_lnk:link list;}
 
 type agent = (string * port list)
 
@@ -53,4 +53,35 @@ let print = function
   | INIT mix -> Format.printf "\n init "; List.iter (fun a -> print_agent a) mix
   | OBS (name,mix) -> Format.printf "\n obs '%s' " name;
                       List.iter (fun a -> print_agent a) mix
-  | RULE (name,r) -> Format.printf "\n rule '%s' " name; print_rule r;
+  | RULE (name,r) -> Format.printf "\n rule '%s' " name; print_rule r
+
+let empty_rule = {lhs =[];rhs=[];bidirectional=false}
+
+let empty = RULE ("empty",empty_rule)
+
+let get_label = function
+  | INIT mix -> List.fold_left (fun acc (nme,_) -> acc^nme) "" mix
+  | OBS (name,_) -> name
+  | RULE (name,_) ->  name
+
+let get_rule_by_label nme rules =
+  List.find
+    (fun r -> String.equal (get_label r) nme) rules
+
+let get_lhs = function
+  | INIT mix -> []
+  | OBS (name,mix) -> mix
+  | RULE (name,r) -> r.lhs
+
+let get_rhs = function
+  | INIT mix -> mix
+  | OBS (name,mix) -> mix
+  | RULE (name,r) -> r.rhs
+
+let is_init = function
+  | INIT _ -> true
+  | OBS _ | RULE _ -> false
+
+let is_obs = function
+  | OBS _ -> true
+  | INIT _ | RULE _  -> false

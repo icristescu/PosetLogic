@@ -21,3 +21,5 @@ type t = {
 
 val print_graph : t -> unit
 (*val test : unit -> unit*)
+
+val empty: t

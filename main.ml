@@ -70,7 +70,7 @@ let parse_rules () =
 let set_flags () =
   Parameter.debug_mode := !debug_mode
 
-let evaluate sfm (_,_, domain as m) v =
+let evaluate sfm (_,_,domain as m) v =
   let fm = Formulas.convert_string_to_domain sfm domain in
   let free_var = Formulas.free_var fm in
   if (free_var = []) then
@@ -99,16 +99,29 @@ let () =
   let () = set_flags () in
   let () = parse_rules () in
   let posets = Domain.set_posets (!files) in
-  ()
+
+  let fm_neg =
+    (Formulas.Atom(
+         Formulas.R("negative_influence",
+                    [Formulas.Var "s1";
+                     Formulas.Var "s2"]))) in
+
+  let m = Formulas.interpretation posets (!read_rule) in
+  let () = Format.printf "\n evaluate formula:\n" in
+  (evaluate fm_neg m empty_valuation)
+
+
   (*  test_z3 posets*)
-  (*  let m = Formulas.interpretation posets in
+  (*
+  let m = Formulas.interpretation posets in
   List.iteri
     (fun i fm ->
       Format.printf "\n evaluate formula %i:\n" i;
       (evaluate fm m empty_valuation))
     (!read_fm)
-   *)
-  (*  let (valuation,fm) = test_subset posets in
+  *)
+  (*
+  let (valuation,fm) = test_subset posets in
   if (Formulas.holds m valuation fm) then Format.printf"true\n"
   else Format.printf "false\n"
    *)
