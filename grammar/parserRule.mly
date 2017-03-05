@@ -24,7 +24,7 @@ start_rule:
 rule_expression:
     | rule_label lhs_rhs arrow lhs_rhs
 		 { Ast.RULE ($1,({Ast.lhs=$2; Ast.bidirectional=$3;
-			    Ast.rhs=$4;}))}
+			    Ast.rhs=$4;Ast.prefix_map=[]}))}
     ;
 
 arrow:

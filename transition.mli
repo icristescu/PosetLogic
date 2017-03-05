@@ -7,4 +7,4 @@ type t = {
 val empty : t
 val print : t -> unit
 val get_rhs : t -> Idgraph.mixture
-val make : Idgraph.mixture -> Ast.t -> Event.quark list -> t
+val make : Idgraph.mixture -> Ast.t -> Quark.t list -> t

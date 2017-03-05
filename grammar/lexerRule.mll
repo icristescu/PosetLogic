@@ -41,7 +41,7 @@ rule token = parse
 		match lab with
 		| "init" -> INIT
 		| "obs" -> OBS
-		| _ as s ->
+		| _ ->
 		    raise (ExceptionDefn.Syntax_Error("invalid use of %"))}
 	 | '!' {KAPPA_LNK}
 	 | internal_state as s {let i = String.index s '~' in

@@ -61,7 +61,8 @@ let parse_rules () =
     let lexbuf = Lexing.from_channel chan in
     while true do
       let result = ParserRule.newline LexerRule.token lexbuf in
-      read_rule := result::(!read_rule);
+      let free_res = Ast.clean_rules result in
+      read_rule := free_res::(!read_rule);
       if (!Parameter.debug_mode) then
         (Format.printf "parsing \n"; Ast.print result;Format.printf"\n")
     done
@@ -107,6 +108,7 @@ let () =
                      Formulas.Var "s2"]))) in
 
   let m = Formulas.interpretation posets (!read_rule) in
+  let () = Format.printf "print the rules: " in
   let () = Format.printf "\n evaluate formula:\n" in
   (evaluate fm_neg m empty_valuation)
 

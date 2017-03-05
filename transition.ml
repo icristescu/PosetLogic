@@ -1,4 +1,5 @@
 open Lib
+
 type t = {
     lhs: Idgraph.mixture;
     rhs: Idgraph.mixture;
@@ -17,7 +18,7 @@ let combine_pname_pid (p1:Ast.port) ((pid, il): int * int list) =
         ((List.length (p1.Ast.port_int) = 0)&&(not(List.mem 0 il)))) then
     let port_lnk =
       match p1.Ast.port_lnk with
-      | [] -> [Idgraph.FREE]
+      | [] -> []
       | l::rs -> if (not(rs=[])) then
                    (raise (ExceptionDefn.Internal_Error
                              ("port_link has at most one element")))
@@ -59,7 +60,7 @@ let combine_ag_nd node_hash (name,aplist) node =
   (name,node,m)
 
 let decorate agents quarks rname =
-  let nodes = Event.get_nodes quarks in
+  let nodes = Quark.get_nodes quarks in
   let () = if (!Parameter.debug_mode) then
              (Format.printf "\n decorate %s nodes = " rname;
               List.iter (fun i ->Format.printf "%d " i) nodes) in
@@ -68,16 +69,16 @@ let decorate agents quarks rname =
       (raise (ExceptionDefn.NotKappa_Poset
                 ("decorate: quarks of event "
                  ^rname^" not valid"))) in
-  let node_hash = Event.get_nodes_ports quarks in
+  let node_hash = Quark.get_nodes_ports quarks in
   let combine_agents = mapping agents (permutations nodes)
                                (combine_ag_nd node_hash) in
   let m = List.hd combine_agents in
   m
 
 let make lhs rule quarks =
-  let quarks_tested = Event.quarks_tested quarks in
-  let quarks_testedMod = Event.quarks_testedMod quarks in
-  let quarks_modified = Event.quarks_modified quarks in
+  let quarks_tested = Quark.quarks_tested quarks in
+  let quarks_testedMod = Quark.quarks_testedMod quarks in
+  let quarks_modified = Quark.quarks_modified quarks in
   if (Ast.is_init rule) then
     let _ =
       if (not((List.length quarks_tested)=0))||
