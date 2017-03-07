@@ -3,16 +3,17 @@
 \label{sec:ts}
 
 \begin{definition}[TS on graphs]
-  A transition system on graphs $TS = (Q,R,T)$ consists of
+  A transition system on graphs $TS = (Q,\mathcal{R},T)$ consists of
   \begin{itemize}
   \item a set of states $Q\subseteq \mathcal{G}$, where each state is a simple graph;
   \item a set of rules or productions, $R$;
-  \item a set of labelled transition $T\subseteq Q\times \text{hom}(\mathcal{G})\times R\times Q$, where each transition $M \overset{m,p}{\Rightarrow} N$ is a dpo rewriting step with the production $p\in R$, $p:L\lemb K\remb R$ and the matching $m:L\emb M$.
+  \item a set of labelled transition $T\subseteq Q\times \text{hom}(\mathcal{G})\times \mathcal{R}\times Q$, where each transition $M \overset{m,p}{\Rightarrow} N$ is a dpo rewriting step with the production $p:L\lemb K\remb R\in\mathcal{R}$ and the matching $m:L\emb M\in\text{hom}(\mathcal{G})$.
   \end{itemize}
 \end{definition}
 
 %We denote $t:(s,e,s')$ a transition.
-Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the destination state of $t_1$. A \emph{trace} $\theta$ is a sequence of composable transitions: $\theta=t_1;t_2;\cdots t_n$. Two traces $\theta:t_1;\cdots t_n$ and $\theta':t_1';\cdots t_n'$ can be composed if $t_n$ and $t_1'$ are composable: $\theta;\theta':t_1;\cdots t_n;t_1;\cdots t_n'$.
+Transitions can be composed $t_1;t_2$ if the source state of $t_2$ matches the destination state of $t_1$. A \emph{trace} $\theta$ is a sequence of composable transitions: $\theta=t_1;t_2;\cdots t_n$.
+%Two traces $\theta:t_1;\cdots t_n$ and $\theta':t_1';\cdots t_n'$ can be composed if $t_n$ and $t_1'$ are composable: $\theta;\theta':t_1;\cdots t_n;t_1;\cdots t_n'$.
 
 \begin{definition}[Independence relation on transitions~\cite{AlgebraicGR}]
   \label{def:indep}
@@ -218,7 +219,7 @@ When we want to make the underlying span explict, we write $t_1 <^{\spa} t_2$, $
   Two sequential transitions $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M_1\overset{m_2,p_2}{\Rightarrow} M_2$ are high res dependent if and only if there exists no morphism $j:L_2\emb D_1$ such that $j\circ g_1= m_2$.
 \end{lemma}
 \begin{proof}
-  First note that for any injective morphism in the diagram we can define a bijection between the domain and the image of the morphism in the codomain. Secondly note that for any graph $M_1$ there exists a unique $M$ in the multisum of $R_1$ and $L_2$ that commutes:
+  First note that for any injective morphism $f:G\emb H$ we can define a bijection between the domain and the image of the morphism in the codomain $f:G\leftrightarrow \text{image}(f(G))\subseteq H$. Secondly note that for any graph $M_1$ there exists a unique $M$ in the multisum of $R_1$ and $L_2$ that commutes:
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (r1) at (1,0) {\(R_1\)};
@@ -232,7 +233,7 @@ When we want to make the underlying span explict, we write $t_1 <^{\spa} t_2$, $
     \draw [->] (l2) to [bend right] (m1);
     \end{tikzpicture}
     \]
-    and that the pullback of $R_1\lemb M_1\remb L_2$ is the same as the pullback of $R_1\lemb M\remb L_2$. Therefore we can reason using the span $R_1\lemb M_1\remb L_2$ in what follows.
+    and that the pullback of $R_1\lemb M_1\remb L_2$ is the same as the pullback of $R_1\lemb M\remb L_2$. Therefore we can reason using either one of the two spans when defining influence between rules.
 
     Let $R_1\remb O \lemb L_2$ be the pullback of the cospan $R_1\lemb M_1\remb L_2$ and let $K_1\remb P \lemb O$ be the pullback of $K_1\lemb R_1\remb O$.
   We proceed by showing that in the diagram below
@@ -263,21 +264,21 @@ When we want to make the underlying span explict, we write $t_1 <^{\spa} t_2$, $
     \draw [dotted,->] (o) to [bend left] node [right,midway] {$p'$} (k1);
     \end{tikzpicture}
     \]
-    the injective morphism $P\emb O$ is an iso iff there exists a morphism $j:L_2\to D_1$ that makes the diagram commute.
+    the injective morphism $P\emb O$ is an iso iff there exists a morphism $j:L_2\to D_1$ such that $j\circ g_1 = m_2$.
 
     Suppose that $P\emb O$ is an iso. Let us show how we can recover from that a morphism $j:L_2\to D_1$.
     Let us denote $p:P\emb O$ the isomorphism between $P$ and $O$. Furthemore, we denote $p':O\to K_1$ the composition of $p$ and $P\to K_1$.
-    Let $o(O) =L_2'\subseteq L_2$ be the image of $o:O\to L_2$. For any $x$ (node or edge) in $L_2'$, define $j(x) = k_1(p'(o^{-1}(x)))$. Consider now $x$ an edge or node in $L_2$ such that $x\notin L_2'$. We have that $m_2(x)\in G$ and moreover $m_2(x)\notin\text{image}(n_1)(R_1)$. The latter follows from $R_1 \remb O\lemb L_2$ being the pullback of $R_1\lemb M_1\remb L_2$. However $D_1\lemb G\remb R_1$ is the pushout of $D_1\remb K_1\lemb R_1$, hence $m_2(x)\in\text{image}(g_1)(D_1)$. $g_1$ is an injective morphism and therefore $g_1^{-1}(m_2(x))$ is well defined. Then $j(x) = g_1^{-1}(m_2(x))$. To summarise, $j$ is defined as follows
+    Let $o(O) =L_2'\subseteq L_2$ be the image of $o:O\to L_2$. For any $x$ (node or edge) in $L_2'$, define $j(x) = k_1(p'(o^{-1}(x)))$. Consider now $x$ an edge or node in $L_2$ such that $x\notin L_2'$. We have that $m_2(x)\in M_1$ and moreover $m_2(x)\notin\text{image}(n_1)(R_1)$. The latter follows from $R_1 \remb O\lemb L_2$ being the pullback of $R_1\lemb M_1\remb L_2$. However $D_1\lemb M_1\remb R_1$ is the pushout of $D_1\remb K_1\lemb R_1$, hence $m_2(x)\in\text{image}(g_1)(D_1)$. $g_1$ is an injective morphism and therefore $g_1^{-1}(m_2(x))$ is well defined. Then $j(x) = g_1^{-1}(m_2(x))$. To summarise, $j$ is defined as follows
     \begin{align*}
       j(x) =& k_1(p'(o^{-1}(x))) &\text{for }x\in\text{image}(o)\subseteq L_2\\
       & g_1^{-1}(m_2(x))&\text{for }x\in L_2\setminus\text{image}(o).
     \end{align*}
-and it is an injective morphism by construction. To show it commutes for the case when $x\in\text{image}(o)\subseteq L_2$ we use the fact that the graphs $O$ and $P$ are obtained by pullbacks.
+and it is an injective morphism as it is the composition of injective morphisms. To show it commutes for the case when $x\in L_2\setminus\text{image}(o)$ is by definition. Fro the case $x\in\text{image}(o)\subseteq L_2$ we use the fact that the graphs $O$ and $P$ are obtained by pullbacks and $M_1$ by pushout.
 
-Let us now show that if there exists $j:L_2\to D_1$ then there exists a morphism $O\to P$ that makes the diagram commute. As above, let $o:O\to L_2$ be the morphism between $O$ and $L_2$ and moreover, $o':O\to R_1$ the morphism between $O$ and $R_1$.
+Let us now show that if there exists $j:L_2\to D_1$ such that $j\circ g_1 = m_2$ then the morphism $P\emb O$ is an iso. As above, let $o:O\to L_2$ be the morphism between $O$ and $L_2$ and moreover, $o':O\to R_1$ the morphism between $O$ and $R_1$.
 %
 For any $x$ (node or edge) in $O$ we have that there exists $x_2\in L_2$ such that $o(x_2)=x$ and similarly for $x_1\in R_1$, $o'(x)=x_1$. As $O$ is the pullback, we have that for $m_2(x_2) = x_M\in M_1$, $x_M = m_2(x_2) = n_1(x_1)$.
-We also have that $m_2(x_2)=g_1(j(x_2))$ and therefore there exists $x_D\in D_1$ such that $j(x_2)=x_D$ and $g_1(x_D)=x_M$. From the fact that the span $D_1\remb M_1\lemb R_1$ is a pushout and from $n_1(x_1)=x_M$ and $g_1(x_D)=x_M$ we have that there exists $x_k\in K_1$ such that $k_1(x_k) = x_D$ and $r_1(x_k)=x_1$. Again, as $K_1\remb P \lemb O$ is a pullback for $r_1(x_k)=x_1$ and $o'(x)=x_1$ we have that there exists $x_P\in P$ such that $p(x_P)=x$ for all nodes $x\in O$. Therefore $p$ is surjective. It is also an injective morphism by definition. Therefore, we obtain that $p$ is indeed an iso.
+We also have that $m_2(x_2)=g_1(j(x_2))$ and therefore there exists $x_D\in D_1$ such that $j(x_2)=x_D$ and $g_1(x_D)=x_M$. From the fact that the span $D_1\lemb M_1\remb R_1$ is a pushout and from $n_1(x_1)=x_M$ and $g_1(x_D)=x_M$ we have that there exists $x_k\in K_1$ such that $k_1(x_k) = x_D$ and $r_1(x_k)=x_1$. Again, as $K_1\remb P \lemb O$ is a pullback for $r_1(x_k)=x_1$ and $o'(x)=x_1$ we have that there exists $x_P\in P$ such that $p(x_P)=x$ for all nodes $x\in O$. Therefore $p$ is surjective. It is also an injective morphism by definition. Therefore, we obtain that $p$ is indeed an iso.
  \end{proof}
 
 \begin{lemma}

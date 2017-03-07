@@ -3,83 +3,99 @@ open Lib
 type t = {
     lhs: Idgraph.mixture;
     rhs: Idgraph.mixture;
-    rule : Ast.t;
+    rule : Rule.t;
   }
 
-let empty = {lhs =Idgraph.empty;rhs =Idgraph.empty;rule=Ast.empty}
+let empty = {lhs =Idgraph.empty;rhs =Idgraph.empty;rule=Rule.empty}
 
 let print t = Format.printf "\n transition"; Idgraph.print t.lhs;
-              Format.printf " => ";Idgraph.print t.rhs; Ast.print t.rule
+              Format.printf " => ";Idgraph.print t.rhs; Rule.print t.rule
 
 let get_rhs t = t.rhs
-
-let combine_pname_pid (p1:Ast.port) ((pid, il): int * int list) =
-  if (((List.length (p1.Ast.port_int) = 1)&&(List.mem 0 il))||
-        ((List.length (p1.Ast.port_int) = 0)&&(not(List.mem 0 il)))) then
-    let port_lnk =
-      match p1.Ast.port_lnk with
-      | [] -> []
-      | l::rs -> if (not(rs=[])) then
-                   (raise (ExceptionDefn.Internal_Error
-                             ("port_link has at most one element")))
-                 else (match l with
-                         Ast.LNK_VALUE i -> [Idgraph.LNK_VALUE i]
-                       | Ast.FREE -> [Idgraph.FREE]
-                       | Ast.LNK_ANY | Ast.LNK_SOME | Ast.LNK_TYPE _ ->
-                          (raise
-                             (ExceptionDefn.Not_Supported
-                                ("rules with side effects not supported")))) in
-    {Idgraph.port_nme=p1.Ast.port_nme;port_id = pid;
-     port_int=p1.Ast.port_int;port_lnk}
-  else (raise (ExceptionDefn.Mappings()))
 
 let mapping list1 list_of_list combine =
   List.fold_left
     (fun acc list2 ->
       try
-        let working_map = List.map2 (fun p1 p2 -> combine p1 p2) list1 list2 in
+        let working_map =
+          List.map2 (fun p1 p2 ->
+                      if (combine p1 p2) then (p1,p2)
+                      else (raise (ExceptionDefn.Mappings()))) list1 list2 in
         working_map::acc
       with ExceptionDefn.Mappings() -> acc) [] list_of_list
 
-let combine_ag_nd node_hash (name,aplist) node =
-  let plist = Hashtbl.find_all node_hash node in
-  let () = if (!Parameter.debug_mode) then
-             (Format.printf "combine name %s node %d ports in rule " name node;
-              List.iter (fun p -> Ast.print_port p) aplist;
-              Format.printf "\n ports in quark";
-              List.iter
-                (fun (p,il) -> Format.printf " p = %d" p;
-                               List.iter (fun i -> Format.printf "~%d" i) il)
-                plist) in
-  let _ =
-    if (not((List.length aplist) = (List.length plist)))
-    then (raise (ExceptionDefn.Mappings())) in
-  let combine_ports = mapping aplist (permutations plist)
-                              (combine_pname_pid) in
-  let m = List.hd combine_ports in
-  (name,node,m)
+let combine_ports_name quarks1 quarks2 (p1:string) (p2:int) =
+  let quarks1'= Rule.filter_on_port p1 quarks1 in
+  let quarks2'= Quark.filter_on_port p2 quarks2 in
+  let exists_test i =
+    List.exists (function Quark.Tested (_,_,il) -> il = i
+                        | _ -> false) quarks2' in
+  let exists_testmod i =
+    List.exists (function Quark.TestedMod (_,_,il) -> il = i
+                        | _ -> false) quarks2' in
+  let exists_mod i =
+    List.exists (function Quark.Modified (_,_,il) -> il = i
+                        | _ -> false) quarks2' in
+  if ((List.length quarks1') = (List.length quarks2')) then
+    List.fold_left
+      (fun ok q1 ->
+        match q1 with
+          Rule.Tested (_,_,il) ->
+          (match il with
+          | Rule.INT _ -> (exists_test 0)&&ok
+          | Rule.LNK _ -> (exists_test 1)&&ok)
+         |Rule.TestedMod ((_,_,il),_) ->
+           (match il with
+            | Rule.INT _ -> (exists_testmod 0)&&ok
+            | Rule.LNK _ -> (exists_testmod 1)&&ok)
+         |Rule.Modified (_,_,il) ->
+           (match il with
+            | Rule.INT _ -> (exists_mod 0)&&ok
+            | Rule.LNK _ -> (exists_mod 1)&&ok))
+      true quarks1'
+  else false
 
-let decorate agents quarks rname =
-  let nodes = Quark.get_nodes quarks in
-  let () = if (!Parameter.debug_mode) then
-             (Format.printf "\n decorate %s nodes = " rname;
-              List.iter (fun i ->Format.printf "%d " i) nodes) in
-  let _ =
-    if (not((List.length nodes) = (List.length agents))) then
-      (raise (ExceptionDefn.NotKappa_Poset
-                ("decorate: quarks of event "
-                 ^rname^" not valid"))) in
-  let node_hash = Quark.get_nodes_ports quarks in
-  let combine_agents = mapping agents (permutations nodes)
-                               (combine_ag_nd node_hash) in
-  let m = List.hd combine_agents in
-  m
+let combine_nodes_name node_names1 node_names2 (n1:int) (n2:int) =
+  let (_,name1) = List.find (fun (n',_) -> (n'=n1)) node_names1 in
+  let (_,name2) = List.find (fun (n',_) -> (n'=n2)) node_names2 in
+  String.equal name1 name2
 
-let make lhs rule quarks =
-  let quarks_tested = Quark.quarks_tested quarks in
+let aux n1 n2 quarks1 quarks2 =
+  let quarks1'= Rule.filter_on_node n1 quarks1 in
+  let ports1 = Rule.get_ports quarks1 in
+  let quarks2'= Quark.filter_on_node n2 quarks2 in
+  let ports2 = Quark.get_ports quarks2 in
+  let combine_all = mapping ports1 (permutations ports2)
+                            (combine_ports_name quarks1' quarks2') in
+  combine_all
+
+let combine_quarks quarks1 node_names1 quarks2 node_names2 =
+  let nodes1 = Rule.get_nodes quarks1 in
+  let nodes2 = Quark.get_nodes quarks2 in
+  let () = if (!Parameter.debug_mode) then
+             (Format.printf "\n combine_quarks ") in
+  let () = if (not((List.length nodes1) = (List.length nodes2))) then
+             (raise (ExceptionDefn.NotKappa_Poset
+                       ("combine: quarks of event not valid"))) in
+  let combine_all = mapping nodes1 (permutations nodes2)
+                            (combine_nodes_name node_names1 node_names2) in
+  List.map
+    (fun nmap ->
+      let all_maps_for_nmap =
+        List.map
+          (fun (n1,n2) ->
+            let pmaps = aux n1 n2 quarks1 quarks2 in
+            if ((List.length pmaps) = 0) then (raise (ExceptionDefn.Mappings()))
+            else (n1,n2,pmaps)) nmap in
+      all_maps_for_nmap) combine_all
+
+(*let decorate1 (quarksA:Ast.quarks) (quarksQ:Quark.t) = []*)
+
+let make lhs rule quarks node_names port_names =
+  (*let quarks_tested = Quark.quarks_tested quarks in
   let quarks_testedMod = Quark.quarks_testedMod quarks in
   let quarks_modified = Quark.quarks_modified quarks in
-  if (Ast.is_init rule) then
+  if (Rule.is_init rule) then
     let _ =
       if (not((List.length quarks_tested)=0))||
            (not((List.length quarks_testedMod)=0)) then
@@ -98,4 +114,5 @@ let make lhs rule quarks =
                     ("make transition: quarks of event "
                      ^(Ast.get_label rule)^" not valid"))) in
       {lhs;rhs=lhs;rule}
-    else {lhs;rhs=lhs;rule}
+    else*)
+      ({lhs;rhs=lhs;rule},[],[])

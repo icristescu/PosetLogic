@@ -16,13 +16,22 @@
   Define $\leq$ the transitive and reflexive closure of low res dependence. We say that $\theta$ is a \emph{causal trace} if it is directed w.r.t. $\leq$.
 \end{definition}
 
+\begin{lemma}
+  \label{lem:inhibiting_pair}
+  Let $t_1$ and $t_2$ be two transitions in a causal trace $\theta$.
+  \begin{enumerate}
+  \item If $t_1\dashv t_2$ then $t_2\not\dashv t_1$.
+  \item If $t_1\leq t_2$ then $t_2\not\dashv t_1$.
+  \end{enumerate}
+\end{lemma}
+
 \begin{definition}[The abstraction on a trace]
   \label{def:abstraction}
   Let us denote with $\Theta$ the set of causal traces.
   Define $\alpha:\Theta\to\mathcal{S}$ an \emph{abstraction} function that maps a trace into a poset as follows:
   \begin{itemize}
   \item given a transition $t_i:M_i\overset{m,p}{\Rightarrow} M_{i+1}$ define the \emph{abstract event} $\alpha(t_i) = e_i$ such that $\labl(e_i) = p$.
-  \item define an augmented poset from a trace $\alpha(\theta) = (E,\prec,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the sequential dependence and inhibition relations between transitions is preserved:
+  \item define an augmented poset from a trace $\alpha(\theta) = (E,\prec,\dashv,\labl)$ such that $\alpha$ is a bijection between transitions and abstract events and such that the low res dependence and inhibition relations between transitions is preserved:
     \begin{align*}
       %e_i \cover e_j \iff t_i <_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
       e_i \prec e_j \iff t_i \prec_{\theta} t_j \text{ and } \alpha(t_i)=e_i, \alpha(t_j)=e_j\\
@@ -32,9 +41,9 @@
   Let $\Theta = \{\theta_1,\cdots,\theta_n\}$ be a set of causal traces.
   Define the set of augmented posets $\mathcal{S}$ obtained by abstraction on $\Theta$ as follows
   \[
-  \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)/_{\iso}\text{ with }k\leq n
+  \alpha(\{\theta_1,\cdots,\theta_n\}) = (s_1,\cdots, s_k)/_{\iso}\text{ with }k\leq n.
   \]
-  where for each augmented poset $s$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = s$.
+  %where for each augmented poset $s$ there exists at least one trace $\theta\in\Theta$ such that $\alpha(\theta) = s$.
 \end{definition}
 
 \begin{example}
@@ -43,12 +52,14 @@
     r_1:A \Rightarrow A, B\qquad r_2:A \Rightarrow C \qquad r_3: B,C \Rightarrow C\qquad
     A \overset{\id_A,r_1}{\Rightarrow} A, B \overset{\id_A,r_2}{\Rightarrow} B,C \overset{id_{B,C},r_3}{\Rightarrow}C.
   \end{align*}
-  Let us denote $t_1$, $t_2$ and $t_3$ the three transitions. We have that $t_1<t_3$, $t_2<t_3$ and $t_2\dashv t_1$.
+  Let us denote $t_1$, $t_2$ and $t_3$ the three transitions. We have that $t_1\prec t_3$, $t_2\prec t_3$ and $t_2\dashv t_1$.
   Note that if the abstraction also "forgets" that $t_2\dashv t_1$ the concretisation retrieves the trace above and a second one where $t_1$ and $t_2$ are sequential independent:
   \begin{align*}
     A_1,A_2 \overset{\id_{A_1},r_1}{\Rightarrow} A_1,A_2,B \overset{\id_{A_2},r_2}{\Rightarrow} A_1,B,C \overset{id_{B,C},r_3}{\Rightarrow} A_1,C.
   \end{align*}
 \end{example}
+
+\subsection{Decorated posets}
 
 \begin{definition}[Decorated poset]
   \label{def:decorate_poset}
@@ -70,7 +81,7 @@
   \end{enumerate}
 \end{definition}
 
-Note that the notation $e\redl{+}_{\spa} e'$ is an overload of the notation $\labl(e)\redl{+}_{\spa} \labl(e')$. The first is defined on events using the abstraction function. The second, defined on rules, can be inferred from the rules itself.
+Note that the notation $e\redl{+}_{\spa} e'$ is an overload of the notation $\labl(e)\redl{+}_{\spa} \labl(e')$. The first is \emph{defined} on events while the second holds on rules and can be \emph{inferred} from the rules itselves.
 
 \begin{definition}
   Let $e_1$,$e_2$ be two events in a decorated poset and let $\spa:L_1\remb O\lemb L_2$ be a span. We say that $e_1$ and $e_2$ are \emph{pairs for positive influence w.r.t. $\spa$} if for all events $e_3$ such that $e_3\redl{+}_{\spa_1} e_1$ and $\spa_1:R_3\remb O_1\lemb L_1$ for which the diagram commutes
@@ -290,36 +301,37 @@ the definition above covers the abstractions from causal traces to decorated pos
 %% \end{example}
 
 \begin{example}
-  If, in the following trace $\theta$, produced by the transitions $t_1;t_2;t_3$, we forget the decoration we obtain a poset with three events $e_1,e_2,e_3$ such that $e_1<e_3$ and $e_2<e_3$.
+  By abstracting the following trace $\theta=t_1;t_2;t_3$ we obtain a poset with three events $e_1,e_2,e_3$ such that $e_1\prec e_3$ and $e_2\prec e_3$:
   \[
-  \theta:\varepsilon \Rightarrow A \Rightarrow A,B\Rightarrow A,B,C\qquad t_1: \varepsilon \Rightarrow A\qquad t_2: \varepsilon\Rightarrow A,B\qquad t_2: A,B\Rightarrow A,B,C
+  \theta:\varepsilon \Rightarrow A \Rightarrow A,A,B\Rightarrow A,A,B,C\qquad r_1: \varepsilon \Rightarrow A\qquad r_2: \varepsilon\Rightarrow A,B\qquad r_3: A,B\Rightarrow A,B,C
   \]
-  But we can come up with two decorations for such poset, where one of them leads to a invalid decorated poset:
+  We can come up with two decorations for such poset, where one of them leads to a invalid decorated poset:
   \begin{align*}
-  \text{good decoration: }e_1\redl{+}_A e_3\qquad e_2\redl{+}_B e_3\qquad
-  \text{bad decoration: }e_1\redl{+}_A e_3\qquad e_2\redl{+}_A e_3
+  \text{good decoration: }e_1\redl{+}_A e_3; e_2\redl{+}_B e_3\qquad
+  \text{bad decoration: }e_1\redl{+}_A e_3; e_2\redl{+}_A e_3
   \end{align*}
+  The bad decoration does not satisfy the constraint of decorating positive meets.
 \end{example}
 
 \begin{example}
-  For the rules
+  Let $e_1,e_2,e_3,e_4$ be four events in a poset such that $e_3\prec e_1$, $e_3\prec e_2$ and with the following corresponding rules
   \[
-  r_3: A \Rightarrow B-A-C\qquad r_1: B-A\Rightarrow B-A-D \qquad t_2: A-C\Rightarrow A-C-D\qquad r_4: A\Rightarrow \varepsilon.
+  r_3: A \Rightarrow B-A-C\qquad r_1: B-A\Rightarrow B-A-D \qquad r_2: A-C\Rightarrow A-C-D\qquad r_4: B-A-C\Rightarrow \varepsilon.
   \]
-  we have that $e_3\redl{+}_{A-B} r_1$ and $e_3\redl{+}_{A-C} e_1$. However events $e_1$ and $e_2$ are pairs for the negative influence of $e_4$ due to the resource $A$.
+  we have that $e_3\redl{+}_{A-B} r_1$ and $e_3\redl{+}_{A-C} e_1$. Moreover events $e_1$ and $e_2$ are pairs for the negative influence of $e_4$ due to the resource $A$. Therefore $e_4\redl{-}_{A-B} e_1 \iff e_4\redl{-}_{A-C} e_2$.
 \end{example}
 
 \begin{example}
-  Consider the transitions
+  Let $e_1,e_2,e_3$ be three events in a poset with $e_3\prec e_1$ and $e_3\prec e_2$ and with the rules $\labl(e_3)=r_3$, $\labl(e_1)=\labl(e_2)=r_1$ where
   \[
-  t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow \varepsilon \qquad t_2: A\Rightarrow \varepsilon
+  r_3: \varepsilon \Rightarrow A\qquad r_1: A\Rightarrow \varepsilon.
   \]
-  for which there is no trace where both $t_3<t_1$ and $t_3<t_2$ hold. The resource $A$ produced by $t_1$ can only be consumed once.
-  If, however, $t_1$ and $t_2$ do not consume $A$ but preserve it:
+  There is only one decoration: $e_3\redl{-}_{A} e_1$ and $e_3\redl{-}_{A} e_2$, which is invalid. The constraint on decoration positive forks is not satisfied. The resource $A$ produced by $e_3$ can only be consumed once.
+  If, however, $e_1$ and $e_2$ do not consume $A$ but preserve it:
   \[
-  t_3: \varepsilon \Rightarrow A\qquad t_1: A\Rightarrow A,B \qquad t_2: A\Rightarrow A,C
+  r_3: \varepsilon \Rightarrow A\qquad r_1: A\Rightarrow A,B
   \]
-  then indeed both $t_1<t_3$ and $t_2<t_3$ hold.
+  then indeed there is a valid decoration $e_3\redl{-}_{A} e_1$ and $e_3\redl{-}_{A} e_2$.
 \end{example}
 
 \subsection{From posets to traces}

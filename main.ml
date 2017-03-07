@@ -61,10 +61,11 @@ let parse_rules () =
     let lexbuf = Lexing.from_channel chan in
     while true do
       let result = ParserRule.newline LexerRule.token lexbuf in
-      let free_res = Ast.clean_rules result in
-      read_rule := free_res::(!read_rule);
+      let rule = Ast.clean_rule result in
+      read_rule := rule::(!read_rule);
       if (!Parameter.debug_mode) then
-        (Format.printf "parsing \n"; Ast.print result;Format.printf"\n")
+        (Format.printf "parsing \n"; Ast.print result;
+         Format.printf " becomes \n"; Rule.print rule;Format.printf "\n")
     done
   with LexerRule.Eof -> ()
 
