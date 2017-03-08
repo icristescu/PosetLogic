@@ -13,6 +13,12 @@ type t = INIT of rule
 
 let empty = RULE ("empty",[],[])
 
+let get_quarks = function
+  | INIT (_,qs,_) | OBS (_,qs,_) | RULE (_,qs,_) -> qs
+
+let get_node_map = function
+  | INIT (_,_,nm) | OBS (_,_,nm) | RULE (_,_,nm) -> nm
+
 let get_agent = function
     Tested (ag,_,_) | TestedMod ((ag,_,_),_) | Modified (ag,_,_) -> ag
 
@@ -21,8 +27,10 @@ let get_port = function
 
 let print_quarks qlist nmap =
   let print_triple (n,p,il) =
-    let (_,agent_name) = List.find (fun (id,na) -> id=n) nmap in
-    Format.printf "(%s%d,%s," agent_name n p;
+    (try
+      let (_,agent_name) = List.find (fun (id,na) -> id=n) nmap in
+      Format.printf "(%s%d,%s," agent_name n p;
+    with _ -> Format.printf "(%d,%s," n p);
     (match il with
        INT i -> Format.printf "int=%s " i
      | LNK lnk ->
@@ -33,10 +41,10 @@ let print_quarks qlist nmap =
        Format.printf "\nTested: "; print_triple triple
     | Modified triple ->
        Format.printf "\nModified: "; print_triple triple
-    |TestedMod (q1,q2) ->
-      Format.printf "\nTestedMod ";
-      Format.printf"[before = ";print_triple q1;Format.printf "]  ";
-      Format.printf"[after = ";print_triple q2;Format.printf "]  "
+    | TestedMod (q1,q2) ->
+       Format.printf "\nTestedMod ";
+       Format.printf"[before = ";print_triple q1;Format.printf "]  ";
+       Format.printf"[after = ";print_triple q2;Format.printf "]  "
   in
   List.iter (fun q -> print_q q) qlist
 
@@ -56,11 +64,6 @@ let get_rule_by_label nme rules =
   List.find (fun r -> String.equal (get_label r) nme) rules
 
 (*
-let get_lhs = function
-  | INIT _ -> []
-  | OBS (name,mix) -> mix
-  | RULE (name,r) -> r.lhs
-
 let get_rhs = function
   | INIT mix -> mix
   | OBS (name,mix) -> mix
@@ -92,3 +95,26 @@ let get_ports quarks =
     (fun ports q ->
       let p = get_port q in
       if (List.mem p ports) then ports else p::ports) [] quarks
+let test_il = function Tested (_,_,il) -> (match il with
+                                           | INT _ -> Some [0]
+                                           | LNK _ -> Some [1])
+                     | _ -> None
+let testmod_il = function TestedMod ((_,_,il),_) -> (match il with
+                                                     | INT _ -> Some [0]
+                                                     | LNK _ -> Some [1])
+                        | _ -> None
+let mod_il = function Modified (_,_,il) -> (match il with
+                                            | INT _ -> Some [0]
+                                            | LNK _ -> Some [1])
+                    | _ -> None
+
+let find_replace (n1,n2) (p1,p2) quarks =
+  let () = Format.printf "find_replace (%d,%d) (%s,%d)" n1 n2 p1 p2 in
+  List.map (function
+            |Tested (n,p,il) as q -> if ((n=n1)&&(String.equal p1 p)) then
+                                       Tested (n2,p,il) else q
+            |TestedMod ((n,p,il),(_,_,il')) as q ->
+                        if ((n=n1)&&(String.equal p1 p)) then
+                          TestedMod ((n2,p,il),(n2,p,il')) else q
+            |Modified (n,p,il) as q -> if ((n=n1)&&(String.equal p1 p)) then
+                                         Modified (n2,p,il) else q) quarks

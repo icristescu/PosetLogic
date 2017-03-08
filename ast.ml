@@ -26,6 +26,40 @@ type t = INIT of mixture
        | OBS of string*mixture
        | RULE of string*rule
 
+let print_link = function
+  | LNK_VALUE i -> Format.printf "!%d" i
+  | FREE -> Format.printf "free"
+  | LNK_ANY -> Format.printf "!_"
+  | LNK_SOME -> Format.printf "!_"
+  | LNK_TYPE (i,a) -> Format.printf "!%s.%s" i a
+
+let print_port p =
+  Format.printf "%s~[" p.port_nme;
+  List.iter (fun intern -> Format.printf "%s " intern;) p.port_int;
+  Format.printf "]";
+  List.iter (fun p -> print_link p) p.port_lnk
+
+let print_agent (name,plist) =
+  Format.printf "%s(" name;
+  List.iter (fun p -> print_port p) plist;
+  Format.printf ") "
+
+let print_rule r =
+  List.iter (fun a -> print_agent a) r.lhs;
+  if (r.bidirectional) then Format.printf " <-> "
+  else Format.printf " -> ";
+  List.iter (fun a -> print_agent a) r.rhs
+
+let print = function
+  | INIT mix -> Format.printf "\n init "; List.iter (fun a -> print_agent a) mix
+  | OBS (name,mix) -> Format.printf "\n obs '%s' " name;
+                      List.iter (fun a -> print_agent a) mix
+  | RULE (name,r) -> Format.printf "\n rule '%s' " name; print_rule r
+
+let empty_rule = {lhs =[];rhs=[];bidirectional=false;}
+let empty = RULE ("empty",empty_rule)
+
+
 let add_free_to_port_lnk plinks = match plinks with
   | [] -> [FREE]
   | ls -> ls
@@ -71,15 +105,15 @@ let create_rhs_quarks agent_names mixture =
   let rec aux qs mixt count ag_nm =
     match mixt with
     | (name,plist)::mixt' ->
-       if (List.mem (count,name) ag_nm) then
+       if (((List.length ag_nm) >0)&&(List.mem (count,name) ag_nm)) then
          let qs' =
            List.fold_left
              (fun acc port -> (split_ports_quarks count port)@acc) [] plist in
          aux (qs'@qs) mixt' (count+1) ag_nm
        else
-         let (qs',ag_nm',_) = create_quarks mixt' (List.length ag_nm) in
+         let (qs',ag_nm',_) = create_quarks mixt (List.length ag_nm) in
          (qs'@qs, ag_nm'@ag_nm)
-    | [] -> (qs, []) in
+    | [] -> (qs, ag_nm) in
   aux [] mixture 0 agent_names
 
 let match_il il il' = match (il,il') with
@@ -107,7 +141,7 @@ let partition_quarks lhs_quarks rhs_quarks =
              with _ ->
                (raise
                   (ExceptionDefn.Syntax_Error
-                     ("agent does not have the same ports in lhs and rhs")))) in
+                     ("agent does not have the same ports in lhs and rhs1"))))in
           let new_quark = Rule.TestedMod ((n,p,il),(n',p',il')) in
           (new_quark::qlist',(remove_quark (n,p,il) rhs')))
       ([],rhs_quarks) lhs_quarks in
@@ -119,22 +153,25 @@ let partition_quarks lhs_quarks rhs_quarks =
                                 (raise
                                    (ExceptionDefn.Syntax_Error
                                       ("agent does not have the same ports
-                                        in lhs and rhs")))) qlist in
+                                        in lhs and rhs2")))) qlist in
                Rule.Modified q) rhs in
   (modified@qlist)
 
 let create_prefix_map lhs rhs =
   let (lhs_quarks,lhs_agent_nm,_) = create_quarks lhs 0 in
   let (rhs_quarks,rhs_agent_nm) = create_rhs_quarks lhs_agent_nm rhs in
+  let () = Format.printf "rhs_agent = ";
+           List.iter (fun (c,n) -> Format.printf "(%d,%s) " c n) rhs_agent_nm in
   (partition_quarks lhs_quarks rhs_quarks,rhs_agent_nm)
 
 let clean_rule = function
   | INIT mix ->
-     let (quarks,agent_names) = create_prefix_map (add_free_to_mix mix) [] in
+     let (quarks,agent_names) = create_prefix_map [] (add_free_to_mix mix) in
      let label = List.fold_left (fun acc (nme,_) -> acc^nme) "" mix in
      Rule.INIT (label,quarks,agent_names)
   | OBS (name,mix) ->
-     let (quarks,agent_names) = create_prefix_map [] (add_free_to_mix mix) in
+     let mix' = add_free_to_mix mix in
+     let (quarks,agent_names) = create_prefix_map mix' mix'  in
      Rule.OBS (name,quarks,agent_names)
   | RULE (name,r) ->
      let () = if (r.bidirectional) then
@@ -144,36 +181,3 @@ let clean_rule = function
      let rhs = add_free_to_mix r.rhs in
      let (quarks,agent_names) = create_prefix_map lhs rhs in
      Rule.RULE (name,quarks,agent_names)
-
-let print_link = function
-  | LNK_VALUE i -> Format.printf "!%d" i
-  | FREE -> Format.printf "free"
-  | LNK_ANY -> Format.printf "!_"
-  | LNK_SOME -> Format.printf "!_"
-  | LNK_TYPE (i,a) -> Format.printf "!%s.%s" i a
-
-let print_port p =
-  Format.printf "%s~[" p.port_nme;
-  List.iter (fun intern -> Format.printf "%s " intern;) p.port_int;
-  Format.printf "]";
-  List.iter (fun p -> print_link p) p.port_lnk
-
-let print_agent (name,plist) =
-  Format.printf "%s(" name;
-  List.iter (fun p -> print_port p) plist;
-  Format.printf ") "
-
-let print_rule r =
-  List.iter (fun a -> print_agent a) r.lhs;
-  if (r.bidirectional) then Format.printf " <-> "
-  else Format.printf " -> ";
-  List.iter (fun a -> print_agent a) r.rhs
-
-let print = function
-  | INIT mix -> Format.printf "\n init "; List.iter (fun a -> print_agent a) mix
-  | OBS (name,mix) -> Format.printf "\n obs '%s' " name;
-                      List.iter (fun a -> print_agent a) mix
-  | RULE (name,r) -> Format.printf "\n rule '%s' " name; print_rule r
-
-let empty_rule = {lhs =[];rhs=[];bidirectional=false;}
-let empty = RULE ("empty",empty_rule)

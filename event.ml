@@ -22,13 +22,24 @@ let nodes_of_json (node:Yojson.Basic.json) =
   match node with
   | `List [`Int id; `String "RULE"; `String label;
            (`Assoc ["quarks", `List l]) ]
-    | `List [`Int id; `String "OBS"; `String label;
-             (`Assoc ["quarks", `List l])]
     | `List [`Int id; `String "PERT"; `String label;
              (`Assoc ["quarks", `List l])]->
      let quarks_ls =
        List.map (fun q -> Quark.quarks_of_json q) l in
-     { event_id = id; event_label = label; quarks = quarks_ls; }
+     let clean_quarks =
+       List.filter (fun q -> Quark.positive_site q) quarks_ls in
+     { event_id = id; event_label = label; quarks = clean_quarks; }
+  | `List [`Int id; `String "OBS"; `String label;
+           (`Assoc ["quarks", `List l])] ->
+     let quarks_ls =
+       List.map (fun q -> Quark.quarks_of_json q) l in
+     let clean_quarks =
+       List.filter (fun q -> Quark.positive_site q) quarks_ls in
+     let () = if ((Quark.exists_mod clean_quarks [0;1])
+                  &&(Quark.exists_testmod clean_quarks [0;1])) then
+                (raise (ExceptionDefn.NotKappa_Poset
+                          ("quarks of init event not valid"))) in
+     { event_id = id; event_label = label; quarks = clean_quarks; }
   | `List [`Int id; `String "INIT"; `List l;
            (`Assoc ["quarks", `List ql])] ->
      let init_label =
@@ -40,5 +51,11 @@ let nodes_of_json (node:Yojson.Basic.json) =
                              ("Not in the cflow format",x))) "" l in
      let quarks_ls =
        List.map (fun q -> Quark.quarks_of_json q) ql in
-     { event_id = id; event_label = init_label; quarks = quarks_ls; }
+     let clean_quarks =
+       List.filter (fun q -> Quark.positive_site q) quarks_ls in
+     let () = if ((Quark.exists_test clean_quarks [0;1])
+                  &&(Quark.exists_testmod clean_quarks [0;1])) then
+                (raise (ExceptionDefn.NotKappa_Poset
+                          ("quarks of init event not valid"))) in
+     { event_id = id; event_label = init_label; quarks = clean_quarks; }
   | _ -> raise (Yojson.Basic.Util.Type_error ("Not in the cflow format",`Null))

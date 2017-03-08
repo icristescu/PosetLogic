@@ -74,8 +74,13 @@ The category of site graphs and morphisms does not have all the pushouts. %but d
 
 \begin{example}
   Let $a,b$ be two agents with $\type(a)=A$ and $\type(b)=B$.
-  Let $G_1 = \big(\{a,b\}; \{(a,1),(b,1)\}; [(a,1),(b,1)]\big)$ be the site graph of two linked agents of type $A$ and $B$, and let $G_2 = \big(\{a\}; \{(a,1)\}; [(a,1),\text{free}] \big)$ be the site graph with agent $A$ free. For the graph $O=\big(\{a\};\{(a,1)\}; \emptyset\big)$ with the obvious morphisms, there is no pushout.
-%  For the two graphs \verb|A(x!1), B(x!1)| and \verb|A(x)| there is no pushout.
+  Let $G_1$ be the site graph of two linked agents of type $A$ and $B$, and let $G_2$ be the site graph with agent $A$ free.
+  \begin{align*}
+    G_1 = \big(\{a,b\}; \{(a,1),(b,1)\}; [(a,1),(b,1)]\big)\qquad
+    G_2 = \big(\{a\}; \{(a,1)\}; [(a,1),\text{free}] \big)
+  \end{align*}
+  For the graph $O=\big(\{a\};\{(a,1)\}; \emptyset\big)$ with the obvious morphisms, there is no pushout.
+  %  For the two graphs \verb|A(x!1), B(x!1)| and \verb|A(x)| there is no pushout.
 \end{example}
 
 However this is not an issue for the dpo rewriting with kappa rules.
@@ -162,7 +167,7 @@ Let us consider an example, with the following three rules
 \end{verbatim}
 Using an inflluence between rules as defined in~\autoref{def:pos_infl} but in the category of site graphs, we get the following influences: $r_2\xrightarrow{+} r_3$ and $r_2\xrightarrow{-} r_1$.
 %
-There is an influence between $r_1$ and $r_3$ as well, but since there is no pushout for $R_1$ and $L_3$ the definition of influence of~\autoref{def:pos_infl} cannot account for it.
+There is an influence between $r_1$ and $r_3$ as well, but since there is no pushout for $R_1$ and $L_3$ the definition of influence (\autoref{def:pos_infl}) cannot account for it.
 \end{example}
 
 %% \begin{definition}
@@ -206,6 +211,8 @@ Site-graphs are a full subcategory of the category of $\Sigma$-graph.
   \end{description}
 \end{definition}
 Medium res influence implies a low res influence but not the other way.
+
+The $\Sigma$-graphs are only needed for the definition above. Henceforth, every graphs we consider is a site-graph unless specifically stated otherwise.
 
 %\input{influence_kappa.tex}
 The results from~\autoref{sec:ts} hold on site graphs and low res influence. As implied by the example above, the concretisation function will use the low res influence between rules. However, as the pushout of two site graphs is not always a site graphs we have to ensure that whenever we compose transition as in~\autoref{sec:refinement} we do obtain site graphs.
@@ -309,11 +316,11 @@ The following lemma ensures that for any two such events, for which the decorati
     \draw [-{Stealth[left]}] (n1) --  (m2);
   \end{tikzpicture}
   \]
-  As $t_2$ is in the trace there exists at least one transition that modifies the edge $m_2(\xi_2)$. Let us consider $t_3$ the earliest such transition in $\theta'$. We first show that $t_3\leq t_2$. By induction on the trace $theta'$ we look at each transition that modifies the edge for node $(a,i)$. From the kappa rules in~\autoref{def:rule_site} we have that if an edge for $[(a,i),x]\in \links_R$ appears in the right hand side of a rule, then there is an edge that appears in the right hand side $[(a,i),y]\in \links_L$. We deduce therefore a chain of low res dependence between the transitions in $\theta'$ that touch on the edge of node $(a,i)$.
+  As $t_2$ is in the trace there exists at least one transition that modifies the edge $m_2(\xi_2)$. Let us consider $t_3$ the earliest such transition in $\theta'$. We first show that $t_3\leq t_2$. By induction on the trace $\theta'$ we look at each transition that modifies the edge for node $(a,i)$. From the kappa rules in~\autoref{def:rule_site} we have that if an edge for $[(a,i),x]\in \links_R$ appears in the right hand side of a rule, then there is an edge that appears in the right hand side $[(a,i),y]\in \links_L$. We deduce therefore a chain of low res dependence between the transitions in $\theta'$ that touch on the edge of node $(a,i)$.
 
 Now let us discuss on the relations between $t_1$ and $t_3$. We distinguish two cases:
 \begin{itemize}
-\item if $r_1^{-1}(\xi)\in D_1$ and hence node $(a,i)$ is in $L_1$ then we have that $t_3\dashv_{\spa} e_1$ with $\xi_1$ included in the graph $O$ of the span $\spa$;
+\item if $r_1^{-1}(\xi)\in D_1$ and hence node $(a,i)$ is in $L_1$ then we have that $t_3\dashv_{\spa} t_1$ with $\xi_1$ included in the graph $O$ of the span $\spa$;
 \item otherwise we have that $t_1\prec_{\spa} t_3$, again with $\xi_1\in O$, where $\spa:R_1\remb O\lemb L_3$.
 \end{itemize}
 \end{proof}
@@ -374,7 +381,7 @@ Now let us discuss on the relations between $t_1$ and $t_3$. We distinguish two 
     \begin{align*}
       \ag_1 = \ag_M\qquad
       \nodes_1 = \nodes_M\qquad
-      \links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{free\}, \xi\in\text{image}(f_2) \}
+      \links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{\text{free}\}, \xi\in\text{image}(f_2) \}
     \end{align*}
     We have that $N_1$ is a site-graph as there can only be pairs of conflicting edges. Once one of the two is removed, the set of edges is conflict free. The morphism $N_1\lemb M$ is the inclusion on agents and nodes. The morphism $M_1\lemb N_1$ is identical to the morphism $f_1:M_1\lemb M$ as $N_1\subseteq\text{image}(f_1)(M_1)$. Remains to show that for any other site-graph $N$ for which the diagram commutes, there is a unique morphism $h:N\lemb N_1$.
     Let us denote the morphisms as follows: $M_1\overset{g_1}{\lemb}N_1\overset{h_1}{\lemb} M$ and $M_1\overset{g_1'}{\lemb}N\overset{h_1'}{\lemb} M$.
@@ -389,7 +396,7 @@ Now let us discuss on the relations between $t_1$ and $t_3$. We distinguish two 
     \begin{align*}
       \ag_1 = \ag_M\qquad
       \nodes_1 = \nodes_M\qquad
-      \links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{\text{free}\} \}
+      \links_1 = \links_M\setminus \{ \xi: \exists\xi', \xi\cap \xi'\notin\{\text{\text{free}}\} \}
     \end{align*}
     The morphisms $D\lemb M_1$ and $D\lemb M_2$ are the inclusions. The constraints of~\autoref{def:rule_site} hold in a straightforward manner.
   \end{itemize}

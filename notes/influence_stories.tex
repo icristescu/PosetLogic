@@ -347,7 +347,7 @@ the definition above covers the abstractions from causal traces to decorated pos
 
 \begin{definition}[Concretisation of an augmented poset]
   \label{def:concret}
-  Let $\underline s=(E,\cover,\prec,\dashv,\labl)$ be an augmented poset $s$.
+  Let $\underline s=(E,\prec,\dashv,\labl)$ be an augmented poset $s$.
   A \emph{concretisation} of $s$ is a triple $(s,\theta,\mathtt{Ref}:E\leftrightarrow\theta)$ such that $\mathtt{Ref}$ is a refinement function and such that
   \begin{align*}
     %e_1\cover e_2 \iff& \mathtt{Ref}(e_1) <_{\theta}\mathtt{Ref}(e_2)\\
@@ -371,28 +371,37 @@ the definition above covers the abstractions from causal traces to decorated pos
 
 \begin{definition}[Linear extensions of posets]
   \label{def:linears}
-  A linear extension of a poset $s=(E,\tleq)$ is any total order that extends the partial order $\tleq$. We denote $\linear(s)$ the set of all possible linear extensions of $s$. A linear extension of a augmented poset $s=(E,\cover,\prec,\dashv)$ is any total order such that
+  A linear extension of a poset $s=(E,\tleq)$ is any total order that extends the partial order $\tleq$.
+  A linear extension of a augmented poset $s=(E,\prec,\dashv)$ is any total order $(E,\seq)$ such that
   \begin{align*}
-    (E,\seq)\in\linear(s) \iff \forall e_1,e_2\in E, &e_1\leq e_2\implies e_1\seq e_2\\
-    & e_1\dashv e_2\implies e_2\seq e_1.
+    \forall e_1,e_2\in E, &e_1\leq e_2\implies e_1\seq e_2\\
+    & e_1\neq e_2\text{ and }e_1\dashv e_2\implies e_2\seq e_1.
   \end{align*}
+  We denote $\linear(s)$ the set of all possible linear extensions of $s$.
 \end{definition}
 Note that linearisations do not create cycles, as follows from the definition of augmented posets.
 
+\begin{definition}{Restriction of a poset to a set of events}
+  Let $s=(E,\prec,\dashv,\labl)$ be an augmented poset.
+  Define $s|_{E'}=(E',\prec',\dashv',\labl')$ as a poset defined on $E'$ and where the relations $\prec'$,$\dashv'$ and the function $\labl'$ are the restriction of $\prec'$,$\dashv'$ and $\labl'$ respectively, to the set $E'$.
+\end{definition}
+
+Note that $s|_E$ is not directed, but the rest of the properties of augmented posets still hold.
+
 \paragraph{A candidate for the concretisation}
-Let $s = (E,\seq,\cover,\prec,\dashv,\labl)$ be a linear extension of an augmented poset. The function $\mathsf{concretise}(s,\emptyset,\emptyset)$ defined below returns a set of concretisations for $s$.
+Let $s = (E,\seq,\prec,\dashv,\labl)$ be a linear extension of an augmented poset. The function $\mathsf{concretise}(s,\emptyset,\emptyset)$ defined below returns a set of concretisations for $s$.
 \begin{align*}
   &\mathsf{concretise}(s,s_1,\mathit{concretisations}_1) = \\
   &\quad\text{if }(E_s\setminus E_{s_1} = \emptyset)\text{ then return }\mathit{concretisations}_1\\
   &\quad e = \text{min}_{\sqsubset}(E_s\setminus E_{s_1})\\
   &\quad\mathit{concretisations}_2 = \emptyset \\
-  &\quad\text{for each }(s_1^{\star},\theta_1,\mathtt{Ref}_1)\text{ in }\mathit{concretisations}_1\\
-  &\quad\qquad s_2 = s\setminus\{s_1\cup\{e\}\}\\
+  &\quad\text{for each }(s_1,\theta_1,\mathtt{Ref}_1)\text{ in }\mathit{concretisations}_1\\
+  &\quad\qquad s_2 = s|_{\{s_1\cup\{e\}\}}\\
   &\quad\qquad\text{for each }s_2^{\star}\text{ in }\mathsf{decorate}(s_2)\\
-  %&\quad\qquad\qquad (s_1)^{\star} = \mathsf{decoration\_of\_trace}(\theta_1)\\
+  &\quad\qquad\qquad (s_1)^{\star} = \mathsf{decoration\_of\_trace}(\theta_1)\\
   &\quad\qquad\qquad \text{ if }s_2^{\star}\subseteq s_1^{\star}\text{ and }\mathsf{valid}(s_2^{\star})\text{ then }\\
   &\quad\qquad\qquad\qquad (\mathit{\theta_2},\mathtt{Ref}_2) = \mathsf{refine}(\theta_1,\mathtt{Ref}_1,s_2^{\star})\\
-  &\quad\qquad\qquad\qquad \mathit{concretisations}_2 = \mathit{concretisations}_2 \cup (s_2^{\star},\mathit{\theta_2},\mathtt{Ref}_2)\\
+  &\quad\qquad\qquad\qquad \mathit{concretisations}_2 = \mathit{concretisations}_2 \cup (s_2,\mathit{\theta_2},\mathtt{Ref}_2)\\
   &\quad\text{return }\mathit{concretisations}_2
 \end{align*}
 where $\mathsf{decorate}$ returns a decoration of $s$ as in~\autoref{def:decorate_poset}, $\mathsf{decoration\_of\_trace}$ is an abstraction of a trace to its decorated poset, defined in the~\autoref{prop:constraints_poset}, $\mathsf{valid}$ is from~\autoref{def:constraints_poset} and lastly, $\mathsf{refine}$ is a function that extends a trace and a refinement to the new event $e$. We provide more details for $\mathsf{refine}$ in the appendix. Also in the appendix, we show that at each call of $\mathsf{concretise}$, the concretisations obtained so far are correct w.r.t.~\autoref{def:concret}.
