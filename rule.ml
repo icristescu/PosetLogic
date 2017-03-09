@@ -1,23 +1,42 @@
 type lnk_or_int = INT of string
                 | LNK of Idgraph.link
 
-type quark = Tested of (int*string*lnk_or_int)
-            | TestedMod of ((int*string*lnk_or_int)*(int*string*lnk_or_int))
-            | Modified of (int*string*lnk_or_int)
+type quark = Tested of (int*int*lnk_or_int)
+            | TestedMod of ((int*int*lnk_or_int)*(int*int*lnk_or_int))
+            | Modified of (int*int*lnk_or_int)
 
-type rule = string*(quark list)*((int*string) list)
+type rule = string*(quark list)*Maps.node_map*Maps.port_map
 
 type t = INIT of rule
        | OBS of rule
        | RULE of rule
 
-let empty = RULE ("empty",[],[])
+let make_port pid il pname =
+  let (internal,lnk) =
+    (match il with
+     | INT s -> ([s],[])
+     | LNK lnk -> ([],[lnk])) in
+  { Idgraph.port_nme = pname;
+    Idgraph.port_id = pid;
+    Idgraph.port_int = internal;
+    Idgraph.port_lnk = lnk;}
+
+let make_agent aname pname = function
+  | Modified (ag,p,il) ->
+     let port = make_port p il pname in
+     (aname,ag,[port])
+  | _ -> (raise (ExceptionDefn.Internal_Error("make_agent")))
+
+let empty = RULE ("empty",[],[],[])
 
 let get_quarks = function
-  | INIT (_,qs,_) | OBS (_,qs,_) | RULE (_,qs,_) -> qs
+  | INIT (_,qs,_,_) | OBS (_,qs,_,_) | RULE (_,qs,_,_) -> qs
 
 let get_node_map = function
-  | INIT (_,_,nm) | OBS (_,_,nm) | RULE (_,_,nm) -> nm
+  | INIT (_,_,nm,_) | OBS (_,_,nm,_) | RULE (_,_,nm,_) -> nm
+
+let get_port_map = function
+  | INIT (_,_,_,nm) | OBS (_,_,_,nm) | RULE (_,_,_,nm) -> nm
 
 let get_agent = function
     Tested (ag,_,_) | TestedMod ((ag,_,_),_) | Modified (ag,_,_) -> ag
@@ -25,12 +44,20 @@ let get_agent = function
 let get_port = function
     Tested (_,p,_) | TestedMod ((_,p,_),_) | Modified (_,p,_) -> p
 
-let print_quarks qlist nmap =
+let get_il = function
+    Tested (_,_,il) | TestedMod ((_,_,il),_) | Modified (_,_,il) -> il
+
+let print_quarks qlist nmap pmap =
   let print_triple (n,p,il) =
     (try
-      let (_,agent_name) = List.find (fun (id,na) -> id=n) nmap in
-      Format.printf "(%s%d,%s," agent_name n p;
-    with _ -> Format.printf "(%d,%s," n p);
+       let (_,agent_name) = List.find (fun (id,na) -> id=n) nmap in
+       Format.printf "(%s%d," agent_name n;
+       (try
+          let (_,plist) = List.find (fun (id,plist) -> id=n) pmap in
+          let (_,port_name) = List.find (fun (idp,na) -> idp=p) plist in
+          Format.printf "%s%d," port_name p;
+        with _ -> Format.printf "%d" p);
+     with _ -> Format.printf "(%d,%d" n p);
     (match il with
        INT i -> Format.printf "int=%s " i
      | LNK lnk ->
@@ -49,8 +76,8 @@ let print_quarks qlist nmap =
   List.iter (fun q -> print_q q) qlist
 
 let print t =
-  let print_rule (label,qs,nmap) =
-    Format.printf "rule %s = " label; print_quarks qs nmap in
+  let print_rule (label,qs,nmap,pmap) =
+    Format.printf "rule %s = " label; print_quarks qs nmap pmap in
   match t with
   | INIT r ->  Format.printf "\ninit ";print_rule r
   | OBS r ->  Format.printf "\nobs ";print_rule r
@@ -58,28 +85,13 @@ let print t =
 
 
 let get_label = function
-  | INIT (name,_,_) | OBS (name,_,_) | RULE (name,_,_) ->  name
+  | INIT (name,_,_,_) | OBS (name,_,_,_) | RULE (name,_,_,_) ->  name
 
 let get_rule_by_label nme rules =
   List.find (fun r -> String.equal (get_label r) nme) rules
 
-(*
-let get_rhs = function
-  | INIT mix -> mix
-  | OBS (name,mix) -> mix
-  | RULE (name,r) -> r.rhs
-
-let is_init = function
-  | INIT _ -> true
-  | OBS _ | RULE _ -> false
-
-let is_obs = function
-  | OBS _ -> true
-  | INIT _ | RULE _  -> false
- *)
-
 let filter_on_port p quarks =
-  List.filter (fun q -> (String.equal (get_port q) p)) quarks
+  List.filter (fun q -> (get_port q)=p) quarks
 
 let filter_on_node n quarks =
   List.filter (fun q -> ((get_agent q)=n)) quarks
@@ -109,12 +121,11 @@ let mod_il = function Modified (_,_,il) -> (match il with
                     | _ -> None
 
 let find_replace (n1,n2) (p1,p2) quarks =
-  let () = Format.printf "find_replace (%d,%d) (%s,%d)" n1 n2 p1 p2 in
   List.map (function
-            |Tested (n,p,il) as q -> if ((n=n1)&&(String.equal p1 p)) then
-                                       Tested (n2,p,il) else q
+            |Tested (n,p,il) as q -> if ((n=n1)&&(p1=p)) then
+                                       Tested (n2,p2,il) else q
             |TestedMod ((n,p,il),(_,_,il')) as q ->
-                        if ((n=n1)&&(String.equal p1 p)) then
-                          TestedMod ((n2,p,il),(n2,p,il')) else q
-            |Modified (n,p,il) as q -> if ((n=n1)&&(String.equal p1 p)) then
-                                         Modified (n2,p,il) else q) quarks
+                        if ((n=n1)&&(p1=p)) then
+                          TestedMod ((n2,p2,il),(n2,p2,il')) else q
+            |Modified (n,p,il) as q -> if ((n=n1)&&(p1=p)) then
+                                         Modified (n2,p2,il) else q) quarks

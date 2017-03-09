@@ -20,7 +20,7 @@ let concretise (s:LinearPoset.t) (rs:Rule.t list) =
       (Trace.empty,[]) s.LinearPoset.seq in
   trace
 
-let test_concret (s:LinearPoset.t) (rs:Rule.t list) =
+(*let test_concret (s:LinearPoset.t) (rs:Rule.t list) =
   let () = if (!Parameter.debug_mode) then
              (Format.printf "concretise linear poset :";
               List.iter (fun i -> Format.printf "%d " i) s.LinearPoset.seq) in
@@ -37,5 +37,6 @@ let test_concret (s:LinearPoset.t) (rs:Rule.t list) =
   let () = if (!Parameter.debug_mode) then
               Transition.print trans in
   Trace.empty
+ *)
 
 let concret (s:Poset.t) (rs:Rule.t list) = concretise (linears s) rs

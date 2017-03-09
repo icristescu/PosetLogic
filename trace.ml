@@ -1,8 +1,8 @@
 
 type t = {
     transitions : Transition.t list;
-    node_names : (int*string) list;
-    port_names : (string * (int* string) list) list;
+    node_names : Maps.node_map;
+    port_names : Maps.port_map;
   }
 
 let empty = {transitions = [];node_names=[];port_names=[]}
@@ -19,5 +19,5 @@ let get_last_transition t =
 
 let add_transition trace trans new_nodes new_ports =
   {transitions=trans::trace.transitions;
-   node_names=new_nodes@trace.node_names;
-   port_names=new_ports@trace.port_names;}
+   node_names=new_nodes;
+   port_names=new_ports;}

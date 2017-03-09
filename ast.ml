@@ -74,47 +74,51 @@ let add_free_to_mix mix =
             {port_nme=p.port_nme;port_int=p.port_int; port_lnk=p_lnks}) pl in
       (n,pl')) mix
 
-let split_ports_quarks count port =
+let split_port_quarks id_node id_port port =
   let quark_int = match port.port_int with
     | [] -> []
-    | s::_ -> [(count,port.port_nme,(Rule.INT s))] in
+    | s::_ -> [(id_node,id_port,(Rule.INT s))] in
   match port.port_lnk with
   | [] -> []
   | l::_ -> match l with
             | LNK_VALUE i ->
                let rule_lnk = Rule.LNK (Idgraph.LNK_VALUE i) in
-               (count,port.port_nme,rule_lnk)::quark_int
+               (id_node,id_port,rule_lnk)::quark_int
             | FREE ->
                let rule_lnk = Rule.LNK (Idgraph.FREE) in
-               (count,port.port_nme,rule_lnk)::quark_int
+               (id_node,id_port,rule_lnk)::quark_int
             | LNK_ANY -> quark_int
             | LNK_SOME | LNK_TYPE _ ->
                (raise (ExceptionDefn.Not_Supported
                          ("rules with side effects not supported")))
 
+let split_ports_in_quarks count plist =
+  let (_,qs) =
+    List.fold_left (fun (i,acc) port ->
+                     (i+1,(split_port_quarks count i port)@acc))
+                   (0,[]) plist in
+  qs
+
 let create_quarks mixture count =
   List.fold_left
-    (fun (qs,agent_names,count) ((name:string),plist) ->
-      let qs' =
-        List.fold_left
-          (fun acc port -> (split_ports_quarks count port)@acc) [] plist in
-      (qs'@qs,(count,name)::agent_names,count+1))
-    ([],[],count) mixture
+    (fun (qs,agent_names,port_names,count) ((name:string),plist) ->
+      let qs' = split_ports_in_quarks count plist in
+      let ports = List.mapi (fun i p -> (i,p.port_nme)) plist in
+      (qs'@qs,(count,name)::agent_names,(count,ports)::port_names,count+1))
+    ([],[],[],count) mixture
 
-let create_rhs_quarks agent_names mixture =
-  let rec aux qs mixt count ag_nm =
+let create_rhs_quarks agent_names port_names mixture =
+  let rec aux qs mixt count ag_nm po_nm =
     match mixt with
     | (name,plist)::mixt' ->
        if (((List.length ag_nm) >0)&&(List.mem (count,name) ag_nm)) then
-         let qs' =
-           List.fold_left
-             (fun acc port -> (split_ports_quarks count port)@acc) [] plist in
-         aux (qs'@qs) mixt' (count+1) ag_nm
+         let qs' = split_ports_in_quarks count plist in
+         aux (qs'@qs) mixt' (count+1) ag_nm po_nm
        else
-         let (qs',ag_nm',_) = create_quarks mixt (List.length ag_nm) in
-         (qs'@qs, ag_nm'@ag_nm)
-    | [] -> (qs, ag_nm) in
-  aux [] mixture 0 agent_names
+         let (qs',ag_nm',po_nm',_) = create_quarks mixt (List.length ag_nm) in
+         (qs'@qs, ag_nm'@ag_nm, po_nm')
+    | [] -> (qs, ag_nm, po_nm) in
+  aux [] mixture 0 agent_names port_names
 
 let match_il il il' = match (il,il') with
   | (Rule.INT _,Rule.INT _) | (Rule.LNK _,Rule.LNK _) -> true
@@ -123,12 +127,12 @@ let match_il il il' = match (il,il') with
 let remove_quark (n,p,il) ls =
   List.filter
     (fun (n',p',il') ->
-      (not((n=n')&&(String.equal p p')&&(match_il il il')))) ls
+      (not((n=n')&&(p=p')&&(match_il il il')))) ls
 
 let partition_quarks lhs_quarks rhs_quarks =
   let find (n,p,il) rhs =
     List.find (fun (n',p',il') ->
-                (n=n')&&(String.equal p p')&&(match_il il il')) rhs in
+                (n=n')&&(p=p')&&(match_il il il')) rhs in
   let (qlist,rhs)=
     List.fold_left
       (fun (qlist',rhs') (n,p,il) ->
@@ -158,26 +162,27 @@ let partition_quarks lhs_quarks rhs_quarks =
   (modified@qlist)
 
 let create_prefix_map lhs rhs =
-  let (lhs_quarks,lhs_agent_nm,_) = create_quarks lhs 0 in
-  let (rhs_quarks,rhs_agent_nm) = create_rhs_quarks lhs_agent_nm rhs in
+  let (lhs_quarks,lhs_an,lhs_pn,_) = create_quarks lhs 0 in
+  let (rhs_quarks,rhs_an,rhs_pn) = create_rhs_quarks lhs_an lhs_pn rhs in
   let () = Format.printf "rhs_agent = ";
-           List.iter (fun (c,n) -> Format.printf "(%d,%s) " c n) rhs_agent_nm in
-  (partition_quarks lhs_quarks rhs_quarks,rhs_agent_nm)
+           Maps.printn rhs_an; Maps.printp rhs_pn in
+  (partition_quarks lhs_quarks rhs_quarks,rhs_an,rhs_pn)
 
 let clean_rule = function
   | INIT mix ->
-     let (quarks,agent_names) = create_prefix_map [] (add_free_to_mix mix) in
+     let (quarks,agent_names,port_names) =
+       create_prefix_map [] (add_free_to_mix mix) in
      let label = List.fold_left (fun acc (nme,_) -> acc^nme) "" mix in
-     Rule.INIT (label,quarks,agent_names)
+     Rule.INIT (label,quarks,agent_names,port_names)
   | OBS (name,mix) ->
      let mix' = add_free_to_mix mix in
-     let (quarks,agent_names) = create_prefix_map mix' mix'  in
-     Rule.OBS (name,quarks,agent_names)
+     let (quarks,agent_names,port_names) = create_prefix_map mix' mix'  in
+     Rule.OBS (name,quarks,agent_names,port_names)
   | RULE (name,r) ->
      let () = if (r.bidirectional) then
                 (raise (ExceptionDefn.Not_Supported
                           ("bidirectional rules not supported"))) in
      let lhs = add_free_to_mix r.lhs in
      let rhs = add_free_to_mix r.rhs in
-     let (quarks,agent_names) = create_prefix_map lhs rhs in
-     Rule.RULE (name,quarks,agent_names)
+     let (quarks,agent_names,port_names) = create_prefix_map lhs rhs in
+     Rule.RULE (name,quarks,agent_names,port_names)

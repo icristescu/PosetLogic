@@ -38,7 +38,7 @@ let nodes_of_json (node:Yojson.Basic.json) =
      let () = if ((Quark.exists_mod clean_quarks [0;1])
                   &&(Quark.exists_testmod clean_quarks [0;1])) then
                 (raise (ExceptionDefn.NotKappa_Poset
-                          ("quarks of init event not valid"))) in
+                          ("quarks of obs event not valid"))) in
      { event_id = id; event_label = label; quarks = clean_quarks; }
   | `List [`Int id; `String "INIT"; `List l;
            (`Assoc ["quarks", `List ql])] ->

@@ -8,5 +8,5 @@ val empty : t
 val print : t -> unit
 val get_rhs : t -> Idgraph.mixture
 val make : Idgraph.mixture -> Rule.t -> Quark.t list -> (int*string) list ->
-                    (string * (int* string) list) list ->
-                    t*((int*string) list)*((string * (int* string) list) list)
+                    (int * (int* string) list) list ->
+                    t*Maps.node_map*Maps.port_map

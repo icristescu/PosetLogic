@@ -152,7 +152,7 @@ Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
   Let $t_1:M_1\overset{m_1,p_1}{\Rightarrow} N_1$ and $t_2:M_2\overset{m_2,p_2}{\Rightarrow} N_2$ be two transitions in a trace $\theta:t_1;t_1':t_2';\cdots t_n';t_2$ and let $p_1:L_1{\remb} D_1 {\lemb} R_1$ and $p_2:L_2{\remb} D_2 {\lemb} R_2$ be two corresponding rules. The morphism $M_1\pmorph M_2$ is the composition of $\spo(t_1)\circ\spo(t_1')\circ\dots\spo(t_n')$.
   \begin{description}
   \item[high res inhibition]
-    Let the span $\spa:L_1\remb O\lemb L_2$ be the pullback of the cospan $L_1{\lemb}M{\remb}L_2$ in the multisum of $L_1$ and $L_2$ such that $p_1\redl{-}_{\spa} p_2$. If the diagram commutes
+    Let the span $\spa:L_1\remb O\lemb L_2$ be the pullback of the cospan $L_1{\lemb}M{\remb}L_2$ in the multisum of $L_1$ and $L_2$ such that $p_2\redl{-}_{\spa} p_1$. If the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -179,7 +179,7 @@ Note that $t_1< t_2 \implies t_1\prec t_2$ but not the reverse.
   \]
   then $t_2$ is high res inhibiting $t_1$, denoted $t_2 \Dashv t_1$.
 \item[low res inhibition]
-  If there exists $\spa:L_1\remb O\lemb L_2$ such that $p_1\redl{-}_{\spa} p_2$ and such that the diagram commutes
+  If there exists $\spa:L_1\remb O\lemb L_2$ such that $p_2\redl{-}_{\spa} p_1$ and such that the diagram commutes
   \[
   \begin{tikzpicture} %[scale=0.8]
     \node (o) at (1,0) {\(O\)};
@@ -326,7 +326,7 @@ Let $t_1:M\overset{m_1,p_1}{\Rightarrow} M_1$ and $t_2:M\overset{m_2,p_2}{\Right
 
 \begin{definition}[Equivalence on transitions]
   \label{def:equiv_trans}
-  Let $\sim$ be a binary relation on transitions such that $t_1\sim t_1'$ iff there exists $t_2$, $t_1\Diamond_{\text{par}} t_2$ and $t_1' = t_1/t_2$.
+  Let $\sim$ be a binary relation on transitions such that $t_1\sim t_1'$ iff there exists $t_2$, $t_1\Diamond_{\text{par}} t_2$ and $t_1' = t_1/t_2$. We denote $\simeq$ the transitive and reflexive closure of $\sim$.
   %% \begin{itemize}
   %% \item there exists $t_2$, $t_2;t_1$, $\neg(t_2<t_2)$, $\neg(t_2\Diamond_{\text{seq}}t_1)$ and $t_1=t_1|t_2$.
   %% \end{itemize}
