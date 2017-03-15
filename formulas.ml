@@ -160,7 +160,7 @@ let denotations (_,_,domain as m) fm =
   let rec denote_var vars valuation vals =
     match vars with
     | x::next ->
-       let () = if (!Parameter.debug_mode) then
+       let () = if (!Param.debug_mode) then
                   Format.printf "denotations for one var %s\n" x in
        List.fold_left
          (fun l p -> denote_var next (add_valuation (x,p) valuation) l)
@@ -168,7 +168,7 @@ let denotations (_,_,domain as m) fm =
          (List.filter (fun d -> domain_match_sort d "Poset") domain)
     | [] ->
        if (holds m valuation fm) then (valuation::vals) else (vals) in
-  let default_valuation x = raise (ExceptionDefn.Uninterpreted_Variable(x)) in
+  let default_valuation x = raise (ExceptDefn.Uninterpreted_Variable(x)) in
   denote_var (free_var fm) default_valuation []
 
 (**** Interpretation ****)
@@ -176,32 +176,32 @@ let denotations (_,_,domain as m) fm =
 let label x = match x with
   | Domain.Ev e -> (Event.get_label e)
   | Domain.Pos _ ->
-     raise (ExceptionDefn.Malformed_Args("label"))
+     raise (ExceptDefn.Malformed_Args("label"))
 
 let prec_1 = function
   | (Domain.Ev e, Domain.Ev e', Domain.Pos p) ->
-     let () = if (!Parameter.debug_mode) then
+     let () = if (!Param.debug_mode) then
                 Format.printf "prec_1 " in
      Poset.check_prec_1 e e' p
-  | _ -> raise (ExceptionDefn.Malformed_Args("prec_1"))
+  | _ -> raise (ExceptDefn.Malformed_Args("prec_1"))
 
 let prec_star = function
   | (Domain.Ev e, Domain.Ev e', Domain.Pos p) ->
-     let () = if (!Parameter.debug_mode) then
+     let () = if (!Param.debug_mode) then
                 (Format.printf "prec_star: ";
                  Event.print_event e; Event.print_event e';
                  Poset.print_poset p) in
      Poset.check_prec_star e e' p
-  | _ -> raise (ExceptionDefn.Malformed_Args("prec_star"))
+  | _ -> raise (ExceptDefn.Malformed_Args("prec_star"))
 
 let id_eq x y =
-  let () = if (!Parameter.debug_mode) then
+  let () = if (!Param.debug_mode) then
                Format.printf "id_eq %s = %s\n" x y in
   (x = y)
 
 let membership = function
     (Domain.Ev e, Domain.Pos p) -> List.mem e (p.Poset.events)
-  | _ -> raise (ExceptionDefn.Malformed_Args("membership"))
+  | _ -> raise (ExceptDefn.Malformed_Args("membership"))
 
 let equal_posets = function
     (Domain.Pos p1, Domain.Pos p2) ->
@@ -211,48 +211,48 @@ let equal_posets = function
      | (true, false) -> Morphism.isomorphism (Poset.remove_obs(p1)) p2
      | (false, true) -> Morphism.isomorphism p1 (Poset.remove_obs(p2))
      | (false, false) -> Morphism.isomorphism p1 p2 )
-  | _ -> raise(ExceptionDefn.Malformed_Args("equal posets"))
+  | _ -> raise(ExceptDefn.Malformed_Args("equal posets"))
 
 let equal_events = function
     (Domain.Ev e1, Domain.Ev e2) ->
-    let () = if (!Parameter.debug_mode) then
+    let () = if (!Param.debug_mode) then
                (Format.printf "equal_events"; Event.print_event e1;
                 Event.print_event e1) in
     if (e1 = e2) then true
     else false
-  | _ -> raise(ExceptionDefn.Malformed_Args("equal events"))
+  | _ -> raise(ExceptDefn.Malformed_Args("equal events"))
 
 let sub_poset = function
     (Domain.Pos p1, Domain.Pos p2) ->
     (match (p1.Poset.kappa, p2.Poset.kappa) with
      | (true, true) ->
-        let () = if (!Parameter.debug_mode) then
+        let () = if (!Param.debug_mode) then
                    (Format.printf
                       "sub_poset: posets are kappa type - remove obs\n";) in
         Morphism.morphism (Poset.remove_obs(p1)) (Poset.remove_obs(p2))
      | (true, false) -> Morphism.morphism (Poset.remove_obs(p1)) p2
      | (false, true) -> Morphism.morphism p1 (Poset.remove_obs(p2))
      | (false, false) -> Morphism.morphism p1 p2 )
-  | _ -> raise(ExceptionDefn.Malformed_Args("sub_posets"))
+  | _ -> raise(ExceptDefn.Malformed_Args("sub_posets"))
 
 let intro = function
     Domain.Pos p -> Poset.intro p
-  | _ -> raise (ExceptionDefn.Malformed_Args("intro"))
+  | _ -> raise (ExceptDefn.Malformed_Args("intro"))
 
 let obs = function
     Domain.Pos p -> p
-  | _ -> raise (ExceptionDefn.Malformed_Args("obs"))
+  | _ -> raise (ExceptDefn.Malformed_Args("obs"))
 
-let negative_influence rules = function
+let negative_influence = function
     (Domain.Pos p1, Domain.Pos p2) ->
-    let t = Concret.concret p1 rules in
-    let () = if (!Parameter.debug_mode) then Trace.print t in
+    let t = Concret.concret p1 in
+    let () = if (!Param.debug_mode) then TraceConcret.print t in
     true
-   | _ ->  raise(ExceptionDefn.Malformed_Args("negative_influence"))
+   | _ ->  raise(ExceptDefn.Malformed_Args("negative_influence"))
 
 let id_label_event str = function
     [e] -> ((label e) = str)
-  | _ -> raise (ExceptionDefn.Malformed_Args("id_label_event"))
+  | _ -> raise (ExceptDefn.Malformed_Args("id_label_event"))
 
 let check_pred p =
   if ((String.length p) >= 5) then
@@ -260,7 +260,7 @@ let check_pred p =
     (String.equal is_label "label")
   else false
 
-let interpretation t rules =
+let interpretation t =
   let domain = (List.map (fun p -> Domain.Pos(p)) (Domain.get_posets(t)))@
                  (List.map (fun e -> Domain.Ev(e)) (Domain.get_events(t))) in
   let func f args =
@@ -269,7 +269,7 @@ let interpretation t rules =
     | ("obs", [p1]) -> p1
     | ("union", [p1;p2]) -> p1
     | ("intersection", [p1;p2]) -> p1
-    | _ -> raise (ExceptionDefn.Uninterpreted_Function(f)) in
+    | _ -> raise (ExceptDefn.Uninterpreted_Function(f)) in
   let pred p args =
     if (check_pred p) then
       let lb = String.sub p 5 ((String.length p) - 5) in
@@ -284,6 +284,6 @@ let interpretation t rules =
       | ("equal_events", [e1;e2]) -> equal_events (e1,e2)
       | ("sub_posets", [p1;p2]) -> sub_poset (p1,p2)
       | ("negative_influence", [p1;p2]) ->
-         negative_influence rules (p1,p2)
-      | _ -> raise (ExceptionDefn.Uninterpreted_Predicate(p)) in
+         negative_influence (p1,p2)
+      | _ -> raise (ExceptDefn.Uninterpreted_Predicate(p)) in
   (func,pred,domain)

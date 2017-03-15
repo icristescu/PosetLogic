@@ -36,7 +36,7 @@ let rec permutations l1 l2 = match (l1,l2) with
            if (perms = [[]]) then acc
            else acc @ List.map (fun p -> x::p) (perms))
         else acc) [] l
-  | _ -> raise (ExceptionDefn.Internal_Error("permutations arguments"))
+  | _ -> raise (ExceptDefn.Internal_Error("permutations arguments"))
 
 let gen_morphisms_permutations_l1 l1 l2 =
   let permuts = permutations l1 l2 in
@@ -92,12 +92,12 @@ let check_prec m p1 p2 =
 
 let comp_morph p1 p2 =
   let all_morphs = gen_all_morphs p1 p2 in
-  let () = if (!Parameter.debug_mode)
+  let () = if (!Param.debug_mode)
            then (Format.printf "gen all morphisms\n";
            print_list_morphisms all_morphs) in
   let valid_prec =
     List.filter (fun m -> check_prec m p1 p2) all_morphs in
-  let () = if (!Parameter.debug_mode)
+  let () = if (!Param.debug_mode)
            then (Format.printf "morphisms after prec check: \n";
                  print_list_morphisms valid_prec) in
   valid_prec
@@ -108,7 +108,7 @@ let check_rev_morph p2 p1 m =
 
 let isomorph p1 p2 =
   let iso = List.filter (fun m -> check_rev_morph p2 p1 m) (comp_morph p1 p2) in
-  let () = if (!Parameter.debug_mode)
+  let () = if (!Param.debug_mode)
            then (Format.printf "isomorphisms: \n"; print_list_morphisms iso) in
   (not (iso = []))
 

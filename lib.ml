@@ -37,6 +37,6 @@ let mapping list1 list combine =
         let working_map =
           List.map2 (fun p1 p2 ->
                       if (combine p1 p2) then (p1,p2)
-                      else (raise (ExceptionDefn.Mappings()))) list1 list2 in
+                      else (raise (ExceptDefn.Mappings()))) list1 list2 in
         working_map::acc
-      with ExceptionDefn.Mappings() -> acc) [] list_of_list
+      with ExceptDefn.Mappings() -> acc) [] list_of_list

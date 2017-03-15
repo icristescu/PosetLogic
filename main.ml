@@ -1,13 +1,12 @@
 let files = ref []
+let env_file = ref ""
 let formula_file = ref ""
-let rule_file = ref ""
 let read_fm = ref []
-let read_rule = ref []
 let debug_mode = ref false
 
 let options = [
     ("-f", Arg.Set_string formula_file, "file name for formulas");
-    ("-r", Arg.Set_string rule_file, "file name for rules");
+    ("-env", Arg.Set_string env_file, "file name for environment");
     ("-debug", Arg.Set debug_mode, "print internal info");]
 
 let test_z3 t =
@@ -21,7 +20,7 @@ let test_subset t =
   let p1 = List.nth posets 2 in
   let p2 = List.nth posets 1 in
 
-  let () = if (!Parameter.debug_mode) then
+  let () = if (!Param.debug_mode) then
              ( Format.printf "\n test_subset : poset \n";
                Poset.print_poset p1; Format.printf " in poset :\n ";
                Poset.print_poset p2) in
@@ -40,7 +39,7 @@ let empty_valuation = function
     _ -> failwith "empty valuation"
 
 let parse_fm () =
-  let () = if (!Parameter.debug_mode) then
+  let () = if (!Param.debug_mode) then
              Format.printf "parse file %s\n" (!formula_file) in
   let chan = open_in (!formula_file) in
   try
@@ -48,29 +47,13 @@ let parse_fm () =
     while true do
       let result = Parser.main Lexer.token lexbuf in
       read_fm := result::(!read_fm);
-      if (!Parameter.debug_mode) then
+      if (!Param.debug_mode) then
         (Format.printf "parsing \n";Formulas.print_fm result;Format.printf"\n")
     done
   with Lexer.Eof -> ()
 
-let parse_rules () =
-  let () = if (!Parameter.debug_mode) then
-             Format.printf "parse file %s\n" (!rule_file) in
-  let chan = open_in (!rule_file) in
-  try
-    let lexbuf = Lexing.from_channel chan in
-    while true do
-      let result = ParserRule.newline LexerRule.token lexbuf in
-      let rule = Ast.clean_rule result in
-      read_rule := rule::(!read_rule);
-      if (!Parameter.debug_mode) then
-        (Format.printf "parsing \n"; Ast.print result;
-         Format.printf " becomes \n"; Rule.print rule;Format.printf "\n")
-    done
-  with LexerRule.Eof -> ()
-
 let set_flags () =
-  Parameter.debug_mode := !debug_mode
+  Param.debug_mode := !debug_mode
 
 let evaluate sfm (_,_,domain as m) v =
   let fm = Formulas.convert_string_to_domain sfm domain in
@@ -99,18 +82,17 @@ let () =
       (Sys.argv.(0) ^
        " stories\n outil") in
   let () = set_flags () in
-  let () = parse_rules () in
-  let posets = Domain.set_posets (!files) in
-
+  let json = Yojson.Basic.from_file (!env_file) in
+  let env = Model.of_yojson json in
+  let posets = Domain.set_posets (!files) env in
   let fm_neg =
     (Formulas.Atom(
          Formulas.R("negative_influence",
                     [Formulas.Var "s1";
                      Formulas.Var "s2"]))) in
 
-  let m = Formulas.interpretation posets (!read_rule) in
-  let () = Format.printf "print the rules: " in
-  let () = Format.printf "\n evaluate formula:\n" in
+  let m = Formulas.interpretation posets in
+  let () = Format.printf "\n evaluate formula\n" in
   (evaluate fm_neg m empty_valuation)
 
 

@@ -21,9 +21,7 @@ val intro : t -> t
 
 val remove_obs : t -> t
 
-val read_poset_from_file : string -> t
-
-val test_poset : t
+val read_poset_from_file : string -> Model.t -> t
 
 val check_prec_1 : Event.t -> Event.t -> t -> bool
 

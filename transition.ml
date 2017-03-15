@@ -3,15 +3,36 @@ open Lib
 type t = {
     lhs: Idgraph.mixture;
     rhs: Idgraph.mixture;
-    rule : Rule.t;
   }
 
-let empty = {lhs =Idgraph.empty;rhs =Idgraph.empty;rule=Rule.empty}
+let empty = {lhs =Idgraph.empty;rhs =Idgraph.empty;}
 
-let print t = Format.printf "\n transition"; Idgraph.print t.lhs;
-              Format.printf " => ";Idgraph.print t.rhs; Rule.print t.rule
+let print t = Format.printf "\ntransition\n"; Idgraph.print t.lhs;
+              Format.printf " => ";Idgraph.print t.rhs
 
 let get_rhs t = t.rhs
+
+(*
+let get_int_lnk = function
+  | Rule.INT s -> ([s],[])
+  | Rule.LNK lnk -> ([],[lnk])
+
+let add_ports portls pid il pname =
+  let (found,new_ports) =
+    List.fold_left
+      (fun (ok,ports) port ->
+        if (port.Idgraph.port_id = pid) then
+          let (intls,lnkls) = get_int_lnk il in
+          let new_port = make_port pname pid
+                                   (port.Idgraph.port_int@intls)
+                                   (port.Idgraph.port_lnk@lnkls) in
+          (true,new_port::ports)
+        else (ok,port::ports))
+      (false,[]) portls in
+  if found then new_ports
+  else
+    let (intls,lnkls) = get_int_lnk il in
+    (make_port pname pid intls lnkls )::portls
 
 let combine_ports_name quarks1 quarks2 p1 p2 =
   let quarks1'= Rule.filter_on_port p1 quarks1 in
@@ -40,9 +61,9 @@ let combine_nodes_name node_names1 node_names2 (n1:int) (n2:int) =
   let name1= try_find_name n1 node_names1 in
   let name2= try_find_name n2 node_names2 in
   match (name1,name2) with
-  |Some name1', Some name2' -> String.equal name1' name2'
-  |_,None -> true
-  |None,_ -> (raise (ExceptionDefn.Internal_Error
+  | Some name1', Some name2' -> String.equal name1' name2'
+  | _, None -> true
+  | None, _ -> (raise (ExceptionDefn.Internal_Error
                        ("combine_ports_name")))
 
 let aux n1 n2 quarks1 quarks2 =
@@ -112,66 +133,168 @@ let decorate combinations quarks node_names node_map port_map =
         acc one_deco_ports)
     (quarks,[],[]) combinations
 
-let add_ports portls pid il pname =
-  let (found,new_ports) =
-    List.fold_left
-      (fun (ok,ports) port ->
-        if (port.Idgraph.port_id = pid) then (true,port::ports)
-        else (ok,port::ports)) (false,[]) portls in
-  if found then new_ports
-  else (Rule.make_port pid il pname)::portls
 
-let new_idgraph quarks node_names port_names =
+
+let inclusion_ports pid il plist =
+  let match_ports intls lnkls = match il with
+    | Rule.INT s -> List.mem s intls
+    | Rule.LNK lnk -> List.mem lnk lnkls in
+  List.exists
+    (fun port ->
+      (port.Idgraph.port_id = pid)&&
+        (match_ports port.Idgraph.port_int port.Idgraph.port_lnk))
+    plist
+
+let modify_ports pid il plist =
+  List.map
+    (fun port ->
+      if (port.Idgraph.port_id = pid) then
+        match il with
+        | Rule.INT s ->
+           make_port port.Idgraph.port_nme pid [s] port.Idgraph.port_lnk
+        | Rule.LNK lnk ->
+           make_port port.Idgraph.port_nme pid port.Idgraph.port_int [lnk]
+      else port) plist
+
+let make_agent aname aid pname pid il =
+  let (intls,lnkls) = get_int_lnk il in
+  let port = make_port pname pid intls lnkls in
+     (aname,aid,[port])
+
+let make_new_idgraph quarks node_names port_names =
+  List.fold_left
+    (fun mixt q ->
+      match q with
+      | Rule.Modified (aid,pid,il) ->
+         let (aname,pname) = Maps.get_names aid pid node_names port_names in
+         let (found,new_mixt) =
+           List.fold_left
+             (fun (ok,mixt') ((aname',aid',plist) as agent) ->
+               if (aid = aid') then
+                 let () =
+                   if (not(String.equal aname' aname)) then
+                     (raise (ExceptionDefn.Internal_Error("make_new_id1"))) in
+                 let new_ports = add_ports plist pid il pname in
+                 let new_agent = (aname,aid,new_ports) in
+                 (true,new_agent::mixt')
+               else (ok,agent::mixt')) (false,[]) mixt in
+         if found then new_mixt
+         else
+           let new_agent = make_agent aname aid pname pid il in
+           new_agent::mixt
+      | _ -> (raise (ExceptionDefn.Internal_Error("make_new_id2")))) [] quarks
+
+
+let make_idgraph quarks mixture =
   List.fold_left
     (fun mixt q ->
       let aid = Rule.get_agent q in
-      let pid = Rule.get_port q in
-      let il = Rule.get_il q in
-      let (aname,pname) = Maps.get_names aid pid node_names port_names in
-      let (found,new_mixt) =
-        List.fold_left
-          (fun (ok,mixt') ((agentn,agenti,plist) as agent) ->
-            if (aid = agenti) then
-              let () = if (not(String.equal agentn aname)) then
-                         (raise (ExceptionDefn.Internal_Error("make_agent"))) in
-              let new_ports = add_ports plist pid il pname in
-              let new_agent = (agentn,agenti,new_ports) in
-              (true,new_agent::mixt')
-            else (ok,agent::mixt')) (false,[]) mixt in
-      if found then new_mixt
-      else
-        let new_agent = Rule.make_agent aname pname q in
-        new_agent::mixt) [] quarks
-(*
-let make_idgraph quarks node_names port_names mixture =
-  List.fold_left
-    (fun mixt q ->
-    ) [] quarks
+      List.map
+        (fun ((aname',aid',plist) as agent) ->
+          if (aid = aid') then
+            match q with
+            | Rule.Tested (_,pid,il) ->
+               let () =
+                 if (not(inclusion_ports pid il plist)) then
+                   (raise (ExceptionDefn.Internal_Error("make_idgraph1"))) in
+               agent
+            | Rule.Modified (_,_,_) ->
+               (raise (ExceptionDefn.Internal_Error("make_idgraph2")))
+            | Rule.TestedMod (_,pid,il,il') ->
+               let () =
+                 if (not(inclusion_ports pid il plist)) then
+                   (raise (ExceptionDefn.Internal_Error("make_idgraph3"))) in
+               let new_ports = modify_ports pid il' plist in
+               let new_agent = (aname',aid',new_ports) in
+               new_agent
+          else agent) mixt) mixture quarks
  *)
+let make_port pid intls lnkls =
+  { Idgraph.port_id = pid;
+    Idgraph.port_int = intls;
+    Idgraph.port_lnk = lnkls;}
+
+let check_tests graph tests = true
+
+let rec replace_port pid port_lnk = function
+  | p::ls -> if (p.Idgraph.port_id = pid) then
+               (make_port pid p.Idgraph.port_int [port_lnk])::ls
+             else p::(replace_port pid port_lnk ls)
+  | [] -> []
+
+let rec replace_free agents aid pid =
+  match agents with
+  | (aid',atype,plist)::ls ->
+     if (aid = aid') then
+       let new_ports = replace_port pid (Idgraph.FREE) plist in
+       (aid,atype,new_ports)::ls
+     else (aid',atype,plist)::(replace_free ls aid pid)
+  | [] -> []
+
+let replace_bind agents aid pid aid' pid' lnk_nb =
+  let port_lnk = Idgraph.LNK_VALUE lnk_nb in
+  let rec aux_replace_bind = function
+    | (aid'',atype,plist)::ls ->
+       if (aid = aid'') then
+         let new_ports = replace_port pid port_lnk plist in
+         (aid,atype,new_ports)::(aux_replace_bind ls)
+       else (if (aid' = aid'') then
+               let new_ports = replace_port pid port_lnk plist in
+               (aid,atype,new_ports)::(aux_replace_bind ls)
+             else (aid'',atype,plist)::(aux_replace_bind ls))
+    | [] -> [] in
+  aux_replace_bind agents
+
+let get_lnknb graph = 0
+
+let make_idgraph graph (alist,blist) node_names port_names =
+  let lnknb = get_lnknb graph in
+  let create_agents =
+    List.fold_left
+      (fun acc action ->
+        match action with
+          Instantiation.Create ((aid,atype),pls) ->
+          let ports = List.map
+                        (fun (pid,internal) ->
+                          let intlist = match internal with
+                            | None -> []
+                            | Some intern-> [intern] in
+                          make_port pid intlist []) pls in
+          (aid,atype,ports)::acc
+        | _ -> acc ) [] alist in
+  let (agents,_) =
+    List.fold_left
+      (fun (acc,lnk_nb) action ->
+        match action with
+          Instantiation.Create _ -> (acc,lnk_nb)
+        | Instantiation.Free ((aid,atype),site_name) ->
+           (replace_free create_agents aid site_name,lnk_nb)
+        | Instantiation.Bind_to (((aid,atype),site),((aid',_),site'))->
+           (replace_bind create_agents aid site aid' site' lnk_nb,(lnk_nb+1))
+        | Instantiation.Mod_internal _ | Instantiation.Remove _
+          | Instantiation.Bind _ -> (acc,lnk_nb)
+           (*(raise (ExceptDefn.NotKappa_Poset
+                                              ("init event not valid")))*)
+      )
+      ([],lnknb) alist in
+  create_agents@agents
 
 
-let make lhs rule quarks node_names port_names =
-  let () = Format.printf "\nmake transition";
-           Rule.print rule;
-           List.iter (fun q-> Quark.print q) quarks in
-  let node_map = Rule.get_node_map rule in
-  let port_map = Rule.get_port_map rule in
-  let rule_quarks = Rule.get_quarks rule in
-  let all_maps = combine_quarks rule_quarks node_map quarks node_names in
-  let () = print_all_maps all_maps in
-  let one_deco_agents = List.hd all_maps in
-  let (new_quarks,newn,newp) = decorate one_deco_agents rule_quarks
-                            node_names node_map port_map in
-  let () = Format.printf "\nnew quarks\n";
-           Rule.print_quarks new_quarks node_map port_map;
-           Format.printf "with new nodes and ports ";
-           Maps.printn newn; Maps.printp newp in
-  let nodes = newn@node_names in
-  let ports = newp@port_names in
-  let new_nodes =
-    List.filter (fun q ->
-                  let id = Rule.get_agent q in
-                  (List.exists (fun (nid,_) -> nid = id) newn)) new_quarks in
-  let rhs = new_idgraph new_nodes newn newp in
-  let () = Format.printf "rhs = "; Idgraph.print rhs in
-  ({lhs;rhs=lhs;rule},nodes,ports)
+let make lhs step node_names port_names =
+  let tests = Trace.tests_of_step step in
+  let actions = Trace.actions_of_step step in
+  let rhs =
+    if (check_tests lhs tests) then
+      make_idgraph lhs actions node_names port_names
+    else (raise (ExceptDefn.Internal_Error
+                 ("make transition"))) in
+
+  let () = if (!Param.debug_mode) then
+             (Format.printf "\n\nmake transition";
+              Trace.print_step Format.std_formatter step;
+              Format.printf "with new nodes and ports ";
+              (*Maps.printn newn; Maps.printp newp;*)
+              Format.printf "\nlhs = "; Idgraph.print lhs;
+              Format.printf "\nrhs = "; Idgraph.print rhs) in
+
+  ({lhs;rhs;},node_names,port_names)

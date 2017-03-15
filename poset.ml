@@ -41,7 +41,7 @@ let edges_of_json json =
       let e2 = member "to" json |> to_int in
       (e1,e2)) json
 
-let read_poset_from_file file =
+let read_poset_from_file file sigs =
   let json = Yojson.Basic.from_file file in
   let open Yojson.Basic.Util in
   let nodes = json |> member "nodes" |> to_list in
@@ -49,18 +49,10 @@ let read_poset_from_file file =
   let edges_inhibit = json |> member "inhibit" |> to_list in
   { kappa = true;
     filename = Some file;
-    events = List.mapi (fun i l -> Event.nodes_of_json l) nodes;
+    events = List.mapi (fun i l -> Event.nodes_of_json sigs l) nodes;
     prec_1 = edges_of_json edges_cause;
     prec_star = None;
     inhibit = edges_of_json edges_inhibit}
-
-let test_poset =
-  let e0 = Event.test_event 1 "A" in
-  let e1 = Event.test_event 2 "B" in
-  let e2 = Event.test_event 3 "C" in
-  let e3 = Event.test_event 4 "D" in
-  { kappa = false;filename = None;events = [e0;e1;e2;e3];
-    prec_1 = [(3,4);(2,3);(1,2)];prec_star=None;inhibit =[] }
 
 let split_intro_rest p =
   List.fold_left
@@ -80,7 +72,7 @@ let intro p =
     (fun e ->
       not(List.exists (fun (i1,i2) -> (Event.get_id e) = i2) p.prec_1))
     p.events in
-  let () = if (!Parameter.debug_mode)
+  let () = if (!Param.debug_mode)
            then (Format.printf "intro events of poset: \n";
                  print_poset p;
                  Format.printf "are: \n";
@@ -97,7 +89,7 @@ let remove_obs p =
      let inhibit = List.filter (fun (e1,e2) -> not (e2 = obs_id) ) p.inhibit in
      { kappa = false; filename = p.filename; events; prec_1;
        prec_star= None;inhibit; })
-  else raise (ExceptionDefn.Internal_Error("should not be possible"))
+  else raise (ExceptDefn.Internal_Error("should not be possible"))
 
 let sort_prec ls =
   let rec verif_sort = function
@@ -106,7 +98,7 @@ let sort_prec ls =
        then verif_sort next else false
     | [] -> true in
   if (verif_sort ls) then ls
-  else raise (ExceptionDefn.Internal_Error("prec_1 is not sorted"))
+  else raise (ExceptDefn.Internal_Error("prec_1 is not sorted"))
 
 (* id of events in interval [0,length(events)] *)
 let get_enriched p =
@@ -134,7 +126,7 @@ let check_prec_star e1 e2 p =
        enr
     | Some enr -> enr in
   let () =
-    if (!Parameter.debug_mode) then
+    if (!Param.debug_mode) then
       (Format.printf "check_prec_star \n";
        Array.iteri
          (fun i l -> Format.printf "arr(%d) =" i;

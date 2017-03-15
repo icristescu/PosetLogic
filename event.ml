@@ -4,58 +4,24 @@ open Lib
 type t = {
     event_id : int; (* local id inside a story *)
     event_label : string;
-    quarks : Quark.t list;
+    step : Trace.step ;
   }
 
 let get_id e = e.event_id
 let get_label e = e.event_label
-let get_quarks e = e.quarks
+let get_step e = e.step
 
 let test_event event_id event_label =
- { event_id; event_label; quarks = []; }
+ { event_id; event_label; step = Trace.Dummy "none"; }
 
 let print_event e =
   Format.printf " (%i, %s)  " (e.event_id) (e.event_label)
 
-let nodes_of_json (node:Yojson.Basic.json) =
-  let open Yojson.Basic.Util in
-  match node with
-  | `List [`Int id; `String "RULE"; `String label;
-           (`Assoc ["quarks", `List l]) ]
-    | `List [`Int id; `String "PERT"; `String label;
-             (`Assoc ["quarks", `List l])]->
-     let quarks_ls =
-       List.map (fun q -> Quark.quarks_of_json q) l in
-     let clean_quarks =
-       List.filter (fun q -> Quark.positive_site q) quarks_ls in
-     { event_id = id; event_label = label; quarks = clean_quarks; }
-  | `List [`Int id; `String "OBS"; `String label;
-           (`Assoc ["quarks", `List l])] ->
-     let quarks_ls =
-       List.map (fun q -> Quark.quarks_of_json q) l in
-     let clean_quarks =
-       List.filter (fun q -> Quark.positive_site q) quarks_ls in
-     let () = if ((Quark.exists_mod clean_quarks [0;1])
-                  &&(Quark.exists_testmod clean_quarks [0;1])) then
-                (raise (ExceptionDefn.NotKappa_Poset
-                          ("quarks of obs event not valid"))) in
-     { event_id = id; event_label = label; quarks = clean_quarks; }
-  | `List [`Int id; `String "INIT"; `List l;
-           (`Assoc ["quarks", `List ql])] ->
-     let init_label =
-       List.fold_left
-         (fun lbl n ->
-           match n with
-             | `String i -> lbl^i
-             | x -> raise (Yojson.Basic.Util.Type_error
-                             ("Not in the cflow format",x))) "" l in
-     let quarks_ls =
-       List.map (fun q -> Quark.quarks_of_json q) ql in
-     let clean_quarks =
-       List.filter (fun q -> Quark.positive_site q) quarks_ls in
-     let () = if ((Quark.exists_test clean_quarks [0;1])
-                  &&(Quark.exists_testmod clean_quarks [0;1])) then
-                (raise (ExceptionDefn.NotKappa_Poset
-                          ("quarks of init event not valid"))) in
-     { event_id = id; event_label = init_label; quarks = clean_quarks; }
-  | _ -> raise (Yojson.Basic.Util.Type_error ("Not in the cflow format",`Null))
+let nodes_of_json env = function
+  | `List [`Int id; step_json] ->
+     let step = Trace.step_of_yojson step_json in
+     let env = Some env in
+     let () = Trace.print_label_of_step ?env (Format.str_formatter) step in
+     let label = Format.flush_str_formatter () in
+     { event_id = id; event_label = label; step;}
+  | x -> raise (Yojson.Basic.Util.Type_error ("Incorrect node of json",x))
