@@ -1,0 +1,23 @@
+let rule_file = ref ""
+let read_rule = ref []
+let options = [
+    ("-f", Arg.Set_string formula_file, "file name for formulas");
+    ("-r", Arg.Set_string rule_file, "file name for rules");
+    ("-debug", Arg.Set debug_mode, "print internal info");]
+
+
+let parse_rules () =
+  let () = if (!Param.debug_mode) then
+             Format.printf "parse file %s\n" (!rule_file) in
+  let chan = open_in (!rule_file) in
+  try
+    let lexbuf = Lexing.from_channel chan in
+    while true do
+      let result = ParserRule.newline LexerRule.token lexbuf in
+      let rule = Ast.clean_rule result in
+      read_rule := rule::(!read_rule);
+      if (!Param.debug_mode) then
+        (Format.printf "parsing \n"; Ast.print result;
+         Format.printf " becomes \n"; Rule.print rule;Format.printf "\n")
+    done
+  with LexerRule.Eof -> ()
