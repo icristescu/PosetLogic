@@ -91,7 +91,7 @@ let () =
                     [Formulas.Var "s1";
                      Formulas.Var "s2"]))) in
 
-  let m = Formulas.interpretation posets in
+  let m = Formulas.interpretation env posets in
   let () = Format.printf "\n evaluate formula\n" in
   (evaluate fm_neg m empty_valuation)
 

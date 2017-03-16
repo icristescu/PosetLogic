@@ -21,7 +21,7 @@ val holds : (string -> Domain.domain list -> Domain.domain) *
                 (Domain.domain list) ->
             (string -> Domain.domain) -> Domain.domain fol formula -> bool
 
-val interpretation : Domain.t ->
+val interpretation : Model.t -> Domain.t ->
                      (string -> Domain.domain list -> Domain.domain) *
                        (string -> Domain.domain list -> bool) *
                          Domain.domain list

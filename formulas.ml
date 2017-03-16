@@ -243,10 +243,13 @@ let obs = function
     Domain.Pos p -> p
   | _ -> raise (ExceptDefn.Malformed_Args("obs"))
 
-let negative_influence = function
+let negative_influence env = function
     (Domain.Pos p1, Domain.Pos p2) ->
-    let t = Concret.concret p1 in
-    let () = if (!Param.debug_mode) then TraceConcret.print t in
+    let sigs = Model.signatures env in
+    let t = Concret.concret p1 sigs in
+    let pre_env = Pattern.minimal_env sigs contact_map in
+    let pattern_trace = TraceConcret.pattern_trace contact_map sigs pre_env t in
+(*    let () = if (!Param.debug_mode) then TraceConcret.print t sigs in*)
     true
    | _ ->  raise(ExceptDefn.Malformed_Args("negative_influence"))
 
@@ -260,7 +263,7 @@ let check_pred p =
     (String.equal is_label "label")
   else false
 
-let interpretation t =
+let interpretation env t =
   let domain = (List.map (fun p -> Domain.Pos(p)) (Domain.get_posets(t)))@
                  (List.map (fun e -> Domain.Ev(e)) (Domain.get_events(t))) in
   let func f args =
@@ -284,6 +287,6 @@ let interpretation t =
       | ("equal_events", [e1;e2]) -> equal_events (e1,e2)
       | ("sub_posets", [p1;p2]) -> sub_poset (p1,p2)
       | ("negative_influence", [p1;p2]) ->
-         negative_influence (p1,p2)
+         negative_influence env (p1,p2)
       | _ -> raise (ExceptDefn.Uninterpreted_Predicate(p)) in
   (func,pred,domain)

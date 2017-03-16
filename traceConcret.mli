@@ -1,14 +1,13 @@
+type s = Transition.s list
+type t = Transition.t list
 
-type t = {
-    transitions : Transition.t list;
-    node_names : Maps.node_map;
-    port_names : Maps.port_map;
-  }
 
-val empty: t
-val print: t -> unit
+val empty: s
+(*val print: t -> Signature.s -> unit*)
 
-val get_last_transition: t -> Transition.t
-val get_first_transition: t -> Transition.t
-val add_transition: t -> Transition.t -> Maps.node_map ->
-                     Maps.port_map ->t
+val get_last_transition: s -> Transition.s
+val get_first_transition: s -> Transition.s
+val add_transition: s -> Transition.s -> s
+val pattern_trace:
+  (int list * (int * int) list) array array -> Signature.s ->
+  Pattern.PreEnv.t -> s -> t

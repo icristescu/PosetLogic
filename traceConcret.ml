@@ -1,23 +1,18 @@
 
-type t = {
-    transitions : Transition.t list;
-    node_names : Maps.node_map;
-    port_names : Maps.port_map;
-  }
+type s = Transition.s list
 
-let empty = {transitions = [];node_names=[];port_names=[]}
+type t = Transition.t list
 
-let print t = List.iter (fun trans -> Transition.print trans) t.transitions
+let empty = []
 
-let get_first_transition t =
-  try
-    List.hd t.transitions
-  with Failure s -> Transition.empty
+(*
+let print t sigs = List.iter (fun trans -> Transition.print trans sigs) t
+ *)
 
-let get_last_transition t =
-    List.nth t.transitions ((List.length t.transitions)-1)
+let get_first_transition t = List.hd t
+let get_last_transition t = List.nth t ((List.length t)-1)
+let add_transition trace trans = trans::trace
 
-let add_transition trace trans new_nodes new_ports =
-  {transitions=trans::trace.transitions;
-   node_names=new_nodes;
-   port_names=new_ports;}
+let pattern_trace contact_map sigs pre_env trace =
+  List.map (fun trans ->
+             Transition.pattern_transition contact_map sigs pre_env trans) trace

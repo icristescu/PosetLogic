@@ -1,10 +1,19 @@
 type t = {
-    lhs: Idgraph.mixture;
-    rhs: Idgraph.mixture;
+    lhs: Pattern.cc list;
+    rhs: Pattern.cc list;
   }
 
-val empty : t
-val print : t -> unit
-val get_rhs : t -> Idgraph.mixture
-val make : Idgraph.mixture -> Trace.step -> Maps.node_map -> Maps.port_map ->
-           t * Maps.node_map * Maps.port_map
+type s = {
+    lhs_state: Replay.state;
+    rhs_state: Replay.state;
+  }
+
+val empty : Signature.s -> t
+val print : t -> Signature.s -> unit
+
+val get_rhs_state : s -> Replay.state
+val make : Replay.state -> Replay.state -> s
+
+val pattern_transition:
+  (int list * (int * int) list) array array -> Signature.s ->
+  Pattern.PreEnv.t -> s -> t

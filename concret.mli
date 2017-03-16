@@ -1,2 +1,2 @@
 
-val concret : Poset.t -> TraceConcret.t
+val concret : Poset.t -> Signature.s -> TraceConcret.s
