@@ -85,16 +85,20 @@ let () =
   let json = Yojson.Basic.from_file (!env_file) in
   let env = Model.of_yojson json in
   let posets = Domain.set_posets (!files) env in
+  let () = if (!Param.debug_mode) then Format.printf "read posets\n" in
   let fm_neg =
-    (Formulas.Atom(
-         Formulas.R("negative_influence",
-                    [Formulas.Var "s1";
-                     Formulas.Var "s2"]))) in
+    Formulas.Exists
+      ("e2","Event",
+       Formulas.Exists
+         ("e1","Event",
+          (Formulas.Atom(
+               Formulas.R("negative_influence",
+                          [Formulas.Var "e1"; Formulas.Var "s1";
+                           Formulas.Var "e2"; Formulas.Var "s2"]))))) in
 
   let m = Formulas.interpretation env posets in
   let () = Format.printf "\n evaluate formula\n" in
   (evaluate fm_neg m empty_valuation)
-
 
   (*  test_z3 posets*)
   (*

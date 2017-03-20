@@ -244,12 +244,9 @@ let obs = function
   | _ -> raise (ExceptDefn.Malformed_Args("obs"))
 
 let negative_influence env = function
-    (Domain.Pos p1, Domain.Pos p2) ->
+    (Domain.Ev e1, Domain.Pos p1, Domain.Ev e2, Domain.Pos p2) ->
     let sigs = Model.signatures env in
-    let t = Concret.concret p1 sigs in
-    let pre_env = Pattern.minimal_env sigs contact_map in
-    let pattern_trace = TraceConcret.pattern_trace contact_map sigs pre_env t in
-(*    let () = if (!Param.debug_mode) then TraceConcret.print t sigs in*)
+    let () = Concret.context_of_application p1 p2 sigs env in
     true
    | _ ->  raise(ExceptDefn.Malformed_Args("negative_influence"))
 
@@ -286,7 +283,7 @@ let interpretation env t =
       | ("equal_posets", [p1;p2]) -> equal_posets (p1,p2)
       | ("equal_events", [e1;e2]) -> equal_events (e1,e2)
       | ("sub_posets", [p1;p2]) -> sub_poset (p1,p2)
-      | ("negative_influence", [p1;p2]) ->
-         negative_influence env (p1,p2)
+      | ("negative_influence", [e1;p1;e2;p2]) ->
+         negative_influence env (e1,p1,e2,p2)
       | _ -> raise (ExceptDefn.Uninterpreted_Predicate(p)) in
   (func,pred,domain)

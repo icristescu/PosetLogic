@@ -15,7 +15,10 @@ let test_event event_id event_label =
  { event_id; event_label; step = Trace.Dummy "none"; }
 
 let print_event e =
-  Format.printf " (%i, %s)  " (e.event_id) (e.event_label)
+  Format.printf "\n(%i, %s) " (e.event_id) (e.event_label)
+
+let print_complete_event e =
+  print_event e;Trace.print_step (Format.std_formatter) e.step;Format.printf"\n"
 
 let nodes_of_json env = function
   | `List [`Int id; step_json] ->
