@@ -174,7 +174,7 @@ let denotations (_,_,domain as m) fm =
 (**** Interpretation ****)
 
 let label x = match x with
-  | Domain.Ev e -> (Event.get_label e)
+  | Domain.Ev e -> (Event.label e)
   | Domain.Pos _ ->
      raise (ExceptDefn.Malformed_Args("label"))
 
@@ -203,15 +203,23 @@ let membership = function
     (Domain.Ev e, Domain.Pos p) -> List.mem e (p.Poset.events)
   | _ -> raise (ExceptDefn.Malformed_Args("membership"))
 
-let equal_posets = function
+let morphisms_posets f = function
     (Domain.Pos p1, Domain.Pos p2) ->
     (match (p1.Poset.kappa, p2.Poset.kappa) with
      | (true, true) ->
-        Morphism.isomorphism (Poset.remove_obs(p1)) (Poset.remove_obs(p2))
-     | (true, false) -> Morphism.isomorphism (Poset.remove_obs(p1)) p2
-     | (false, true) -> Morphism.isomorphism p1 (Poset.remove_obs(p2))
-     | (false, false) -> Morphism.isomorphism p1 p2 )
-  | _ -> raise(ExceptDefn.Malformed_Args("equal posets"))
+        let () = if (!Param.debug_mode) then
+                   (Format.printf "kappa posets - remove obs@.") in
+        f (Poset.remove_event p1 (Poset.obs p1))
+          (Poset.remove_event p2 (Poset.obs p2))
+     | (true, false) ->
+        f (Poset.remove_event p1 (Poset.obs p1)) p2
+     | (false, true) ->
+        f p1 (Poset.remove_event p2 (Poset.obs p2))
+     | (false, false) -> f p1 p2)
+  | _ -> raise(ExceptDefn.Malformed_Args("morphisms posets"))
+
+let equal_posets = morphisms_posets Morphism.isomorphism
+let sub_poset = morphisms_posets Morphism.morphism
 
 let equal_events = function
     (Domain.Ev e1, Domain.Ev e2) ->
@@ -221,19 +229,6 @@ let equal_events = function
     if (e1 = e2) then true
     else false
   | _ -> raise(ExceptDefn.Malformed_Args("equal events"))
-
-let sub_poset = function
-    (Domain.Pos p1, Domain.Pos p2) ->
-    (match (p1.Poset.kappa, p2.Poset.kappa) with
-     | (true, true) ->
-        let () = if (!Param.debug_mode) then
-                   (Format.printf
-                      "sub_poset: posets are kappa type - remove obs\n";) in
-        Morphism.morphism (Poset.remove_obs(p1)) (Poset.remove_obs(p2))
-     | (true, false) -> Morphism.morphism (Poset.remove_obs(p1)) p2
-     | (false, true) -> Morphism.morphism p1 (Poset.remove_obs(p2))
-     | (false, false) -> Morphism.morphism p1 p2 )
-  | _ -> raise(ExceptDefn.Malformed_Args("sub_posets"))
 
 let intro = function
     Domain.Pos p -> Poset.intro p
@@ -246,7 +241,9 @@ let obs = function
 let negative_influence env = function
     (Domain.Ev e1, Domain.Pos p1, Domain.Ev e2, Domain.Pos p2) ->
     let sigs = Model.signatures env in
-    let () = Concret.context_of_application p1 p2 sigs env in
+(*    let past1 = Poset.past e1 p1 in
+    let past2 = Poset.past e2 p2 in*)
+    let () = Concret.context_of_application e1 p1 e2 p2 sigs env in
     true
    | _ ->  raise(ExceptDefn.Malformed_Args("negative_influence"))
 

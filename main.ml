@@ -9,12 +9,6 @@ let options = [
     ("-env", Arg.Set_string env_file, "file name for environment");
     ("-debug", Arg.Set debug_mode, "print internal info");]
 
-let test_z3 t =
-  let posets = Domain.get_posets t in
-  let p1 = List.nth posets 0 in
-  let p2 = List.nth posets 3 in
-  Z3morphism.get_morphism p1 p2
-
 let test_subset t =
   let posets = Domain.get_posets t in
   let p1 = List.nth posets 2 in
@@ -34,6 +28,16 @@ let test_subset t =
     (Formulas.Atom(
          Formulas.R("sub_posets", [Formulas.Var "x"; Formulas.Var "y"]))) in
   (valuation,fm)
+
+let fm_neg =
+  Formulas.Exists
+    ("e2","Event",
+     Formulas.Exists
+       ("e1","Event",
+        (Formulas.Atom(
+             Formulas.R("negative_influence",
+                        [Formulas.Var "e1"; Formulas.Var "s1";
+                         Formulas.Var "e2"; Formulas.Var "s2"])))))
 
 let empty_valuation = function
     _ -> failwith "empty valuation"
@@ -84,33 +88,21 @@ let () =
   let () = set_flags () in
   let json = Yojson.Basic.from_file (!env_file) in
   let env = Model.of_yojson json in
-  let posets = Domain.set_posets (!files) env in
+  let posets = Domain.set_posets (!files) (Some env) in
   let () = if (!Param.debug_mode) then Format.printf "read posets\n" in
-  let fm_neg =
-    Formulas.Exists
-      ("e2","Event",
-       Formulas.Exists
-         ("e1","Event",
-          (Formulas.Atom(
-               Formulas.R("negative_influence",
-                          [Formulas.Var "e1"; Formulas.Var "s1";
-                           Formulas.Var "e2"; Formulas.Var "s2"]))))) in
-
   let m = Formulas.interpretation env posets in
   let () = Format.printf "\n evaluate formula\n" in
   (evaluate fm_neg m empty_valuation)
 
-  (*  test_z3 posets*)
-  (*
-  let m = Formulas.interpretation posets in
+
+(*  test_z3 posets*)
+(*  let () = parse_fm () in
   List.iteri
     (fun i fm ->
       Format.printf "\n evaluate formula %i:\n" i;
       (evaluate fm m empty_valuation))
-    (!read_fm)
-  *)
-  (*
+    (!read_fm)*)
+(*
   let (valuation,fm) = test_subset posets in
   if (Formulas.holds m valuation fm) then Format.printf"true\n"
-  else Format.printf "false\n"
-   *)
+  else Format.printf "false\n"*)

@@ -39,12 +39,12 @@ let add_posets p current_posets =
   { poset_list = p::current_posets.poset_list;
     event_list = p.Poset.events@current_posets.event_list; }
 
-let set_posets file_list sigs =
+let set_posets file_list env =
   let posets : t = { poset_list = []; event_list = []; } in
   let posets_file =
     List.fold_left
       (fun t file ->
-        let s = Poset.read_poset_from_file file sigs in
+        let s = Poset.read_poset_from_file file env in
         add_posets s t) posets file_list in
   let () = if (!Param.debug_mode)
            then (Format.printf "\nset_posets";

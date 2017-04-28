@@ -15,6 +15,6 @@ val print_posets: t -> unit
 val print_domain : domain -> unit
 val print_domain_list : domain list -> unit
 
-val set_posets : string list -> Model.t -> t
+val set_posets : string list -> Model.t option -> t
 
 val get_poset_from_filename : string -> domain list -> domain

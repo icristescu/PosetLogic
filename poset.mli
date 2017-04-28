@@ -18,11 +18,15 @@ val get_events_by_id_list : int list -> t -> Event.t list
 val print_poset: t -> unit
 
 val intro : t -> t
+val obs : t -> int
+val remove_event : t -> int -> t
 
-val remove_obs : t -> t
-
-val read_poset_from_file : string -> Model.t -> t
+val read_poset_from_file : string -> Model.t option -> t
 
 val check_prec_1 : Event.t -> Event.t -> t -> bool
 
 val check_prec_star : Event.t -> Event.t -> t -> bool
+
+val past : Event.t -> t -> t
+
+val same_poset : t -> t -> bool

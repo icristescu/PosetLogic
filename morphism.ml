@@ -63,9 +63,9 @@ let check_combination p1 p2 =
 
 let gen_all_morphs p1 p2 =
   let l1 =
-    List.map (fun e -> (Event.get_id e, Event.get_label e)) p1.Poset.events in
+    List.map (fun e -> (Event.id e, Event.label e)) p1.Poset.events in
   let l2 =
-    List.map (fun e -> (Event.get_id e, Event.get_label e)) p2.Poset.events in
+    List.map (fun e -> (Event.id e, Event.label e)) p2.Poset.events in
   let combins = combinations (List.length l1) l2 in
   List.flatten
     (List.map
@@ -77,9 +77,9 @@ let gen_all_morphs p1 p2 =
 let check_labels m p1 p2 =
   List.fold_left
     (fun ok_so_far (id1,id2) ->
-      let e1 = List.find (fun e -> (Event.get_id e) = id1) p1.Poset.events in
-      let e2 = List.find (fun e -> (Event.get_id e) = id2) p2.Poset.events in
-      ok_so_far && ((Event.get_label e1)= (Event.get_label e2)))
+      let e1 = List.find (fun e -> (Event.id e) = id1) p1.Poset.events in
+      let e2 = List.find (fun e -> (Event.id e) = id2) p2.Poset.events in
+      ok_so_far && ((Event.label e1)= (Event.label e2)))
     true (IntMap.bindings m)
 
 let check_prec m p1 p2 =
