@@ -16,6 +16,9 @@ type ('a) term = Var of string
 
 type ('a) fol = R of string * ('a) term list
 
+(** define the meaning of a term or formula with respect to both
+    an interpretation (of the function and predicate symbols) and
+    a valuation (of the free variables). *)
 val holds : (string -> Domain.domain list -> Domain.domain) *
               (string -> Domain.domain list -> bool) *
                 (Domain.domain list) ->
@@ -37,3 +40,6 @@ val print_fm : string fol formula -> unit
 
 val convert_string_to_domain : string fol formula -> Domain.domain list
                                -> Domain.domain fol formula
+
+val replace_variables : 'a fol formula list -> (string * 'a) list ->
+                        'a fol formula list

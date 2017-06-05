@@ -93,12 +93,12 @@ let check_prec m p1 p2 =
 let comp_morph p1 p2 =
   let all_morphs = gen_all_morphs p1 p2 in
   let () = if (!Param.debug_mode)
-           then (Format.printf "gen all morphisms\n";
+           then (Format.printf "@.generating all morphisms...@.";
            print_list_morphisms all_morphs) in
   let valid_prec =
     List.filter (fun m -> check_prec m p1 p2) all_morphs in
   let () = if (!Param.debug_mode)
-           then (Format.printf "morphisms after prec check: \n";
+           then (Format.printf "the morphisms that passed the prec check:@.";
                  print_list_morphisms valid_prec) in
   valid_prec
 

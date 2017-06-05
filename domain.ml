@@ -16,13 +16,13 @@ let get_poset_from_filename s dlist =
     (fun d ->
       match d with Ev e -> false
                  | Pos p ->
-                    (match p.Poset.filename with Some n -> (s=n)
-                                               | None -> false))
+                    (match (Poset.filename p) with Some n -> (s=n)
+                                                 | None -> false))
     dlist
 
 let print_posets t =
   List.iteri
-    (fun i p -> Format.printf "\nposet nb %d\n" i; Poset.print_poset p)
+    (fun i p -> Format.printf "@.poset nb %d" i; Poset.print_poset p)
     t.poset_list
 
 let print_domain = function
@@ -37,7 +37,7 @@ let print_domain_list l =
 
 let add_posets p current_posets =
   { poset_list = p::current_posets.poset_list;
-    event_list = p.Poset.events@current_posets.event_list; }
+    event_list = (Poset.events p)@current_posets.event_list; }
 
 let set_posets file_list env =
   let posets : t = { poset_list = []; event_list = []; } in
@@ -47,6 +47,6 @@ let set_posets file_list env =
         let s = Poset.read_poset_from_file file env in
         add_posets s t) posets file_list in
   let () = if (!Param.debug_mode)
-           then (Format.printf "\nset_posets";
+           then (Format.printf "\n********* the posets are:";
                  print_posets posets_file) in
   posets_file

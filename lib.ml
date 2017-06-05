@@ -19,6 +19,13 @@ let remove_duplicates l compare =
     | x :: xs -> go (remove_elt x xs compare) (x::acc)
   in go l []
 
+let concat_without_duplicates l1 l2 =
+  let rec concat l1 l2 =
+    match l1 with
+    | h::tl -> if (List.mem h l2) then concat tl l2 else concat tl (h::l2)
+    | [] -> l2 in
+  if (l2 = []) then l1 else concat l1 l2
+
 let rec interleave x lst =
   match lst with
   | [] -> [[x]]
@@ -40,3 +47,22 @@ let mapping list1 list combine =
                       else (raise (ExceptDefn.Mappings()))) list1 list2 in
         working_map::acc
       with ExceptDefn.Mappings() -> acc) [] list_of_list
+
+let print_int_list m =
+  List.iter (fun (a,b) -> Format.printf "(%d,%d) " a b) m;
+  Format.printf "@."
+
+let print_cc sigs cc =
+  Pattern.print_cc
+    ~new_syntax:true ~sigs ~with_id:true (Format.std_formatter) cc
+
+let print_side sigs mixt =
+  List.iter
+    (fun (m,cc,cc_id) ->
+      Pattern.print_cc
+        ~new_syntax:true ~sigs ~cc_id ~with_id:true
+        (Format.std_formatter) cc;
+      Format.printf " && ";
+      List.iter (fun (a,b) -> Format.printf "(%d,%d) " a b) m)
+    mixt;
+  Format.printf "@."

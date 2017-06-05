@@ -1,3 +1,4 @@
+(** the domains of variables in formulas *)
 type domain =  Pos of Poset.t
              | Ev of Event.t
 

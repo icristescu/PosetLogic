@@ -7,31 +7,38 @@ type t = {
     events : Event.t list;
     prec_1 : (int * int) list;
     inhibit : (int * int) list;
-    mutable prec_star : int list array option;
+    mutable prec_star : (int*int list) list option;
   }
 
 let empty_poset =
   {kappa = false; filename = None; events = []; prec_1 = [];
-   prec_star = None; inhibit = [];}
+   prec_star = None; inhibit = []}
 
-let get_events_from_poset p = p.events
+let events p = p.events
+let filename p = p.filename
 
-let get_event_by_id i p =
-  List.find (fun e -> (Event.id e) = i) (get_events_from_poset p)
+let event_by_id i p =
+  List.find (fun e -> (Event.id e) = i) (p.events)
 
-let get_events_by_id_list ls p =
+let events_by_id_list ls p =
   List.filter (fun e -> List.mem (Event.id e) ls) p.events
 
+let print_poset_name p = match p.filename with
+  | Some fn -> Format.printf "%s" fn
+  | None -> Format.printf "(no name)"
+
 let print_poset p =
-  Format.printf "events (id, label) : \n";
+  Format.printf "@.";
+  print_poset_name p;
+  Format.printf " with events (id, label):";
   List.iter (fun e -> Event.print_event e) p.events;
-  Format.printf "\n";
+  Format.printf "@.";
   Format.printf "prec : ";
   List.iter (fun (e,e') -> Format.printf " %i < %i  " e e') p.prec_1 ;
-  Format.printf "\n";
+  Format.printf "@.";
   Format.printf "inhibit : ";
   List.iter (fun (e,e') -> Format.printf " %i < %i " e e') p.inhibit;
-  Format.printf "\n"
+  Format.printf "@."
 
 let edges_of_json json =
   let open Yojson.Basic.Util in
@@ -54,69 +61,92 @@ let read_poset_from_file file env =
     prec_star = None;
     inhibit = edges_of_json edges_inhibit}
 
-let split_intro_rest p =
-  List.fold_left
-    (fun (intros,rest) (e1,e2) ->
-      if (List.mem e1 rest) then
-        ( if (List.mem e2 rest) then (intros,rest) else (intros,e2::rest))
-      else (e1::intros,e2::rest))
-    ([],[]) p.prec_1
-
 let get_poset_of_events events =
   { kappa = false; filename = None; events; prec_1 = [];
-    prec_star=None; inhibit = [] }
+    prec_star=None; inhibit = []}
 
 let intro p =
-  let intros =
+  let intro_events =
     List.filter
-    (fun e ->
-      not(List.exists (fun (i1,i2) -> (Event.id e) = i2) p.prec_1))
-    p.events in
-  let () = if (!Param.debug_mode)
-           then (Format.printf "intro events of poset: \n";
-                 print_poset p;
-                 Format.printf "are: \n";
-                 List.iter (fun e -> Event.print_event e) intros) in
-  get_poset_of_events(intros)
+      (fun e -> not(List.exists (fun (_,i) -> (Event.id e) = i) p.prec_1))
+      p.events in
+  get_poset_of_events(intro_events)
 
-(* specialised to the case of one obs - the last one in the list *)
 let obs p =
-  if (p.kappa) then List.length p.events
-  else raise (ExceptDefn.Internal_Error("obs of non kappa poset"))
+  let obs_events =
+    List.filter
+      (fun e -> not(List.exists (fun (i,_) -> (Event.id e) = i) p.prec_1))
+      p.events in
+  get_poset_of_events(obs_events)
 
-let remove_event p eid =
-  let neither (e1,e2) = not((e1 = eid)||(e2 = eid)) in
-  let events = List.filter (fun e -> not ((Event.id e) = eid)) p.events in
-  let prec_1 = List.filter neither p.prec_1 in
-  let inhibit = List.filter neither p.inhibit in
-  {kappa = false;filename = p.filename; events; prec_1;prec_star= None;inhibit}
+(* mophisms between posets don't take obs into account - only one obs in kappa *)
+let prepare_for_morphism p =
+  if (not(p.kappa)) then p
+  else
+    let obs_id = List.hd (List.map (fun e -> (Event.id e)) (events (obs p))) in
+    let neither (e1,e2) = not((e1 = obs_id)||(e2 = obs_id)) in
+    let events = List.filter (fun e -> not (Event.id e = obs_id)) p.events in
+    let prec_1 = List.filter neither p.prec_1 in
+    let inhibit = List.filter neither p.inhibit in
+    {kappa = false;filename = p.filename;events;prec_1;prec_star=None;inhibit;}
 
-let sort_prec ls =
-  let rec verif_sort = function
-    | (e1,e2)::next ->
-       if not(List.exists (fun (e1',e2') -> (e2 = e1')) next)
-       then verif_sort next else false
-    | [] -> true in
-  if (verif_sort ls) then ls
-  else raise (ExceptDefn.Internal_Error("prec_1 is not sorted"))
+let sort p =
+  let rev_inhibit = List.map (fun (a,b) -> (b,a)) p.inhibit in
+  let to_order = p.prec_1 @ rev_inhibit in
+  let rec sort_pairs = function
+    | [] -> []
+    | ls ->
+       let (max,rest) =
+         List.partition
+           (fun (a,b) -> not (List.exists (fun (_,a') -> (a = a')) ls)) ls in
+       max@(sort_pairs rest) in
+  sort_pairs to_order
 
-(* id of events in interval [0,length(events)] *)
+let obs_id p =
+  let obs_pos = obs p in
+  List.map (Event.id) obs_pos.events
+
+let linearisation p =
+  let l = Lib.remove_duplicates (List.map fst (sort p)) (=) in
+  l@(obs_id p)
+
 let get_enriched p =
   match p.prec_star with
   | Some enr -> enr
   | None ->
-     let arr = Array.make ((List.length p.events)+1) [] in
-     let sorted = sort_prec p.prec_1 in
+     let sorted = sort p in
      let () =
-       List.iter
-         (fun (e1,e2) ->
-           let l2 =
-             List.fold_left
-               (fun acc e -> if (List.mem e acc) then acc else e::acc)
-               arr.(e1) arr.(e2) in
-           arr.(e1) <- e2::l2) sorted in
-     let () = p.prec_star <- Some arr in
-     arr
+       if (!Param.debug_mode) then
+         (Format.printf "sort poset @."; Lib.print_int_list sorted) in
+
+     let get_causes e acc =
+       let direct_causes =
+         List.map fst (List.filter (fun (_,e') -> e' = e) sorted) in
+       List.fold_left
+         (fun acc' e' ->
+           let (_,causes) = List.find (fun (i,_) -> i=e') acc in
+           Lib.concat_without_duplicates causes acc') [e] direct_causes in
+
+     let indirect ls acc' =
+       List.fold_left
+         (fun acc e1 ->
+           if (List.exists (fun (e,_) -> e = e1) acc) then acc
+           else (e1,get_causes e1 acc)::acc) acc' ls in
+     let s = indirect (List.map fst sorted) [] in
+     let obs =
+       List.find_all
+         (fun e -> not(List.exists (fun (e',_) -> e=e') s))
+         (List.map Event.id p.events) in
+     let s' = indirect obs s in
+     let () =
+       if (!Param.debug_mode) then
+         (Format.printf "enriched poset @.";
+          List.iter
+            (fun (a,ls) ->
+              Format.printf "[%d]:" a;List.iter (Format.printf "%d, ") ls;
+              Format.printf "@.") s') in
+     let () = p.prec_star <- Some s' in
+     s'
 
 let check_prec_1 e1 e2 p =
   (List.mem e1 p.events)&& (List.mem e2 p.events)&&
@@ -124,29 +154,81 @@ let check_prec_1 e1 e2 p =
 
 let check_prec_star e1 e2 p =
   let enrich = get_enriched p in
-  let () =
-    if (!Param.debug_mode) then
-      (Format.printf "check_prec_star \n";
-       Array.iteri
-         (fun i l -> Format.printf "arr(%d) =" i;
-                     List.iter (fun id -> Format.printf "%d " id) l;
-                     Format.printf "\n") enrich;
-       Format.printf "%d =< %d" (e1.Event.event_id) (e2.Event.event_id) ) in
-  (List.mem e1 p.events)&& (List.mem e2 p.events)&&
-    (List.mem (e2.Event.event_id) enrich.(e1.Event.event_id))
+  if (List.mem e1 p.events)&&(List.mem e2 p.events) then
+    let (_,causes_e2) = List.find (fun (e,_) -> e=(e2.Event.event_id)) enrich in
+    (List.mem (e2.Event.event_id) causes_e2)
+  else false
 
-(*check it !!*)
 let past e p =
   let enrich = get_enriched p in
   let eid = Event.id e in
-  let events = get_events_by_id_list enrich.(eid) p in
+  let (_,causes) = List.find (fun (i,_) -> i = eid) enrich in
+  let events = events_by_id_list causes p in
   let list_mem (e1,e2) =
-    (List.mem e1 enrich.(eid))&&(List.mem e1 enrich.(eid)) in
+    (List.mem e1 causes)&&(List.mem e2 causes) in
   let prec_1 = List.filter list_mem p.prec_1 in
   let inhibit = List.filter list_mem p.inhibit in
-  {kappa = false;filename = p.filename; events; prec_1;prec_star= None;inhibit}
+  {kappa = false;filename = p.filename;events;prec_1;prec_star=None;inhibit;}
 
 let same_poset p1 p2 =
   match (p1.filename,p2.filename) with
   | (None, _) | (_, None) -> false
   | (Some f1, Some f2) -> ((String.compare f1 f2)=0)
+
+
+(** concretisation to trace ****)
+
+let print_replay_states event lhs_state rhs_state =
+  Format.printf "@.concret of event";Event.print_event event;
+  Format.printf "lhs_state@.";
+  Edges.debug_print (Format.std_formatter)
+                    (lhs_state.Replay.graph);
+  Format.printf "rhs_state@.";
+  Edges.debug_print (Format.std_formatter)
+                    (rhs_state.Replay.graph)
+
+let copy_state s = {
+    Replay.graph = (Edges.copy s.Replay.graph); time=s.Replay.time;
+    event = s.Replay.event;connected_components=s.Replay.connected_components;}
+
+let make sigs env replay_state =
+  let (env',list) = Replay.cc_of_state replay_state env in
+  (env',list)
+
+let concretise s linear sigs =
+  let () = if (!Param.debug_mode) then
+             (Format.printf "concretise linear poset :";
+              List.iter (fun i -> Format.printf "%d " i) linear) in
+  let init_state = Replay.init_state ~with_connected_components:true in
+  let (trace,_,_) =
+    List.fold_left
+      (fun (trace,lhs_state,env) eid ->
+        let event = event_by_id eid s in
+        let step = Event.step event in
+        let rhs_copy = copy_state lhs_state in
+        let (rhs_state,_) = Replay.do_step sigs rhs_copy step in
+        (* let () = if (!Param.debug_mode) then *)
+        (*            print_replay_states event lhs_state rhs_state in *)
+        let (env',graph) = make sigs env rhs_state in
+        let trace' = TraceConcret.add_transition sigs trace graph eid in
+        (trace',rhs_state,env'))
+      (TraceConcret.empty,init_state,(Pattern.PreEnv.empty sigs))
+      linear in
+  (List.rev trace)
+
+let concrete model env sigs e p = match (Event.concrete e) with
+    None ->
+    let past_e = past e p in
+    let linear = linearisation past_e in
+    let t = concretise past_e linear sigs in
+    let () =
+      if (!Param.debug_mode) then
+        (Format.printf "past of e@.";print_poset past_e) in
+    let lhs_graph = TraceConcret.get_last_lhs_graph t in
+    let graph = match lhs_graph with
+      | None ->
+         raise(ExceptDefn.Malformed_Args
+                 ("cannot evaluate negative influence on intro events"))
+      | Some graph -> graph in
+    Event.set_concrete model env sigs e graph
+  | Some context -> context

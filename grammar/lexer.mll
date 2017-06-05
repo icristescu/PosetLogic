@@ -5,13 +5,16 @@ exception LexingError
 }
 let id = (['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9' '_' '-' '+']* )
 let blank = [' ' '\t']
+let eol = '\r'? '\n'
 
 
 rule token = parse
     [' ' '\t']		{ token lexbuf }     (* skip blanks *)
-  | ['\n' ]		{ EOL }
+  | ['\n' ]		{ Lexing.new_line lexbuf; EOL }
   | '('        	  	{ LPAREN }
   | ')'    		{ RPAREN }
+  | '#'                 { comment lexbuf}
+  | '%'			{ CONFIG }
   | "true" 		{ TRUE }
   | "false" 		{ FALSE }
   | "not"		{ NOT }
@@ -44,3 +47,8 @@ and read_label acc char_list =
   | _ as c 		{ if List.mem c char_list
 	    		  then String.concat "" (List.rev_map (fun x -> String.make 1 x) acc)
 	    		  else read_label (c::acc) char_list lexbuf}
+and comment =
+  parse
+  | eof                 { raise Eof}
+  | eol                 { Lexing.new_line lexbuf; EOL }
+  | _                   { comment lexbuf}
