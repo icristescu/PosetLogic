@@ -304,23 +304,18 @@ let denotations (_,_,domain as m) fm =
          vals
          (List.filter (fun d -> domain_match_sort d "Poset") domain)
     | [] ->
-       if (holds m valuation fm) then
-         let () =
-           if (!Param.verb) then
-             (Format.printf "true on valuation :@.";
-              List.iter
-                (fun v -> Format.printf "%s = " v;
-                          Domain.print_domain (valuation(v))) (free_var fm);
-              Format.printf "@.@.") in
+       let () =
+         if (!Param.verb) then
+           (Format.printf "on valuation :@.";
+            List.iter
+              (fun v -> Format.printf "%s = " v;
+                        Domain.print_domain (valuation(v))) (free_var fm);
+            Format.printf "@.") in
+       if holds m valuation fm then
+         let () = if (!Param.verb) then Format.printf "holds true @.@." in
          (valuation::vals)
        else
-         let () =
-           if (!Param.verb) then
-             (Format.printf "@. false on valuation :@.";
-              List.iter
-                (fun v -> Format.printf "%s = " v;
-                          Domain.print_domain (valuation(v))) (free_var fm);
-              Format.printf "@.@.") in
+         let () = if (!Param.verb) then Format.printf "holds false @.@." in
          vals in
   let default_valuation x = raise (ExceptDefn.Uninterpreted_Variable(x)) in
   denote_var (free_var fm) default_valuation []

@@ -39,7 +39,6 @@ let print_morphisms compose2 =
   Format.printf "@.compose2 = ";
   List.iter (fun (a,b)-> Format.printf "(%d,%d) " a b) compose2
 
-
 (*********** functions on morphisms as lists *)
 let list_to_renaming ls =
   match
@@ -119,58 +118,74 @@ let compose_matchings mg1 m1 n1 m2' n2 m2 mg2 =
   let partial1 =
     List.filter (fun (a1,b1) -> List.mem b1 (domain list_m2')) compose1 in
   let () = if (!Param.debug_mode) then print_morphs2 compose1 partial1 in
+(*  let comp1 = compose partial1 list_m2' in
+  let () = print_morphisms comp1 in
+  let comp2 = compose comp1 n2 in
+  let () = print_morphisms comp2 in
+  let comp3 = compose comp2 m2 in
+  let () = print_morphisms comp3 in
+  let () = print_morphisms mg2 in *)
   let compose2 =
     compose (compose (compose (compose partial1 list_m2') n2) m2) mg2 in
   let () = if (!Param.debug_mode) then print_morphisms compose2 in
   list_to_renaming compose2
 
-let print_conflict = function
-  | (i1,s1,l1,int1)::(i2,s2,l2,int2)::_ ->
-     if (int1!= int2) then
-       Format.printf
-         "on internal state of %d:%d=%d and %d:%d=%d" i1 s1 int1 i2 s2 int2
-     else (Format.printf "on link of %d:%d " i1 s1 ;
-           (match l1 with
-            | Pattern.Free -> Format.printf " free "
-            | Pattern.Link (n1,ns1) -> Format.printf "(%d, %d)" n1 ns1
-            | _ -> ());
-           Format.printf "and %d:%d " i2 s2;
-           (match l2 with
-            | Pattern.Free -> Format.printf " free "
-            | Pattern.Link (n1,ns1) -> Format.printf "(%d, %d)" n1 ns1
-            | _ -> ()))
-  | _ ->
-     raise (ExceptDefn.Internal_Error("conflict must return two nodes"))
+let print_conflict sigs (cc1,i1,cc2,i2,s,internal) =
+  let () =
+    Format.printf "no context for inhibition due to conflict on cc1 = ";
+    Lib.print_cc sigs cc1;
+    Format.printf " and cc2 = "; Lib.print_cc sigs cc2;
+    Format.printf " due to conflict on " in
+  let () =
+    if internal then Format.printf "internal states of "
+    else Format.printf "links of " in
+  Format.printf "%d of cc1 and %d of cc2 on site %d @." i1 i2 s
 
 let build_context
       sigs domain (n1,cc1,id1) (n2,cc2,id2) graph1 graph2 m1 m2 m2' inf=
   let find_cc n m graph =
-    (*    let (n',_) = List.find (fun (_,i) -> (i=id)) n in*)
+    (*graph:(morphism,pattern.cc,pattern.id) list*)
     let (rule_id,abstract_id) = List.hd n in
     let (_,concrete_id) = List.find (fun (i,_) -> (i=abstract_id)) m in
-    let (mg,g,_) =
-      List.find
+    let cc_of_graph,rest =
+      List.partition
         (fun (m,_,_) -> List.exists (fun (c,_) -> c=concrete_id) m) graph in
-    (n,mg,g) in
-  let (n1',mg1,g1) = find_cc n1 m1 graph1 in
-  let (n2',mg2,g2) = find_cc n2 m2 graph2 in
+    match cc_of_graph with
+    | (mg,g,_)::[] -> (n,mg,g,rest)
+    | _ ->
+       raise (ExceptDefn.Internal_Error("only one cc should match in graph")) in
+  let (n1',mg1,g1,rest1) = find_cc n1 m1 graph1 in
+  let (n2',mg2,g2,rest2) = find_cc n2 m2 graph2 in
+  (*let () =
+    Format.printf "build_context @.@.";
+    Lib.print_cc sigs g1;Lib.print_cc sigs g2;
+    Lib.print_cc sigs cc1;Lib.print_cc sigs cc2 in*)
   let m = compose_matchings mg1 m1 n1' m2' n2' m2 mg2 in
   (* let () = if (!Param.debug_mode) then print_build_context sigs m in *)
   let context = Pattern.merge_on_inf domain m g1 g2 in
   match context with
-  | (None,conflict) ->
-     let () =
-       if (!Param.verb) then
-         (Format.printf "no context for inhibition due to conflict ";
-          print_conflict conflict) in
-        false
+  | (None,Some conflict) ->
+     let () = if (!Param.verb) then print_conflict sigs conflict in
+     false
+  | (None,None) ->
+     raise (ExceptDefn.Internal_Error("no pushout must return conflict"))
   | (Some c,_) ->
      let () =
        if (!Param.verb) then
          (Format.printf "witness context for inhibition = ";
           Lib.print_cc sigs c;
+          List.iter
+            (fun (_,cc,_) ->
+              Pattern.print_cc
+                ~new_syntax:true ~sigs ~with_id:true (Format.std_formatter) cc)
+            rest1;
+          List.iter
+            (fun (_,cc,_) ->
+              Pattern.print_cc
+                ~new_syntax:true ~sigs ~with_id:true (Format.std_formatter) cc)
+            rest2;
           Format.printf "@. due to inf = ";
-          Lib.print_cc sigs inf) in
+          Lib.print_cc sigs inf; Format.printf "@.") in
      true
 
 let all_possible lhs1 lhs2 sigs domain graph1 graph2 m1 m2 actions =
@@ -215,7 +230,6 @@ let all_possible lhs1 lhs2 sigs domain graph1 graph2 m1 m2 actions =
 let context_of_application e1 s1 e2 s2 sigs env =
   let env' = Model.domain env in
   let domain = Pattern.PreEnv.of_env env' in
-
   let (graph1,lhs1,m1,actions) = Poset.concrete env env' sigs e1 s1 in
   let (graph2,lhs2,m2,_) = Poset.concrete env env' sigs e2 s2 in
 

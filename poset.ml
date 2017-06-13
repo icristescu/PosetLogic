@@ -91,8 +91,8 @@ let prepare_for_morphism p =
     {kappa = false;filename = p.filename;events;prec_1;prec_star=None;inhibit;}
 
 let sort p =
-  let rev_inhibit = List.map (fun (a,b) -> (b,a)) p.inhibit in
-  let to_order = p.prec_1 @ rev_inhibit in
+  (*let rev_inhibit = List.map (fun (a,b) -> (b,a)) p.inhibit in*)
+  let to_order = p.prec_1 @ p.inhibit in
   let rec sort_pairs = function
     | [] -> []
     | ls ->
@@ -195,7 +195,7 @@ let make sigs env replay_state =
   let (env',list) = Replay.cc_of_state replay_state env in
   (env',list)
 
-let concretise s linear sigs =
+let concretise env s linear sigs =
   let () = if (!Param.debug_mode) then
              (Format.printf "concretise linear poset :";
               List.iter (fun i -> Format.printf "%d " i) linear) in
@@ -212,18 +212,19 @@ let concretise s linear sigs =
         let (env',graph) = make sigs env rhs_state in
         let trace' = TraceConcret.add_transition sigs trace graph eid in
         (trace',rhs_state,env'))
-      (TraceConcret.empty,init_state,(Pattern.PreEnv.empty sigs))
+      (TraceConcret.empty,init_state,(Pattern.PreEnv.of_env env))
       linear in
   (List.rev trace)
 
-let concrete model env sigs e p = match (Event.concrete e) with
+let concrete model env sigs e p =
+  match (Event.concrete e) with
     None ->
     let past_e = past e p in
-    let linear = linearisation past_e in
-    let t = concretise past_e linear sigs in
     let () =
       if (!Param.debug_mode) then
         (Format.printf "past of e@.";print_poset past_e) in
+    let linear = linearisation past_e in
+    let t = concretise env past_e linear sigs in
     let lhs_graph = TraceConcret.get_last_lhs_graph t in
     let graph = match lhs_graph with
       | None ->
