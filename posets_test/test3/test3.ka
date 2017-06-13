@@ -1,0 +1,29 @@
+%agent: A(a~p~u,x,y)
+%agent: B(x,z)
+%agent: C(y,z)
+
+'ab' 	A(a~u,x), B(x) -> A(a~u,x!1), B(x!1) @ 0.01
+
+'bac'	A(x!1,y), B(x!1), C(y) -> A(x!1,y!2), B(x!1), C(y!2) @ 0.01
+'c.ab'  A(x!1,y!2), B(x!1), C(y!2) -> A(x!1,y), B(x!1), C(y) @ 0.01
+
+'c.ap' 	A(a~p,y!1), C(y!1) -> A(a~p,y), C(y) @ 1
+'pabc'	A(a~u,x!1), B(x!1,z!2), C(z!2) -> A(a~p,x!1), B(x!1,z!2), C(z!2) @ 0.01
+'pcab'	A(a~u,x!1,y!2), B(x!1), C(y!2) -> A(a~p,x!1,y!2), B(x!1), C(y!2) @ 0.01
+
+'bc'	B(z), C(z) -> B(z!1), C(z!1) @ 0.01
+
+'a.bc'  A(x!1), B(x!1,z!2), C(z!2) -> A(x), B(x,z!2), C(z!2) @ 0.01
+'ac' 	A(a~u,y), C(y) -> A(a~u,y!1), C(y!1) @ 0.01
+
+%obs: 'Ap'  |A(a~p)|
+%obs: 'Apx' |A(a~p,x)|
+%obs: 'Apy' |A(a~p,y)|
+
+
+%mod: [true] do $TRACK 'Apx' [true]
+%mod: [true] do $TRACK 'Apy' [true]
+%def: "displayCompression" "weak"
+%def: "dotCflows" "json"
+
+%init: 1000 A(a~u,x,y), B(x,z), C(y,z)
