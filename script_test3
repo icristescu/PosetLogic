@@ -1,1 +1,1 @@
-./main.native posets_test/test3/c0.json posets_test/test3/c1.json posets_test/test3/c2.json posets_test/test3/c3.json posets_test/test3/c4.json posets_test/test3/c5.json -env posets_test/test3/env.json -f posets_test/test3/test2
+./main.native examples/test3/c0.json examples/test3/c1.json examples/test3/c2.json examples/test3/c3.json examples/test3/c4.json examples/test3/c5.json -env examples/test3/env.json -f examples/test3/test2
