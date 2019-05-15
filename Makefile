@@ -13,7 +13,7 @@ clean:
 			$(OCB) -clean
 
 native:
-			$(OCB) -package Z3 main.native
+			$(OCB) main.native
 
 byte:
 			$(OCB) main.byte
@@ -25,7 +25,7 @@ debug:
 			$(OCB) -tag debug main.byte
 sanity:
 # check that packages can be found
-			ocamlfind query yojson z3
+			ocamlfind query yojson
 
 test: 		native
 			./main.native "OCaml" "OCamlBuild" "users"

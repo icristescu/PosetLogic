@@ -1,21 +1,21 @@
 open Lib
 
-type ('a) formula = False
+type 'a formula = False
                  | True
                  | Atom of 'a
-                 | Not of ('a)formula
-                 | And of ('a)formula * ('a)formula
-                 | Or of ('a)formula * ('a)formula
-                 | Imp of ('a)formula * ('a)formula
-                 | Iff of ('a)formula * ('a)formula
-                 | Forall of string * string * ('a)formula
-                 | Exists of string * string * ('a)formula
+                 | Not of 'a formula
+                 | And of 'a formula * 'a formula
+                 | Or of 'a formula *  'a formula
+                 | Imp of 'a formula * 'a formula
+                 | Iff of 'a formula * 'a formula
+                 | Forall of string * string * 'a formula
+                 | Exists of string * string * 'a formula
 
 type ('a) term =  Var of string
-                | Fn of string * ('a) term list
-                | Const of ('a)
+                | Fn of string * 'a term list
+                | Const of 'a
 
-type ('a) fol = R of string * ('a) term list
+type ('a) fol = R of string * 'a term list
 
 let rec string_term tm domain = match tm with
   | Var s -> Var s

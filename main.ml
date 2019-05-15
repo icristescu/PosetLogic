@@ -74,11 +74,3 @@ let () =
       Format.printf "@.********* evaluate formula %i:\n" i;
       (evaluate fm m empty_valuation))
     formulas
-
-(*** evaluate formulas written directly in ocaml ***)
-(*  let () = Format.printf "\n evaluate formula\n" in
-  (evaluate Tests.fm_neg m empty_valuation)*)
-(*
-  let (valuation,fm) = Tests.test_subset posets in
-  if (Formulas.holds m valuation fm) then Format.printf"true\n"
-  else Format.printf "false\n"*)

@@ -1,2 +1,2 @@
-true:   package(yojson), package(z3), package(KappaLib)
+true:   package(yojson), package(KappaLib)
 true:   debug, bin_annot

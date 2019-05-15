@@ -1,20 +1,20 @@
 
-type ('a)formula = False
+type 'a formula = False
                  | True
                  | Atom of 'a
-                 | Not of ('a)formula
-                 | And of ('a)formula * ('a)formula
-                 | Or of ('a)formula * ('a)formula
-                 | Imp of ('a)formula * ('a)formula
-                 | Iff of ('a)formula * ('a)formula
-                 | Forall of string * string * ('a)formula
-                 | Exists of string * string * ('a)formula
+                 | Not of 'a formula
+                 | And of 'a formula * 'a formula
+                 | Or of 'a formula * 'a formula
+                 | Imp of 'a formula * 'a formula
+                 | Iff of 'a formula * 'a formula
+                 | Forall of string * string * 'a formula
+                 | Exists of string * string * 'a formula
 
-type ('a) term = Var of string
-               | Fn of string * ('a) term list
-               | Const of ('a)
+type 'a term = Var of string
+               | Fn of string * 'a term list
+               | Const of 'a
 
-type ('a) fol = R of string * ('a) term list
+type 'a fol = R of string * 'a term list
 
 (** define the meaning of a term or formula with respect to both
     an interpretation (of the function and predicate symbols) and
